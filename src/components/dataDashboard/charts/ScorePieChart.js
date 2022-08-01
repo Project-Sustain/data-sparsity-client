@@ -10,7 +10,9 @@ const useStyles = makeStyles({
     paper: {
         margin: "10px",
         padding: "10px",
-        width: '50vw'
+        width: '50vw',
+        zIndex: '5000',
+        opacity: '0.9'
     },
     table: {
         overflow: 'auto',
@@ -72,7 +74,7 @@ export default function ScorePieChart(props) {
 
     if(props.status === "VALID" && pieData.length > 0 && props.inDashboard) {
         return (
-            <Paper className={classes.paper}>
+            <Paper elevation={3} className={classes.paper}>
 
                 <Stack direction='row' justifyContent="center">
                     <Typography align='center' variant='h5'>Sparsity Score Spread&nbsp;</Typography>

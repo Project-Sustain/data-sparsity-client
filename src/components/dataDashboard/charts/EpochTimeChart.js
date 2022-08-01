@@ -7,11 +7,12 @@ import { sum } from 'simple-statistics';
 import { colors } from '../../../helpers/colors';
 
 const useStyles = makeStyles({
-    paper: {
+    root: {
         margin: "10px",
         padding: "10px",
         maxHeight: "70vh",
-        overflow: "auto"
+        zIndex: '5000',
+        opacity: '0.9'
     },
     chart: {
         width: "100%",
@@ -74,7 +75,7 @@ export default function EpochTimeChart(props) {
 
     if(props.status === "VALID" && props.inDashboard) {
         return (
-            <Paper elevation={2} className={classes.paper}>
+            <Paper elevation={3} className={classes.root}>
                 <Typography variant='h5' align='center'>Number of Observations by Time</Typography>
                 <ResponsiveContainer width="100%" height={400}>
                     <LineChart
@@ -117,7 +118,7 @@ export default function EpochTimeChart(props) {
 
     else if(props.status === "INVALID" && props.inDashboard) {
         return (
-            <Paper elevation={2} className={classes.paper}>
+            <Paper elevation={3} className={classes.root}>
                 <Typography>No Data Matching Request</Typography>
             </Paper>
         );
@@ -125,7 +126,7 @@ export default function EpochTimeChart(props) {
 
     else if(props.status === "PENDING" && props.inDashboard) {
         return (
-            <Paper elevation={2} className={classes.paper}>
+            <Paper elevation={3} className={classes.root}>
                 <Typography>Chart Loading...</Typography>
                 <LinearProgress color='tertiary' />
             </Paper>

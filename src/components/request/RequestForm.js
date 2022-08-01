@@ -14,7 +14,9 @@ const useStyles = makeStyles({
     paper: {
         margin: "10px",
         padding: "10px",
-        width: "50vw"
+        width: "50vw",
+        zIndex: '5000',
+        opacity: '0.9'
     },
     item: {
         margin: '10px'

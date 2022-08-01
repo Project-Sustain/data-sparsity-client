@@ -8,7 +8,9 @@ const useStyles = makeStyles({
         width: "10vw",
         position: 'absolute',
         top: '10px',
-        left: '30px'
+        left: '30px',
+        zIndex: '5000',
+        opacity: '0.9'
     }
 })
 
