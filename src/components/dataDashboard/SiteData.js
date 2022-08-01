@@ -6,17 +6,23 @@ import SelectedSite from "./SelectedSite";
 const useStyles = makeStyles({
     loading: {
         margin: "10px",
-        padding: "10px"
+        padding: "10px",
+        zIndex: '5000',
+        opacity: '0.9'
     },
     table: {
         margin: '10px',
         padding: '10px',
-        width: '40vw'
+        width: '40vw',
+        zIndex: '5000',
+        opacity: '0.9'
     },
     site: {
         margin: '10px',
         padding: '10px',
-        width: '60vw'
+        width: '60vw',
+        zIndex: '5000',
+        opacity: '0.9'
     }
 });
 

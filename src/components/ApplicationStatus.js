@@ -5,7 +5,9 @@ const useStyles = makeStyles({
   root: {
     margin: "10px",
     padding: "10px",
-    width: "20vw"
+    width: "20vw",
+    zIndex: '5000',
+    opacity: '0.9'
   }
 });
 
