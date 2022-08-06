@@ -11,12 +11,12 @@ export default function App() {
     const [scores, setScores] = useState([]);
     const [status, setStatus] = useState("");
 
-    const [request, setRequest] = useState(false);
-    const [appStatus, setAppStatus] = useState(false);
+    const [request, setRequest] = useState(true);
+    const [appStatus, setAppStatus] = useState(true);
     const [pieChart, setPieChart] = useState(false);
     const [barChart, setBarChart] = useState(false);
     const [lineChart, setLineChart] = useState(false);
-    const [siteData, setSiteData] = useState(false);
+    const [siteData, setSiteData] = useState(true);
     const [dashboardStatus, setDashbaordStatus] = useState([]);
 
     useEffect(() => {
@@ -43,7 +43,7 @@ export default function App() {
                     status, request, appStatus, pieChart, barChart, lineChart, siteData}}
                 set={{setSelectedIndex, setSparsityData, setScores, setStatus}}
             />
-            <UsMap />
+            <UsMap data={sparsityData} />
         </>
     );
 }

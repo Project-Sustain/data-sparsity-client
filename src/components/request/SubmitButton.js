@@ -1,5 +1,7 @@
 import { Button } from '@mui/material';
 import { makeStyles } from '@material-ui/core';
+import { colors } from '../../helpers/colors';
+import chroma from 'chroma-js';
 
 const useStyles = makeStyles({
     root: {
@@ -13,6 +15,7 @@ export default function SubmitButton(props) {
     const sendSparsityScoreRequest = async() => {
 
         props.setStatus("PENDING");
+        props.setSparsityData([]);
 
         const params = {
             'collectionName': props.collectionName,
@@ -73,16 +76,26 @@ export default function SubmitButton(props) {
             function formatResults(streamedResults) {
                 streamedResults.sort((a, b) => {return b.sparsityScore - a.sparsityScore});
                 const scoresList = [...new Set(streamedResults.map(result => {return result.sparsityScore}))];
+                const initialColorScale = chroma.scale([colors.tertiary, colors.primary]).colors(streamedResults.length);
                 const numberOfUniqueScores = scoresList.length - 1;
                 const scoreMap = {};
                 scoresList.forEach((absoulteScore, index) => {
                     scoreMap[absoulteScore] = parseInt(((numberOfUniqueScores - index) / numberOfUniqueScores) * 100) + "%";
                 });
-                const formattedResults = streamedResults.map(result => {
+                const formattedResults = streamedResults.map((result, index) => {
+                    const coordinates = result.coordinates;
+                    result.coordinates = [coordinates.longitude, coordinates.latitude];
                     result.relativeSparsityScore = scoreMap[result.sparsityScore];
+                    result.color = hexToRgb(initialColorScale[index]);
                     return result
                 });
                 return formattedResults;
+
+                // Source: https://stackoverflow.com/questions/5623838/rgb-to-hex-and-hex-to-rgb
+                function hexToRgb(hex) {
+                    var result = /^#?([a-f\d]{2})([a-f\d]{2})([a-f\d]{2})$/i.exec(hex);
+                    return result ? [parseInt(result[1], 16), parseInt(result[2], 16), parseInt(result[3], 16)] : [0, 0 ,0];
+                  }
             }
         });
     }
