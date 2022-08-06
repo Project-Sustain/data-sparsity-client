@@ -19,8 +19,6 @@ export default function App() {
     const [siteData, setSiteData] = useState(true);
     const [dashboardStatus, setDashbaordStatus] = useState([]);
 
-    console.log({sparsityData});
-
     useEffect(() => {
         const tempScores = sparsityData.map((siteData) => {return siteData.sparsityScore});
         setScores(tempScores);
@@ -45,7 +43,7 @@ export default function App() {
                     status, request, appStatus, pieChart, barChart, lineChart, siteData}}
                 set={{setSelectedIndex, setSparsityData, setScores, setStatus}}
             />
-            <UsMap />
+            <UsMap data={sparsityData} />
         </>
     );
 }

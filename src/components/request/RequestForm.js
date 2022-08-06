@@ -41,7 +41,7 @@ export default memo(function RequestForm(props) {
     useEffect(() => {
         setStateInfo(gisStateCounty);
         setSelectedState(gisStateCounty[15]);
-        setSelectedCounty(gisStateCounty[15].counties[0]);
+        setSelectedCounty(gisStateCounty[15].counties[3]);
         setSpatialIdentifier(gisStateCounty[15].GISJOIN);
         setCollection(sparsityMetadata[0]);
     }, []);
