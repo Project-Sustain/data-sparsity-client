@@ -83,8 +83,6 @@ export default function SubmitButton(props) {
                     scoreMap[absoulteScore] = parseInt(((numberOfUniqueScores - index) / numberOfUniqueScores) * 100) + "%";
                 });
                 const formattedResults = streamedResults.map((result, index) => {
-                    const coordinates = result.coordinates;
-                    result.coordinates = [coordinates.longitude, coordinates.latitude];
                     result.relativeSparsityScore = scoreMap[result.sparsityScore];
                     result.color = hexToRgb(initialColorScale[index]);
                     return result

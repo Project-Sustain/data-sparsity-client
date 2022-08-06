@@ -19,6 +19,8 @@ const ICON_MAPPING = {
 
 export default function Main({data}) {
 
+    console.log({data})
+
     const iconLayer = new IconLayer({
         id: 'icon-layer',
         pickable: true,
