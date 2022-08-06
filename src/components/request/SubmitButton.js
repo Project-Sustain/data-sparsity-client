@@ -1,5 +1,7 @@
 import { Button } from '@mui/material';
 import { makeStyles } from '@material-ui/core';
+import { colors } from '../../helpers/colors';
+import chroma from 'chroma-js';
 
 const useStyles = makeStyles({
     root: {
@@ -73,13 +75,15 @@ export default function SubmitButton(props) {
             function formatResults(streamedResults) {
                 streamedResults.sort((a, b) => {return b.sparsityScore - a.sparsityScore});
                 const scoresList = [...new Set(streamedResults.map(result => {return result.sparsityScore}))];
+                const initialColorScale = chroma.scale([colors.tertiary, colors.primary]).colors(streamedResults.length);
                 const numberOfUniqueScores = scoresList.length - 1;
                 const scoreMap = {};
                 scoresList.forEach((absoulteScore, index) => {
                     scoreMap[absoulteScore] = parseInt(((numberOfUniqueScores - index) / numberOfUniqueScores) * 100) + "%";
                 });
-                const formattedResults = streamedResults.map(result => {
+                const formattedResults = streamedResults.map((result, index) => {
                     result.relativeSparsityScore = scoreMap[result.sparsityScore];
+                    result.color = initialColorScale[index];
                     return result
                 });
                 return formattedResults;

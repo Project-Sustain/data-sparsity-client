@@ -11,13 +11,15 @@ export default function App() {
     const [scores, setScores] = useState([]);
     const [status, setStatus] = useState("");
 
-    const [request, setRequest] = useState(false);
-    const [appStatus, setAppStatus] = useState(false);
+    const [request, setRequest] = useState(true);
+    const [appStatus, setAppStatus] = useState(true);
     const [pieChart, setPieChart] = useState(false);
     const [barChart, setBarChart] = useState(false);
     const [lineChart, setLineChart] = useState(false);
-    const [siteData, setSiteData] = useState(false);
+    const [siteData, setSiteData] = useState(true);
     const [dashboardStatus, setDashbaordStatus] = useState([]);
+
+    console.log({sparsityData});
 
     useEffect(() => {
         const tempScores = sparsityData.map((siteData) => {return siteData.sparsityScore});
