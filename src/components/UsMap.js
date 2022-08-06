@@ -34,6 +34,7 @@ export default function Main({data}) {
 
     const iconLayer = new IconLayer({
         id: 'icon-layer',
+        pickable: true,
         data,
         iconAtlas: 'https://raw.githubusercontent.com/visgl/deck.gl-data/master/website/icon-atlas.png',
         iconMapping: ICON_MAPPING,
@@ -41,7 +42,8 @@ export default function Main({data}) {
         getIcon: d => 'marker',
         getPosition: d => d.coordinates,
         getSize: d => 2,
-        getColor: d => d.color
+        getColor: d => d.color,
+        getFillColor: d => d.color
     });
 
     return (
@@ -50,6 +52,7 @@ export default function Main({data}) {
                 initialViewState={INITIAL_VIEW_STATE}
                 controller={true}
                 layers={[iconLayer]}
+                getTooltip={({object}) => object && `${object.organizationFormalName}\n${object.monitorId}\nAbsolute Sparsity Score: ${object.sparsityScore}\nRelative Sparsity Score: ${object.relativeSparsityScore}`}
               >
                 <StaticMap mapStyle={BASEMAP.POSITRON} />
             </DeckGL>
