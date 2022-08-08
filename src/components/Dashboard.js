@@ -6,6 +6,7 @@ import RequestForm from './request/RequestForm';
 import ScorePieChart from './dataDashboard/charts/ScorePieChart';
 import SiteData from './dataDashboard/SiteData';
 import { makeStyles } from "@material-ui/core";
+import DashboardCurator from './dataDashboard/DashboardCurator';
 
 const useStyles = makeStyles({
     root: {
@@ -36,6 +37,10 @@ export default function Dashbaord(props) {
                     setStatus={props.set.setStatus} 
                     setSparsityData={props.set.setSparsityData} 
                     setSelectedIndex={props.set.setSelectedIndex} 
+                />
+                <DashboardCurator 
+                    dashboardStatus={props.state.dashboardStatus} 
+                    status={props.state.status} 
                 />
                 </Stack>
             </Container>

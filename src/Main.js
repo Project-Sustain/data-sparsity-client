@@ -37,10 +37,10 @@ export default function App() {
 
     return (
         <>
-            <DashboardCurator dashboardStatus={dashboardStatus} status={status} />
+            {/* <DashboardCurator dashboardStatus={dashboardStatus} status={status} /> */}
             <Dashbaord
                 state={{serverConnection, DbConnection, selectedIndex, sparsityData, scores,
-                    status, request, appStatus, pieChart, barChart, lineChart, siteData}}
+                    status, request, appStatus, pieChart, barChart, lineChart, siteData, dashboardStatus}}
                 set={{setSelectedIndex, setSparsityData, setScores, setStatus}}
             />
             <UsMap data={sparsityData} />

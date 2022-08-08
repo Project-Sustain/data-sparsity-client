@@ -1,55 +1,67 @@
-import { Paper, FormGroup, FormControlLabel, Checkbox, Typography } from "@mui/material";
+import { Paper, FormGroup, FormControlLabel, Checkbox, Typography, Button, Divider } from "@mui/material";
 import { makeStyles } from "@material-ui/core";
+import { useState } from "react";
 
 const useStyles = makeStyles({
-    root: {
-        margin: "10px",
-        padding: "10px",
-        width: "10vw",
-        position: 'absolute',
-        top: '10px',
-        left: '30px',
-        zIndex: '5001'
+    button: {
+        zIndex: 5000,
+    },
+    curator: {
+        zIndex: 5000,
+        margin: '10px',
+        padding: '10px',
+        width: '20vw',
+        opacity: '0.9'
     }
 })
 
 export default function DashboardCurator(props) {
     const classes = useStyles();
+    const [open, setOpen] = useState(false);
 
-    const disable = (entry) => {
-        if(entry.label === "Application Status" || entry.label === "Request Form") {
-            return false;
+    const renderButton = () => {
+        if(open) return null;
+        else {
+            return <Button className={classes.button} onClick={() => setOpen(true)}>Dashboard Menu</Button>
         }
-        else if(props.status === "VALID") {
-            return false;
+    }
+
+    const renderCurator = () => {
+        if(!open) return null;
+        else {
+            return (
+                <Paper elevation={3} className={classes.curator}>
+                    <Button fullWidth onClick={() => setOpen(false)}>Close</Button>
+                    <Divider />
+                    <FormGroup>
+                        {
+                            props.dashboardStatus.map((entry, index) => {
+                                return (
+                                    <FormControlLabel
+                                        key={index}
+                                        control={
+                                            <Checkbox
+                                                checked={entry.check}
+                                                onClick={() => entry.set(!entry.check)}
+                                            />
+                                        }
+                                        label={entry.label}
+                                    />
+                                );
+                            })
+                        }
+                    </FormGroup>
+                </Paper>
+            );
         }
-        else return true;
     }
 
     if(props.dashboardStatus) {
         return (
-            <Paper elevation={3} className={classes.root}>
-                <Typography align='center' variant='h5'>Dashboard</Typography>
-                <FormGroup>
-                    {
-                        props.dashboardStatus.map((entry, index) => {
-                            return (
-                                <FormControlLabel
-                                    key={index}
-                                    control={
-                                        <Checkbox
-                                            checked={entry.check}
-                                            // disabled={disable(entry)}
-                                            onClick={() => entry.set(!entry.check)}
-                                        />
-                                    }
-                                    label={entry.label}
-                                />
-                            );
-                        })
-                    }
-                </FormGroup>
-            </Paper>
+            <>  
+                {renderButton()}
+                {renderCurator()}
+            </>
         );
     }
 
