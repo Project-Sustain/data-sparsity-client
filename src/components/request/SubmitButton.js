@@ -31,17 +31,20 @@ export default function SubmitButton(props) {
         const response = await sendJsonRequest("sparsityScores", params);
         if(response) {
             const data = response.siteData;
-            console.log({data})
             const formattedResults = formatResults(data);
-            console.log({formattedResults});
 
             props.setSparsityData(formattedResults);
             props.setSelectedIndex(0);
             props.setStatus(formattedResults.length > 0 ? "VALID" : "INVALID");
         }
 
+        // FIXME do ALL this on the server...
         function formatResults(streamedResults) {
-            streamedResults.sort((a, b) => {return b.sparsityScore - a.sparsityScore});
+            streamedResults.sort((a, b) => {
+                a.sparsityScore = a.sparsityScore ? a.sparsityScore : 0;
+                b.sparsityScore = b.sparsityScore ? b.sparsityScore : 0;
+                return b.sparsityScore - a.sparsityScore;
+            });
             const scoresList = [...new Set(streamedResults.map(result => {return result.sparsityScore}))];
             const initialColorScale = chroma.scale([colors.tertiary, colors.primary]).colors(streamedResults.length);
             const numberOfUniqueScores = scoresList.length - 1;
