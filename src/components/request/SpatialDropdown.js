@@ -14,6 +14,9 @@ export default function SpatialDropdown(props) {
         <FormControl className={classes.root}>
             <InputLabel>{props.label}</InputLabel>
             <Select
+                MenuProps={{
+                    style: {zIndex: 5001}
+                }}
                 disabled={props.disabled}
                 value={props.value}
                 label={props.label}

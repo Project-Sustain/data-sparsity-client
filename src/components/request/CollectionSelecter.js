@@ -4,9 +4,6 @@ import { makeStyles } from "@material-ui/core";
 const useStyles = makeStyles({
     root: {
         margin: "10px",
-    },
-    select: {
-        zIndex: 5001
     }
   });
 
@@ -23,6 +20,9 @@ export default function CollectionSelector(props) {
             <FormControl fullWidth className={classes.root}>
                 <InputLabel>Dataset</InputLabel>
                 <Select
+                    MenuProps={{
+                        style: {zIndex: 5001}
+                    }}
                     className={classes.select}
                     value={props.collection}
                     label="Dataset"
