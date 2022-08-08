@@ -1,4 +1,4 @@
-import { Paper, FormGroup, FormControlLabel, Checkbox, Typography, Button, Divider } from "@mui/material";
+import { Paper, FormGroup, FormControlLabel, Checkbox, Button, Divider } from "@mui/material";
 import { makeStyles } from "@material-ui/core";
 import { useState } from "react";
 
