@@ -1,9 +1,12 @@
-import { FormControl, InputLabel, Select, MenuItem } from '@mui/material';
+import { FormControl, InputLabel, Select, MenuItem, } from '@mui/material';
 import { makeStyles } from "@material-ui/core";
 
 const useStyles = makeStyles({
+    root: {
+        margin: "10px",
+    },
     select: {
-      margin: "10px",
+        zIndex: 5001
     }
   });
 
@@ -17,9 +20,10 @@ export default function CollectionSelector(props) {
 
     if(props.sparsityMetadata.length > 0) {
         return (
-            <FormControl fullWidth className={classes.select}>
+            <FormControl fullWidth className={classes.root}>
                 <InputLabel>Dataset</InputLabel>
                 <Select
+                    className={classes.select}
                     value={props.collection}
                     label="Dataset"
                     onChange={updateCollection}
