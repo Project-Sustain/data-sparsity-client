@@ -9,8 +9,7 @@ const useStyles = makeStyles({
         position: 'absolute',
         top: '10px',
         left: '30px',
-        zIndex: '5000',
-        opacity: '0.9'
+        zIndex: '5001'
     }
 })
 
