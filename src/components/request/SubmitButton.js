@@ -32,9 +32,9 @@ export default function SubmitButton(props) {
         if(response) {
             const data = response.siteData;
             const formattedResults = formatResults(data);
-            props.setStatus(formattedResults.length > 0 ? "VALID" : "INVALID");
             props.setSparsityData(formattedResults);
             props.setSelectedIndex(0);
+            props.setStatus(formattedResults.length > 0 ? "VALID" : "INVALID");
         }
 
         // FIXME do ALL this on the server...
