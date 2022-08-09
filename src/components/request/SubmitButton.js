@@ -40,21 +40,9 @@ export default function SubmitButton(props) {
 
         // FIXME do ALL this on the server...
         function formatResults(streamedResults) {
-            streamedResults.sort((a, b) => {
-                a.sparsityScore = a.sparsityScore ? a.sparsityScore : 0;
-                b.sparsityScore = b.sparsityScore ? b.sparsityScore : 0;
-                return b.sparsityScore - a.sparsityScore;
-            });
-            const scoresList = [...new Set(streamedResults.map(result => {return result.sparsityScore}))];
             const initialColorScale = chroma.scale([colors.tertiary, colors.primary]).colors(streamedResults.length);
-            const numberOfUniqueScores = scoresList.length - 1;
-            const scoreMap = {};
-            scoresList.forEach((absoulteScore, index) => {
-                scoreMap[absoulteScore] = parseInt(((numberOfUniqueScores - index) / numberOfUniqueScores) * 100) + "%";
-            });
             const formattedResults = streamedResults.map((result, index) => {
                 result.sparsityScore = result.sparsityScore ? result.sparsityScore : 0.000;
-                result.relativeSparsityScore = scoreMap[result.sparsityScore];
                 result.color = hexToRgb(initialColorScale[index]);
                 return result
             });
