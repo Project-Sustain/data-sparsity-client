@@ -20,12 +20,14 @@ export default function SubmitButton(props) {
         props.setSparsityData([]);
 
         const params = {
-            'collectionName': props.collectionName,
+            'collectionName': props.collection.collection,
             'spatialScope': props.spatialScope,
             'spatialIdentifier': props.spatialIdentifier,
             'startTime': props.startTime,
             'endTime': props.endTime,
-            'measurementTypes': props.measurementTypes
+            'measurementTypes': props.measurementTypes,
+            'siteIdName': props.collection.siteIdName,
+            'siteCollection': props.collection.siteCollection
         };
 
         const response = await sendJsonRequest("sparsityScores", params);
