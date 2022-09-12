@@ -132,7 +132,7 @@ export default memo(function RequestForm(props) {
                 </Stack>
                 <SubmitButton 
                     className={classes.item}
-                    collectionName={collection.collection}
+                    collection={collection}
                     spatialScope={spatialScope}
                     spatialIdentifier={spatialIdentifier}
                     startTime={temporalRange[0]}

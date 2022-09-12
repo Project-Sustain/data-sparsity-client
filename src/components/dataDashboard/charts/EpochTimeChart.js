@@ -11,7 +11,7 @@ const useStyles = makeStyles({
         margin: "10px",
         padding: "10px",
         maxHeight: "70vh",
-        zIndex: '5000',
+        zIndex: 5000,
         opacity: '0.9'
     },
     chart: {
