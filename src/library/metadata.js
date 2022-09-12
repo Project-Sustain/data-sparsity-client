@@ -22,5 +22,11 @@ export const sparsityMetadata = [
         "label": "Water Quality: Point Data",
         "siteIdName": "MonitoringLocationIdentifier",
         "siteCollection": "water_quality_sites"
+    },
+    {
+        "collection": "epa_aqi_ozone",
+        "label": "AQI Ozone",
+        "siteIdName": "monitor_id",
+        "siteCollection": "epa_aqi_monitors"
     }
 ]

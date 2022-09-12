@@ -1,7 +1,7 @@
 import { useState, useEffect } from 'react';
 import { makeStyles } from "@material-ui/core";
 import { ResponsiveContainer, PieChart, Pie, Legend } from 'recharts';
-import { Typography, Paper, Stack, TableContainer, TableRow, TableCell, Table, TableHead, TableBody, Grid } from '@mui/material';
+import { Typography, Paper, Stack, TableContainer, TableRow, TableCell, Table, TableHead, TableBody } from '@mui/material';
 import moment from 'moment';
 import { colors } from '../../helpers/colors';
 
@@ -50,8 +50,9 @@ export default function SelectedSite(props) {
     return (
         <Stack direction='row' justifyContent='space-around' alignItems='flex-start' spacing={2}>
             <Stack direction='column' justifyContent='flex-start' className={classes.section}>
-                <Typography><strong>Formal Name:</strong> {props.site.organizationFormalName}</Typography>
-                <Typography><strong>Site Type:</strong> {props.site.monitoringLocationTypeName}</Typography>
+                {/* loop here and get additional info params */}
+                {/* <Typography><strong>Formal Name:</strong> {props.site.organizationFormalName}</Typography> */}
+                {/* <Typography><strong>Site Type:</strong> {props.site.monitoringLocationTypeName}</Typography> */}
                 <Typography><strong>Absolute Sparsity Score:</strong> {props.site.sparsityScore}</Typography>
                 <Typography><strong>Relative Sparsity Score:</strong> {props.site.relativeSparsityScore}</Typography>
                 <ResponsiveContainer width='100%' height={250}>
@@ -78,7 +79,7 @@ export default function SelectedSite(props) {
                                 <TableCell>{tableData.length} Observations</TableCell>
                             </TableRow>
                         </TableHead>
-                        <TableBody>
+                        {/* <TableBody>
                             {
                                 tableData.map((date, index) => {
                                     return (
@@ -88,7 +89,7 @@ export default function SelectedSite(props) {
                                     );
                                 })
                             }
-                        </TableBody>
+                        </TableBody> */}
                     </Table>
                 </TableContainer>
             </Stack>

@@ -30,13 +30,22 @@ export default function SubmitButton(props) {
             'siteCollection': props.collection.siteCollection
         };
 
+        console.log({params})
+
         const response = await sendJsonRequest("sparsityScores", params);
-        if(response) {
+        if(response && Object.keys(response).length > 0) {
+            console.log({response})
             const data = response.siteData;
+            console.log({data})
             const formattedResults = formatResults(data);
             props.setSparsityData(formattedResults);
             props.setSelectedIndex(0);
             props.setStatus(formattedResults.length > 0 ? "VALID" : "INVALID");
+        }
+
+        else {
+            console.log("ERROR in response");
+            props.setStatus("INVALID");
         }
 
         // FIXME do ALL this on the server...
