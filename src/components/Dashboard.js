@@ -1,6 +1,5 @@
 import { useEffect, useState } from 'react'
 import { Container, Stack } from '@mui/material';
-import { makeStyles } from "@material-ui/core";
 import UseConnectionStatus from '../hooks/UseConnectionStatus';
 import ApplicationStatus from './ApplicationStatus';
 import SparsityScoresChart from './dataDashboard/charts/SparsityScoresChart';
@@ -9,25 +8,22 @@ import RequestForm from './request/RequestForm';
 import ScorePieChart from './dataDashboard/charts/ScorePieChart';
 import SiteData from './dataDashboard/SiteData';
 import DashboardCurator from './dataDashboard/DashboardCurator';
-
-const useStyles = makeStyles({
-    root: {
-        zIndex: 5000,
-    },
-});
+import StatisticalInfo from './dataDashboard/StatisticalInfo';
 
 export default function Dashbaord(props) {
-    const classes = useStyles();
 
     const { serverConnection, DbConnection } = UseConnectionStatus();
     const [scores, setScores] = useState([]);
     const [status, setStatus] = useState("");
 
-    const [standardDeviation, setStandardDeviation] = useState();
-    const [mean, setMean] = useState();
+    const [meanDifference, setMeanDifference] = useState();
+    const [standardDeviationDifference, setStandardDeviationDifference] = useState();
+    const [meanObservations, setMeanObservations] = useState();
+    const [standardDeviationObservations, setStandardDeviationObservations] = useState();
 
     const [request, setRequest] = useState(true);
     const [appStatus, setAppStatus] = useState(true);
+    const [statInfo, setStatInfo] = useState(true);
     const [pieChart, setPieChart] = useState(true);
     const [barChart, setBarChart] = useState(true);
     const [lineChart, setLineChart] = useState(true);
@@ -43,12 +39,13 @@ export default function Dashbaord(props) {
         setDashbaordStatus([
         {"label": "Application Status", "check": appStatus,"set": setAppStatus},
         {"label": "Request Form", "check": request, "set": setRequest},
-        {"label": "Pie Chart", "check": pieChart,"set": setPieChart},
-        {"label": "Bar Chart", "check": barChart,"set": setBarChart},
-        {"label": "Site Data", "check": siteData,"set": setSiteData},
-        {"label": "Time Series", "check": lineChart,"set": setLineChart}
+        {"label": "Statistical Info", "check": statInfo, "set": setStatInfo},
+        {"label": "Pie Chart", "check": pieChart, "set": setPieChart},
+        {"label": "Bar Chart", "check": barChart, "set": setBarChart},
+        {"label": "Site Data", "check": siteData, "set": setSiteData},
+        {"label": "Time Series", "check": lineChart, "set": setLineChart}
         ]);
-    }, [request, appStatus, pieChart, barChart, lineChart, siteData]); 
+    }, [request, appStatus, pieChart, barChart, lineChart, siteData, statInfo]); 
 
     return (
         <>
@@ -66,14 +63,27 @@ export default function Dashbaord(props) {
                     setStatus={setStatus} 
                     setSparsityData={props.setSparsityData} 
                     setSelectedIndex={props.setSelectedIndex} 
-                    setMean={setMean}
-                    setStandardDeviation={setStandardDeviation}
+                    setMeanDifference={setMeanDifference}
+                    setStandardDeviationDifference={setStandardDeviationDifference}
+                    setMeanObservations={setMeanObservations}
+                    setStandardDeviationObservations={setStandardDeviationObservations}
                 />
                 <DashboardCurator 
                     dashboardStatus={dashboardStatus} 
                     status={status} 
                 />
                 </Stack>
+            </Container>
+
+            <Container maxWidth='auto'>
+                <StatisticalInfo 
+                    inDashboard={statInfo} 
+                    status={status} 
+                    meanDifference={meanDifference}
+                    standardDeviationDifference={standardDeviationDifference}
+                    meanObservations={meanObservations}
+                    standardDeviationObservations={standardDeviationObservations}
+                />
             </Container>
 
             <Container maxWidth='auto'>
@@ -88,8 +98,6 @@ export default function Dashbaord(props) {
                         status={status} 
                         scores={scores} 
                         sparsityData={props.sparsityData}
-                        mean={mean}
-                        standardDeviation={standardDeviation}
                     />
                 </Stack>
             </Container>

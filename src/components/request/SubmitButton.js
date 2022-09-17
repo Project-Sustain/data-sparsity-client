@@ -35,8 +35,10 @@ export default function SubmitButton(props) {
         const response = await sendJsonRequest("sparsityScores", params);
         if(response && Object.keys(response).length > 0) {
             console.log({response})
-            props.setMean(response.mean);
-            props.setStandardDeviation(response.standardDeviation);
+            props.setMeanDifference(response.meanDifference);
+            props.setStandardDeviationDifference(response.standardDeviationDifference);
+            props.setMeanObservations(response.meanObservations);
+            props.setStandardDeviationObservations(response.standardDeviationObservations);
             const data = response.siteData;
             console.log({data})
             const formattedResults = formatResults(data);

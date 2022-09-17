@@ -14,7 +14,7 @@ export default function App() {
                 selectedIndex={selectedIndex} 
                 setSelectedIndex={setSelectedIndex}
             />
-            <UsMap data={sparsityData} />
+            {/* <UsMap data={sparsityData} /> */}
         </>
     );
 }

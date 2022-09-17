@@ -73,8 +73,7 @@ export default function SparsityScoresChart(props) {
                     alignItems="center"
                     spacing={2}
                 >
-                    <Typography variant='h5' align='center'>Mean: {props.mean}</Typography>
-                    <Typography variant='h5' align='center'>Std Dev: {props.standardDeviation}</Typography>
+                    <Typography variant='h5' align='center'>Number of Sites Within Sparsity Range</Typography>
                     <ResponsiveContainer width='100%' height={400}>
                         <BarChart data={data}>
                             <XAxis dataKey="name" />
