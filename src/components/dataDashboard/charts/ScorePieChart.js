@@ -7,7 +7,7 @@ import chroma from 'chroma-js';
 // import ArrowForwardIcon from '@mui/icons-material/ArrowForward';
 
 const useStyles = makeStyles({
-    paper: {
+    root: {
         margin: "10px",
         padding: "10px",
         width: '50vw',
@@ -74,7 +74,7 @@ export default function ScorePieChart(props) {
 
     if(props.status === "VALID" && pieData.length > 0 && props.inDashboard) {
         return (
-            <Paper elevation={3} className={classes.paper}>
+            <Paper elevation={3} className={classes.root}>
 
                 <Stack direction='row' justifyContent="center">
                     <Typography align='center' variant='h5'>Sparsity Score Spread&nbsp;</Typography>
@@ -135,7 +135,7 @@ export default function ScorePieChart(props) {
     
     else if(props.status === "INVALID" && props.inDashboard) {
         return (
-            <Paper elevation={2} className={classes.paper}>
+            <Paper elevation={2} className={classes.root}>
                 <Typography>No Data Matching Request</Typography>
             </Paper>
         );
@@ -143,7 +143,7 @@ export default function ScorePieChart(props) {
 
     else if(props.status === "PENDING" && props.inDashboard) {
         return (
-            <Paper className={classes.paper}>
+            <Paper className={classes.root}>
                 <Typography>Pie Chart Loading...</Typography>
                 <LinearProgress />
             </Paper>

@@ -1,5 +1,5 @@
 import { makeStyles } from "@material-ui/core";
-import { Paper, Typography, LinearProgress, Stack, Divider } from "@mui/material";
+import { Paper, Typography, LinearProgress, Stack } from "@mui/material";
 import { styled } from '@mui/material/styles';
 // import { colors } from '../../helpers/colors';
 
