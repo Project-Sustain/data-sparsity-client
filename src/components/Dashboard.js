@@ -23,11 +23,14 @@ export default function Dashbaord(props) {
     const [scores, setScores] = useState([]);
     const [status, setStatus] = useState("");
 
+    const [standardDeviation, setStandardDeviation] = useState();
+    const [mean, setMean] = useState();
+
     const [request, setRequest] = useState(true);
     const [appStatus, setAppStatus] = useState(true);
-    const [pieChart, setPieChart] = useState(false);
-    const [barChart, setBarChart] = useState(false);
-    const [lineChart, setLineChart] = useState(false);
+    const [pieChart, setPieChart] = useState(true);
+    const [barChart, setBarChart] = useState(true);
+    const [lineChart, setLineChart] = useState(true);
     const [siteData, setSiteData] = useState(true);
     const [dashboardStatus, setDashbaordStatus] = useState([]);
 
@@ -63,6 +66,8 @@ export default function Dashbaord(props) {
                     setStatus={setStatus} 
                     setSparsityData={props.setSparsityData} 
                     setSelectedIndex={props.setSelectedIndex} 
+                    setMean={setMean}
+                    setStandardDeviation={setStandardDeviation}
                 />
                 <DashboardCurator 
                     dashboardStatus={dashboardStatus} 
@@ -82,7 +87,9 @@ export default function Dashbaord(props) {
                         inDashboard={barChart} 
                         status={status} 
                         scores={scores} 
-                        sparsityData={props.sparsityData} 
+                        sparsityData={props.sparsityData}
+                        mean={mean}
+                        standardDeviation={standardDeviation}
                     />
                 </Stack>
             </Container>

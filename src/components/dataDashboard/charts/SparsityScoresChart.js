@@ -1,8 +1,7 @@
 import { BarChart, Bar, XAxis, YAxis, Tooltip, Legend, ResponsiveContainer } from 'recharts';
 import { makeStyles } from "@material-ui/core";
-import { Paper, Slider, Typography, LinearProgress, Radio, RadioGroup, FormControl, FormControlLabel, FormLabel, Stack } from "@mui/material";
+import { Paper, Typography, LinearProgress, Radio, RadioGroup, FormControl, FormControlLabel, FormLabel, Stack } from "@mui/material";
 import { useEffect, useState } from 'react';
-import { mean, standardDeviation, median } from 'simple-statistics';
 import { colors } from '../../../helpers/colors';
 
 const useStyles = makeStyles({
@@ -25,24 +24,13 @@ export default function SparsityScoresChart(props) {
         {'name': 'Exponential 1', 'cutoffs': [0.001, 0.01, 0.1, 1]},
         {'name': 'Exponential 2', 'cutoffs': [1, 10, 100, 1000]},
         {'name': 'Log 1', 'cutoffs': [0.1, 1, 1.1, 1.01]},
-        {'name': 'Linear 1', 'cutoffs': [25, 50, 75, 100]},
+        {'name': 'Linear 1', 'cutoffs': [0, 0.5, 1, 1.5, 2]},
         {'name': 'Linear 2', 'cutoffs': [50, 100, 150, 200]}
     ];
 
     const [data, setData] = useState({});
-    const [average, setAverage] = useState(0);
-    const [stdDev, setStdDev] = useState(0);
-    const [med, setMed] = useState(0);
-    const [scale, setScale] = useState(scaleArray[0]);
-    const [numBuckets, setNumBuckets] = useState(5);
-
-    useEffect(() => {
-        if(props.scores.length > 0){
-            setStdDev(standardDeviation(props.scores).toFixed(2));
-            setAverage(mean(props.scores).toFixed(2));
-            setMed(median(props.scores).toFixed(2));
-        }
-    }, [props.scores]);
+    const [scale, setScale] = useState(scaleArray[3]);
+    const numBuckets = 5
 
     useEffect(() => {
         if(props.scores.length > 0) {
@@ -76,10 +64,6 @@ export default function SparsityScoresChart(props) {
         setScale(scaleArray[value]);
     }
 
-    const updateNumBuckets = (event) => {
-        setNumBuckets(parseInt(event.target.value));
-    }
-
     if(props.status === "VALID" && props.inDashboard) {
         return (
             <Paper elevation={3} className={classes.paper}>
@@ -89,7 +73,8 @@ export default function SparsityScoresChart(props) {
                     alignItems="center"
                     spacing={2}
                 >
-                    <Typography variant='h5' align='center'>Mean: {average}, Median:{med}, Std Dev: {stdDev}</Typography>
+                    <Typography variant='h5' align='center'>Mean: {props.mean}</Typography>
+                    <Typography variant='h5' align='center'>Std Dev: {props.standardDeviation}</Typography>
                     <ResponsiveContainer width='100%' height={400}>
                         <BarChart data={data}>
                             <XAxis dataKey="name" />
@@ -99,20 +84,6 @@ export default function SparsityScoresChart(props) {
                             <Bar dataKey="numberOfSites" fill={colors.secondary} barSize={30} />
                         </BarChart>
                     </ResponsiveContainer>
-                    {/* <FormControl className={classes.slider}>
-                        <FormLabel align='center' color='secondary' id="slider">Number of Bars</FormLabel>
-                        <Slider
-                            aria-labelledby="slider"
-                            min={5}
-                            max={20}
-                            step={1}
-                            value={numBuckets}
-                            onChange={updateNumBuckets}
-                            color='secondary'
-                            valueLabelDisplay="auto"
-                            marks
-                        />
-                    </FormControl> */}
                     <FormControl>
                         <FormLabel align='center' color='secondary' id="scale">X-Axis Scale</FormLabel>
                         <RadioGroup

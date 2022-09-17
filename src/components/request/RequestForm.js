@@ -143,6 +143,8 @@ export default memo(function RequestForm(props) {
                     sparsityData={props.sparsityData}
                     setSparsityData={props.setSparsityData}
                     setSelectedIndex={props.setSelectedIndex}
+                    setMean={props.setMean}
+                    setStandardDeviation={props.setStandardDeviation}
                 />
             </Paper>
         );

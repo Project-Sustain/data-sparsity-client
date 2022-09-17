@@ -10,7 +10,7 @@ export default function App() {
         <>
             <Dashbaord 
                 sparsityData={sparsityData} 
-                setSparsityData={setSparsityData} 
+                setSparsityData={setSparsityData}
                 selectedIndex={selectedIndex} 
                 setSelectedIndex={setSelectedIndex}
             />
