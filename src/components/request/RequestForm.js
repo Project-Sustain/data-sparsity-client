@@ -39,6 +39,10 @@ export default memo(function RequestForm(props) {
     const selectedConstraints = [];
 
     useEffect(() => {
+        props.setCollectionProperties(collection.sitePropertyFields);
+    }, [props, collection])
+
+    useEffect(() => {
         setStateInfo(gisStateCounty);
         setSelectedState(gisStateCounty[15]);
         setSelectedCounty(gisStateCounty[15].counties[3]);
@@ -143,6 +147,11 @@ export default memo(function RequestForm(props) {
                     sparsityData={props.sparsityData}
                     setSparsityData={props.setSparsityData}
                     setSelectedIndex={props.setSelectedIndex}
+                    
+                    setMeanDifference={props.setMeanDifference}
+                    setStandardDeviationDifference={props.setStandardDeviationDifference}
+                    setMeanObservations={props.setMeanObservations}
+                    setStandardDeviationObservations={props.setStandardDeviationObservations}
                 />
             </Paper>
         );

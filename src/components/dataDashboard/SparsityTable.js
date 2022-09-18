@@ -1,29 +1,9 @@
 
 import { React } from 'react'
-import { useTheme } from '@mui/material/styles';
-import { makeStyles } from "@material-ui/core";
-import { Paper, Typography, Stack, LinearProgress, Grid } from '@mui/material';
+import { Typography, Stack } from '@mui/material';
 import { DataGrid } from '@mui/x-data-grid';
 
-const useStyles = makeStyles({
-  paper: {
-    margin: "10px",
-    padding: "10px",
-  },
-  listHeader: {
-    margin: "20px"
-  },
-  list: {
-    margin: "10px",
-    padding: "10px",
-    maxHeight: "45vh",
-    overflow: "auto"
-  }
-});
-
 export default function SparsityTable(props) {
-    const theme = useTheme();
-    const classes = useStyles(theme);
 
     return (
       <Stack direction='column' justifyContent='center' alignItems='center'>

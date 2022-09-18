@@ -25,9 +25,10 @@ export default function SubmitButton(props) {
             'spatialIdentifier': props.spatialIdentifier,
             'startTime': props.startTime,
             'endTime': props.endTime,
-            'measurementTypes': props.measurementTypes,
             'siteIdName': props.collection.siteIdName,
-            'siteCollection': props.collection.siteCollection
+            'siteCollection': props.collection.siteCollection,
+            'measurementTypes': props.measurementTypes,
+            'sitePropertyFields': props.collection.sitePropertyFields
         };
 
         console.log({params})
@@ -35,6 +36,10 @@ export default function SubmitButton(props) {
         const response = await sendJsonRequest("sparsityScores", params);
         if(response && Object.keys(response).length > 0) {
             console.log({response})
+            props.setMeanDifference(response.meanDifference);
+            props.setStandardDeviationDifference(response.standardDeviationDifference);
+            props.setMeanObservations(response.meanObservations);
+            props.setStandardDeviationObservations(response.standardDeviationObservations);
             const data = response.siteData;
             console.log({data})
             const formattedResults = formatResults(data);
