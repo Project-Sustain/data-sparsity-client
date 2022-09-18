@@ -16,6 +16,8 @@ export default function Dashbaord(props) {
     const [scores, setScores] = useState([]);
     const [status, setStatus] = useState("");
 
+    const [collectionProperties, setCollectionProperties] = useState([]);
+
     const [meanDifference, setMeanDifference] = useState();
     const [standardDeviationDifference, setStandardDeviationDifference] = useState();
     const [meanObservations, setMeanObservations] = useState();
@@ -59,8 +61,9 @@ export default function Dashbaord(props) {
                     setSelectedIndex={props.setSelectedIndex} 
                 />
                 <RequestForm 
-                    inDashboard={request} 
-                    setStatus={setStatus} 
+                    inDashboard={request}
+                    setStatus={setStatus}
+                    setCollectionProperties={setCollectionProperties} 
                     setSparsityData={props.setSparsityData} 
                     setSelectedIndex={props.setSelectedIndex} 
                     setMeanDifference={setMeanDifference}
@@ -105,6 +108,7 @@ export default function Dashbaord(props) {
             <Container maxWidth='auto'>
                 <SiteData 
                     status={status} 
+                    collectionProperties={collectionProperties}
                     inDashboard={siteData} 
                     selectedIndex={props.selectedIndex} 
                     sparsityData={props.sparsityData} 

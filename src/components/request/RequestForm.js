@@ -39,6 +39,10 @@ export default memo(function RequestForm(props) {
     const selectedConstraints = [];
 
     useEffect(() => {
+        props.setCollectionProperties(collection.sitePropertyFields);
+    }, [props, collection])
+
+    useEffect(() => {
         setStateInfo(gisStateCounty);
         setSelectedState(gisStateCounty[15]);
         setSelectedCounty(gisStateCounty[15].counties[3]);

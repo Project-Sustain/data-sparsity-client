@@ -43,9 +43,11 @@ export default function SelectedSite(props) {
                 <Typography><strong>Mean Time Between Observations:</strong> {props.site.siteMean}</Typography>
                 <Typography><strong>Sparsity Score:</strong> {props.site.sparsityScore}</Typography>
                 <Typography><strong>Total Observations:</strong> {props.site.numberOfMeasurements}</Typography>
-                {/* loop here and get additional info params */}
-                {/* <Typography><strong>Formal Name:</strong> {props.site.organizationFormalName}</Typography> */}
-                {/* <Typography><strong>Site Type:</strong> {props.site.monitoringLocationTypeName}</Typography> */}
+                {
+                    props.site.sitePropertyInfo.map((property, index) => {
+                        return <Typography key={index}><strong>{props.collectionProperties[index]}</strong>: {property}</Typography>
+                    })
+                }
                 <ResponsiveContainer width='100%' height={250}>
                     <PieChart>
                         <Pie
