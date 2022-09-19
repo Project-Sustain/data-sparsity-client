@@ -17,11 +17,7 @@ export default function Dashbaord(props) {
     const [status, setStatus] = useState("");
 
     const [collectionProperties, setCollectionProperties] = useState([]);
-
-    const [meanDifference, setMeanDifference] = useState();
-    const [standardDeviationDifference, setStandardDeviationDifference] = useState();
-    const [meanObservations, setMeanObservations] = useState();
-    const [standardDeviationObservations, setStandardDeviationObservations] = useState();
+    const [stats, setStats] = useState({});
 
     const [request, setRequest] = useState(true);
     const [appStatus, setAppStatus] = useState(true);
@@ -63,13 +59,10 @@ export default function Dashbaord(props) {
                 <RequestForm 
                     inDashboard={request}
                     setStatus={setStatus}
+                    setStats={setStats}
                     setCollectionProperties={setCollectionProperties} 
                     setSparsityData={props.setSparsityData} 
                     setSelectedIndex={props.setSelectedIndex} 
-                    setMeanDifference={setMeanDifference}
-                    setStandardDeviationDifference={setStandardDeviationDifference}
-                    setMeanObservations={setMeanObservations}
-                    setStandardDeviationObservations={setStandardDeviationObservations}
                 />
                 <DashboardCurator 
                     dashboardStatus={dashboardStatus} 
@@ -82,10 +75,7 @@ export default function Dashbaord(props) {
                 <StatisticalInfo 
                     inDashboard={statInfo} 
                     status={status} 
-                    meanDifference={meanDifference}
-                    standardDeviationDifference={standardDeviationDifference}
-                    meanObservations={meanObservations}
-                    standardDeviationObservations={standardDeviationObservations}
+                    stats={stats}
                 />
             </Container>
 

@@ -20,6 +20,8 @@ const useStyles = makeStyles({
 export default function SparsityScoresChart(props) {
     const classes = useStyles();
 
+    console.log(props.scores)
+
     const scaleArray = [
         {'name': 'Exponential 1', 'cutoffs': [0.001, 0.01, 0.1, 1]},
         {'name': 'Exponential 2', 'cutoffs': [1, 10, 100, 1000]},
