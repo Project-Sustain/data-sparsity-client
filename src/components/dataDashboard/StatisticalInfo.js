@@ -46,13 +46,18 @@ export default function StatisticalInfo(props) {
                     </Item>
                     <Item>
                         <Typography variant='h5'><strong>Time Between Observations</strong></Typography>
-                        <Typography>Mean: {props.meanDifference}</Typography>
-                        <Typography>Standard Deviation: {props.standardDeviationDifference}</Typography>
+                        <Typography>Mean: {props.stats.meanTimeBetweenObservations}</Typography>
+                        <Typography>Standard Deviation: {props.stats.stdDevTimeBetweenObservations}</Typography>
                     </Item>
                     <Item>
                         <Typography variant='h5'><strong>Number of Observations per Site</strong></Typography>
-                        <Typography>Mean: {props.meanObservations}</Typography>
-                        <Typography>Standard Deviation: {props.standardDeviationObservations}</Typography>
+                        <Typography>Mean: {props.stats.meanNumberOfObservations}</Typography>
+                        <Typography>Standard Deviation: {props.stats.stdDevNumberOfObservations}</Typography>
+                    </Item>
+                    <Item>
+                        <Typography variant='h5'><strong>Sparstiy Scores</strong></Typography>
+                        <Typography>Mean: {props.stats.meanSparsity}</Typography>
+                        <Typography>Standard Deviation: {props.stats.stdDevSparsity}</Typography>
                     </Item>
                 </Stack>
             </Paper>
