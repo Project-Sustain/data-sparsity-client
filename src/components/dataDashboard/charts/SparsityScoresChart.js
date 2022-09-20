@@ -20,51 +20,34 @@ const useStyles = makeStyles({
 export default function SparsityScoresChart(props) {
     const classes = useStyles();
 
-    console.log(props.scores)
-
-    const scaleArray = [
-        {'name': 'Exponential 1', 'cutoffs': [0.001, 0.01, 0.1, 1]},
-        {'name': 'Exponential 2', 'cutoffs': [1, 10, 100, 1000]},
-        {'name': 'Log 1', 'cutoffs': [0.1, 1, 1.1, 1.01]},
-        {'name': 'Linear 1', 'cutoffs': [0, 0.5, 1, 1.5, 2]},
-        {'name': 'Linear 2', 'cutoffs': [50, 100, 150, 200]}
-    ];
-
     const [data, setData] = useState({});
-    const [scale, setScale] = useState(scaleArray[3]);
-    const numBuckets = 5
 
     useEffect(() => {
         if(props.scores.length > 0) {
+            const numBuckets = 8;
+            const min = props.scores[props.scores.length-1];
+            const max = props.scores[0];
+            const range = max - min;
+            const rangePerBucket = range / numBuckets;
 
-            /**
-             * NOTE: There are numBuckets-1 cutoffs!
-             * 
-             * First, get the cutoffs array aka scale.scale array based off of numBuckets
-             * and low/high for the selected scale (exp, log, lin)
-             * 
-             * Then, create the buckets dynamically and add them as objects with a name field and numberOfSites field
-             */
-            // const chartData = [...Array(numBuckets).keys()].map(index => {
-                const chartData = [0, 1, 2, 3, 4].map(index => {
-                switch(index){
-                    case 0:
-                        return {name: `0-${scale.cutoffs[index]}`, numberOfSites: props.scores.filter(score => score < scale.cutoffs[index]).length};
-                    case numBuckets-1:
-                        return {name: `>${scale.cutoffs[index-1]}`, numberOfSites: props.scores.filter(score => score >= scale.cutoffs[index-1]).length};
-                    default:
-                        return {name: `${scale.cutoffs[index-1]}-${scale.cutoffs[index]}`, numberOfSites: props.scores.filter(score => score >= scale.cutoffs[index-1] && score < scale.cutoffs[index]).length};
-                }
+            console.log(`${min} -> ${max}`);
+            console.log({rangePerBucket});
+
+            const chartData = [0,1,2,3,4,5,6,7,8].map(index => {
+                const bucketMin = (min+(rangePerBucket*index)).toFixed(3);
+                const bucketMax = (min+(rangePerBucket*index+1)).toFixed(3);
+                console.log(`${bucketMin} -> ${bucketMax}`)
+                return {name: `${bucketMin} - ${bucketMax}`, numberOfSites: props.scores.filter(score => score >= bucketMin && score < bucketMax).length};
             });
 
             setData(chartData);
         }
-    }, [props.scores, scale, numBuckets]);
+    }, [props.scores]);
 
-    const updateScale = (event) => {
-        const value = parseInt(event.target.value);
-        setScale(scaleArray[value]);
-    }
+    // const updateScale = (event) => {
+    //     const value = parseInt(event.target.value);
+    //     setScale(scaleArray[value]);
+    // }
 
     if(props.status === "VALID" && props.inDashboard) {
         return (
@@ -85,7 +68,7 @@ export default function SparsityScoresChart(props) {
                             <Bar dataKey="numberOfSites" fill={colors.secondary} barSize={30} />
                         </BarChart>
                     </ResponsiveContainer>
-                    <FormControl>
+                    {/* <FormControl>
                         <FormLabel align='center' color='secondary' id="scale">X-Axis Scale</FormLabel>
                         <RadioGroup
                             row
@@ -97,7 +80,7 @@ export default function SparsityScoresChart(props) {
                                     return <FormControlLabel key={index} value={index} control={<Radio color='secondary' />} label={scale.name} />
                             })}
                         </RadioGroup>
-                    </FormControl>
+                    </FormControl> */}
                 </Stack>
             </Paper>
         );
