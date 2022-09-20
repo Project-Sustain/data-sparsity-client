@@ -9,7 +9,7 @@ const useStyles = makeStyles({
         margin: "10px",
         padding: "10px",
         width: '50vw',
-        zIndex: '5000',
+        zIndex: 5000,
         opacity: '0.9'
     },
     slider: {
@@ -24,19 +24,16 @@ export default function SparsityScoresChart(props) {
 
     useEffect(() => {
         if(props.scores.length > 0) {
-            const numBuckets = 8;
+            const numBuckets = 4;
             const min = props.scores[props.scores.length-1];
             const max = props.scores[0];
             const range = max - min;
             const rangePerBucket = range / numBuckets;
 
-            console.log(`${min} -> ${max}`);
-            console.log({rangePerBucket});
 
-            const chartData = [0,1,2,3,4,5,6,7,8].map(index => {
+            const chartData = [0,1,2,3,4].map(index => {
                 const bucketMin = (min+(rangePerBucket*index)).toFixed(3);
                 const bucketMax = (min+(rangePerBucket*index+1)).toFixed(3);
-                console.log(`${bucketMin} -> ${bucketMax}`)
                 return {name: `${bucketMin} - ${bucketMax}`, numberOfSites: props.scores.filter(score => score >= bucketMin && score < bucketMax).length};
             });
 
