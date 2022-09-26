@@ -32,10 +32,6 @@ export default function SparsityScoresChart(props) {
                     const range = max - min;
                     const rangePerBucket = range / numBuckets;
 
-                    console.log({min})
-                    console.log({max})
-                    console.log({rangePerBucket})
-
                     chartData = [0,1,2,3,4].map(index => {
                         const bucketMin = (min+(rangePerBucket*index)).toFixed(3);
                         const bucketMax = (min+(rangePerBucket*(index+1))).toFixed(3);
