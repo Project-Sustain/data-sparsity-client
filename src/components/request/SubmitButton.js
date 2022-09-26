@@ -39,7 +39,7 @@ export default function SubmitButton(props) {
                 'stdDevTimeBetweenObservations': response.standardDeviationDifference,
                 'meanNumberOfObservations': response.meanObservations,
                 'stdDevNumberOfObservations': response.standardDeviationObservations,
-                'meanSparsity': response.meanSparsity,
+                'meanSparsity': response.meanSparsity ? response.meanSparsity : 0.0,
                 'stdDevSparsity': response.standardDeviationSparsity
             });
             const data = response.siteData;

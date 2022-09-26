@@ -38,9 +38,11 @@ export default memo(function RequestForm(props) {
     const [temporalRange, setTemporalRange] = useState([]);
     const selectedConstraints = [];
 
+    console.log({temporalRange});
+
     useEffect(() => {
         props.setCollectionProperties(collection.sitePropertyFields);
-    }, [props, collection])
+    }, [props, collection]);
 
     useEffect(() => {
         setStateInfo(gisStateCounty);

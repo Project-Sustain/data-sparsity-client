@@ -23,19 +23,28 @@ export default function SparsityScoresChart(props) {
     const [data, setData] = useState({});
 
     useEffect(() => {
-        if(props.scores.length > 0) {
-            const numBuckets = 4;
-            const min = props.scores[props.scores.length-1];
-            const max = props.scores[0];
-            const range = max - min;
-            const rangePerBucket = range / numBuckets;
+            let chartData = [];
+            if(props.scores.length > 0) {
+                try {
+                    const numBuckets = 5;
+                    const min = props.scores[props.scores.length-1];
+                    const max = props.scores[0];
+                    const range = max - min;
+                    const rangePerBucket = range / numBuckets;
 
+                    console.log({min})
+                    console.log({max})
+                    console.log({rangePerBucket})
 
-            const chartData = [0,1,2,3,4].map(index => {
-                const bucketMin = (min+(rangePerBucket*index)).toFixed(3);
-                const bucketMax = (min+(rangePerBucket*index+1)).toFixed(3);
-                return {name: `${bucketMin} - ${bucketMax}`, numberOfSites: props.scores.filter(score => score >= bucketMin && score < bucketMax).length};
-            });
+                    chartData = [0,1,2,3,4].map(index => {
+                        const bucketMin = (min+(rangePerBucket*index)).toFixed(3);
+                        const bucketMax = (min+(rangePerBucket*(index+1))).toFixed(3);
+                        return {name: `${bucketMin} - ${bucketMax}`, numberOfSites: props.scores.filter(score => score >= bucketMin && score < bucketMax).length};
+                    });
+
+                } catch (exception) {
+                    console.log({exception}); // FIXME Set a flag to display a message...
+                }
 
             setData(chartData);
         }

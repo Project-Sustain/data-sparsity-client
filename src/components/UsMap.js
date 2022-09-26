@@ -39,7 +39,7 @@ export default function Main({data}) {
                 initialViewState={INITIAL_VIEW_STATE}
                 controller={true}
                 layers={[iconLayer]}
-                getTooltip={({object}) => object && `${object.organizationFormalName}\n${object.monitorId}\nAbsolute Sparsity Score: ${object.sparsityScore}\nRelative Sparsity Score: ${object.relativeSparsityScore}`}
+                getTooltip={({object}) => object && `${object.monitorId}\nAbsolute Sparsity Score: ${object.sparsityScore}`}
               >
                 <StaticMap mapStyle={BASEMAP.POSITRON} />
             </DeckGL>
