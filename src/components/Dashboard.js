@@ -95,6 +95,23 @@ export default function Dashbaord(props) {
                 </Stack>
             </Container>
 
+            {/* <Container maxWidth='auto'>
+                <StatisticalInfo 
+                    inDashboard={statInfo} 
+                    status={status} 
+                    stats={stats}
+                />
+            </Container>
+
+            <Container maxWidth='auto'>
+                <SparsityScoresChart 
+                    inDashboard={barChart} 
+                    status={status} 
+                    scores={scores} 
+                    sparsityData={props.sparsityData}
+                />
+            </Container> */}
+
             <Container maxWidth='auto'>
                 <SiteData 
                     status={status} 
