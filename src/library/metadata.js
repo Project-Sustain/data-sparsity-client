@@ -87,12 +87,12 @@ export const sparsityMetadata = [
         "siteIdName": aqiSiteIdName,
         "siteCollection": aqiSiteCollection,
         "sitePropertyFields": aqiSiteProperties
-    },
-    {
-        "collection": "epa_aqi_sulfur_dioxide",
-        "label": "AQI Sulfur Dioxide",
-        "siteIdName": aqiSiteIdName,
-        "siteCollection": aqiSiteCollection,
-        "sitePropertyFields": aqiSiteProperties
     }
+    // {
+    //     "collection": "epa_aqi_sulfur_dioxide",
+    //     "label": "AQI Sulfur Dioxide",
+    //     "siteIdName": aqiSiteIdName,
+    //     "siteCollection": aqiSiteCollection,
+    //     "sitePropertyFields": aqiSiteProperties
+    // }
 ]
