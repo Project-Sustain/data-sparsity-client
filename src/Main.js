@@ -8,13 +8,13 @@ export default function App() {
 
     return (
         <>
+            <UsMap data={sparsityData} />
             <Dashbaord 
                 sparsityData={sparsityData} 
                 setSparsityData={setSparsityData}
                 selectedIndex={selectedIndex} 
                 setSelectedIndex={setSelectedIndex}
             />
-            {/* <UsMap data={sparsityData} /> */}
         </>
     );
 }
