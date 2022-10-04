@@ -1,5 +1,5 @@
 import { makeStyles } from "@material-ui/core";
-import { Paper, Typography, LinearProgress, Stack } from "@mui/material";
+import { Paper, Typography, LinearProgress, Stack, Table, TableBody, TableCell, TableContainer, TableHead, TableRow } from "@mui/material";
 import { styled } from '@mui/material/styles';
 // import { colors } from '../../helpers/colors';
 
@@ -29,13 +29,12 @@ export default function StatisticalInfo(props) {
     if(props.status === "VALID" && props.inDashboard) {
         return (
             <Paper elevation={3} className={classes.root}>
-                <Typography variant='h4' align='center'>Overview</Typography>
                 <Stack 
                     direction='row' 
                     justifyContent='space-evenly'
                     alignItems="center"
                 >
-                    <Item className={classes.overview}>
+                    <Item className={classes.overview} elevation={3}>
                         <Typography variant='h5'><strong>Sparsity Score</strong></Typography>
                         <Typography>
                             Sparsity Score represents the average amount of time between observations
@@ -44,20 +43,33 @@ export default function StatisticalInfo(props) {
                             at every site in the query.
                         </Typography>
                     </Item>
-                    <Item>
-                        <Typography variant='h5'><strong>Time Between Observations</strong></Typography>
-                        <Typography>Mean: {props.stats.meanTimeBetweenObservations}</Typography>
-                        <Typography>Standard Deviation: {props.stats.stdDevTimeBetweenObservations}</Typography>
-                    </Item>
-                    <Item>
-                        <Typography variant='h5'><strong>Number of Observations per Site</strong></Typography>
-                        <Typography>Mean: {props.stats.meanNumberOfObservations}</Typography>
-                        <Typography>Standard Deviation: {props.stats.stdDevNumberOfObservations}</Typography>
-                    </Item>
-                    <Item>
-                        <Typography variant='h5'><strong>Sparstiy Scores</strong></Typography>
-                        <Typography>Mean: {props.stats.meanSparsity}</Typography>
-                        <Typography>Standard Deviation: {props.stats.stdDevSparsity}</Typography>
+                    <Item elevation={3}>
+                        <TableContainer>
+                            <TableHead>
+                                <TableRow>
+                                    <TableCell></TableCell>
+                                    <TableCell><strong>Mean</strong></TableCell>
+                                    <TableCell><strong>Standard Deviation</strong></TableCell>
+                                </TableRow>
+                            </TableHead>
+                            <TableBody>
+                                <TableRow>
+                                    <TableCell>Time Between Observations</TableCell>
+                                    <TableCell>{props.stats.meanTimeBetweenObservations}</TableCell>
+                                    <TableCell>{props.stats.stdDevTimeBetweenObservations}</TableCell>
+                                </TableRow>
+                                <TableRow>
+                                    <TableCell>Number of Observations per Site</TableCell>
+                                    <TableCell>{props.stats.meanNumberOfObservations}</TableCell>
+                                    <TableCell>{props.stats.stdDevNumberOfObservations}</TableCell>
+                                </TableRow>
+                                <TableRow>
+                                    <TableCell>Sparstiy Scores</TableCell>
+                                    <TableCell>{props.stats.meanSparsity}</TableCell>
+                                    <TableCell>{props.stats.stdDevSparsity}</TableCell>
+                                </TableRow>
+                            </TableBody>
+                        </TableContainer>
                     </Item>
                 </Stack>
             </Paper>
