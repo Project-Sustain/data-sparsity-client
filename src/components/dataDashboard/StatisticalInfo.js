@@ -29,7 +29,6 @@ export default function StatisticalInfo(props) {
     if(props.status === "VALID" && props.inDashboard) {
         return (
             <Paper elevation={3} className={classes.root}>
-                <Typography variant='h4' align='center'>Overview</Typography>
                 <Stack 
                     direction='row' 
                     justifyContent='space-evenly'
