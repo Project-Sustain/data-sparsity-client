@@ -35,12 +35,20 @@ export default function SubmitButton(props) {
         if(response && Object.keys(response).length > 0) {
             console.log({response})
             props.setStats({
-                'meanTimeBetweenObservations': response.meanDifference,
-                'stdDevTimeBetweenObservations': response.standardDeviationDifference,
-                'meanNumberOfObservations': response.meanObservations,
-                'stdDevNumberOfObservations': response.standardDeviationObservations,
-                'meanSparsity': response.meanSparsity ? response.meanSparsity : 0.0,
-                'stdDevSparsity': response.standardDeviationSparsity
+                'minTimeBetweenObservations': response.diffStats[0],
+                'maxTimeBetweenObservations': response.diffStats[1],
+                'meanTimeBetweenObservations': response.diffStats[2],
+                'stdDevTimeBetweenObservations': response.diffStats[3],
+
+                'minNumberOfObservations': response.obsStats[0],
+                'maxNumberOfObservations': response.obsStats[1],
+                'meanNumberOfObservations': response.obsStats[2],
+                'stdDevNumberOfObservations': response.obsStats[3],
+
+                'minSparsity': response.sparsityStats[0],
+                'maxSparsity': response.sparsityStats[1],
+                'meanSparsity': response.sparsityStats[2] ? response.sparsityStats[2] : 0.0,
+                'stdDevSparsity': response.sparsityStats[3]
             });
             const data = response.siteData;
             const formattedResults = formatResults(data);
