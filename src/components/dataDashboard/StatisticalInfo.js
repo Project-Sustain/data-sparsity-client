@@ -45,30 +45,40 @@ export default function StatisticalInfo(props) {
                     </Item>
                     <Item elevation={3}>
                         <TableContainer>
-                            <TableHead>
-                                <TableRow>
-                                    <TableCell></TableCell>
-                                    <TableCell><strong>Mean</strong></TableCell>
-                                    <TableCell><strong>Standard Deviation</strong></TableCell>
-                                </TableRow>
-                            </TableHead>
-                            <TableBody>
-                                <TableRow>
-                                    <TableCell>Time Between Observations</TableCell>
-                                    <TableCell>{props.stats.meanTimeBetweenObservations}</TableCell>
-                                    <TableCell>{props.stats.stdDevTimeBetweenObservations}</TableCell>
-                                </TableRow>
-                                <TableRow>
-                                    <TableCell>Number of Observations per Site</TableCell>
-                                    <TableCell>{props.stats.meanNumberOfObservations}</TableCell>
-                                    <TableCell>{props.stats.stdDevNumberOfObservations}</TableCell>
-                                </TableRow>
-                                <TableRow>
-                                    <TableCell>Sparstiy Scores</TableCell>
-                                    <TableCell>{props.stats.meanSparsity}</TableCell>
-                                    <TableCell>{props.stats.stdDevSparsity}</TableCell>
-                                </TableRow>
-                            </TableBody>
+                            <Table>
+                                <TableHead>
+                                    <TableRow>
+                                        <TableCell></TableCell>
+                                        <TableCell><strong>Min</strong></TableCell>
+                                        <TableCell><strong>Max</strong></TableCell>
+                                        <TableCell><strong>Mean</strong></TableCell>
+                                        <TableCell><strong>Standard Deviation</strong></TableCell>
+                                    </TableRow>
+                                </TableHead>
+                                <TableBody>
+                                    <TableRow>
+                                        <TableCell>Time Between Observations</TableCell>
+                                        <TableCell>{props.stats.minTimeBetweenObservations}</TableCell>
+                                        <TableCell>{props.stats.maxTimeBetweenObservations}</TableCell>
+                                        <TableCell>{props.stats.meanTimeBetweenObservations}</TableCell>
+                                        <TableCell>{props.stats.stdDevTimeBetweenObservations}</TableCell>
+                                    </TableRow>
+                                    <TableRow>
+                                        <TableCell>Number of Observations per Site</TableCell>
+                                        <TableCell>{props.stats.minNumberOfObservations}</TableCell>
+                                        <TableCell>{props.stats.maxNumberOfObservations}</TableCell>
+                                        <TableCell>{props.stats.meanNumberOfObservations}</TableCell>
+                                        <TableCell>{props.stats.stdDevNumberOfObservations}</TableCell>
+                                    </TableRow>
+                                    <TableRow>
+                                        <TableCell>Sparstiy Scores</TableCell>
+                                        <TableCell>{props.stats.minSparsity}</TableCell>
+                                        <TableCell>{props.stats.maxSparsity}</TableCell>
+                                        <TableCell>{props.stats.meanSparsity}</TableCell>
+                                        <TableCell>{props.stats.stdDevSparsity}</TableCell>
+                                    </TableRow>
+                                </TableBody>
+                            </Table>
                         </TableContainer>
                     </Item>
                 </Stack>
