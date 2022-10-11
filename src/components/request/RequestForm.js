@@ -36,12 +36,14 @@ export default memo(function RequestForm(props) {
     const [spatialScope, setSpatialScope] = useState("COUNTY");
     const [spatialIdentifier, setSpatialIdentifier] = useState("");
     const [temporalRange, setTemporalRange] = useState([]);
+    const [baseline, setBaseline] = useState()
     const selectedConstraints = [];
 
     console.log({temporalRange});
 
     useEffect(() => {
         props.setCollectionProperties(collection.sitePropertyFields);
+        setBaseline(collection.initialBaseline)
     }, [props, collection]);
 
     useEffect(() => {
@@ -139,11 +141,11 @@ export default memo(function RequestForm(props) {
                 <SubmitButton 
                     className={classes.item}
                     collection={collection}
-                    spatialScope={spatialScope}
                     spatialIdentifier={spatialIdentifier}
                     startTime={temporalRange[0]}
                     endTime={temporalRange[1]}
                     measurementTypes={selectedConstraints}
+                    baseline={baseline}
 
                     setStatus={props.setStatus}
                     sparsityData={props.sparsityData}
