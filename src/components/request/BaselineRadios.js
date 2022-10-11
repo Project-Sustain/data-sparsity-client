@@ -15,6 +15,7 @@ export default function BaselineRadios(props) {
                 value={props.baseline}
                 onChange={updateBaseline}
             >
+                <FormControlLabel value="60000" control={<Radio />} label="Minute" />
                 <FormControlLabel value="3600000" control={<Radio />} label="Hour" />
                 <FormControlLabel value="86400000" control={<Radio />} label="Day" />
                 <FormControlLabel value="604800000" control={<Radio />} label="Week" />

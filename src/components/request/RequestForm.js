@@ -10,6 +10,7 @@ import CollectionSelector from './CollectionSelecter';
 import SubmitButton from './SubmitButton';
 import { makeStyles } from "@material-ui/core";
 import BaselineRadios from './BaselineRadios';
+import { Divider } from '@mui/material';
 
 const useStyles = makeStyles({
     paper: {
@@ -37,12 +38,12 @@ export default memo(function RequestForm(props) {
     const [spatialScope, setSpatialScope] = useState("COUNTY");
     const [spatialIdentifier, setSpatialIdentifier] = useState("");
     const [temporalRange, setTemporalRange] = useState([]);
-    const [baseline, setBaseline] = useState()
+    const [baseline, setBaseline] = useState();
     const selectedConstraints = [];
 
     useEffect(() => {
         props.setCollectionProperties(collection.sitePropertyFields);
-        setBaseline(collection.initialBaseline)
+        setBaseline(collection.initialBaseline);
     }, [props, collection]);
 
     useEffect(() => {
@@ -51,6 +52,7 @@ export default memo(function RequestForm(props) {
         setSelectedCounty(gisStateCounty[15].counties[3]);
         setSpatialIdentifier(gisStateCounty[15].GISJOIN);
         setCollection(sparsityMetadata[0]);
+        setBaseline(sparsityMetadata[0].initialBaseline);
     }, []);
     
     useEffect(() => {
@@ -114,6 +116,7 @@ export default memo(function RequestForm(props) {
                         spatialScope={spatialScope}
                         setSpatialScope={setSpatialScope}
                     />
+                    <Divider orientation='vertical' flexItem />
                     <BaselineRadios 
                         className={classes.item}
                         baseline={baseline}
