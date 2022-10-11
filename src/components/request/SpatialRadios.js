@@ -8,7 +8,7 @@ export default function SpatialRadios(props) {
 
     return (
         <FormControl>
-            {/* <FormLabel id="spatial-scope">Spatial Scope</FormLabel> */}
+            <FormLabel id="spatial-scope">Spatial Scope</FormLabel>
             <RadioGroup
                 row
                 aria-labelledby="spatial-scope"

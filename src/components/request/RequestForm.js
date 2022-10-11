@@ -9,6 +9,7 @@ import TemporalSlider from './TemporalSlider';
 import CollectionSelector from './CollectionSelecter';
 import SubmitButton from './SubmitButton';
 import { makeStyles } from "@material-ui/core";
+import BaselineRadios from './BaselineRadios';
 
 const useStyles = makeStyles({
     paper: {
@@ -38,8 +39,6 @@ export default memo(function RequestForm(props) {
     const [temporalRange, setTemporalRange] = useState([]);
     const [baseline, setBaseline] = useState()
     const selectedConstraints = [];
-
-    console.log({temporalRange});
 
     useEffect(() => {
         props.setCollectionProperties(collection.sitePropertyFields);
@@ -109,11 +108,18 @@ export default memo(function RequestForm(props) {
                     sparsityMetadata={sparsityMetadata}
                     collection={collection}
                 />
-                <SpatialRadios
-                    className={classes.item}
-                    spatialScope={spatialScope}
-                    setSpatialScope={setSpatialScope}
-                />
+                <Stack direction='row' justifyContent='space-evenly' className={classes.item}>
+                    <SpatialRadios
+                        className={classes.item}
+                        spatialScope={spatialScope}
+                        setSpatialScope={setSpatialScope}
+                    />
+                    <BaselineRadios 
+                        className={classes.item}
+                        baseline={baseline}
+                        setBaseline={setBaseline}
+                    />
+                </Stack>
                 <Stack direction='row' justifyContent='space-between' className={classes.item}>
                     <SpatialDropdown
                         disabled={false}
