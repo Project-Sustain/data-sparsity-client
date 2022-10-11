@@ -1,9 +1,23 @@
-import { FormControl, FormControlLabel, Radio, RadioGroup, FormLabel } from '@mui/material';
+import { FormControl, FormControlLabel, Radio, RadioGroup, FormLabel, Button } from '@mui/material';
+import { sendJsonRequest } from '../../helpers/api';
 
 export default function BaselineRadios(props) {
 
     const updateBaseline = (event) => {
         props.setBaseline(Number(event.target.value));
+    }
+
+    const sendBaselineRequest = async() => {
+
+        // props.setStatus("PENDING");
+        // props.setSparsityData([]);
+
+        const params = {
+            'baseline': props.baseline
+        };
+
+        const response = await sendJsonRequest("updateBaseline", params);
+        
     }
 
     return (
@@ -21,6 +35,7 @@ export default function BaselineRadios(props) {
                 <FormControlLabel value="604800000" control={<Radio />} label="Week" />
                 <FormControlLabel value="2629800000" control={<Radio />} label="Month" />
             </RadioGroup>
+            <Button onClick={sendBaselineRequest} variant='outlined'>Update Baseline</Button>
         </FormControl>
     );
     
