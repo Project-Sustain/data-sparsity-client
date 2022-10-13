@@ -35,7 +35,7 @@ export default function BaselineRadios(props) {
                 <FormControlLabel value="604800000" control={<Radio />} label="Week" />
                 <FormControlLabel value="2629800000" control={<Radio />} label="Month" />
             </RadioGroup>
-            <Button onClick={sendBaselineRequest} variant='outlined'>Update Baseline</Button>
+            <Button disabled={props.disableButton} onClick={sendBaselineRequest} variant='outlined'>Update Baseline</Button>
         </FormControl>
     );
     

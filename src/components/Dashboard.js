@@ -58,6 +58,7 @@ export default function Dashbaord(props) {
                 />
                 <RequestForm 
                     inDashboard={request}
+                    status={status}
                     setStatus={setStatus}
                     setStats={setStats}
                     setCollectionProperties={setCollectionProperties} 

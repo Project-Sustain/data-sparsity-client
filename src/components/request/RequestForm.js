@@ -42,11 +42,6 @@ export default memo(function RequestForm(props) {
     const selectedConstraints = [];
 
     useEffect(() => {
-        props.setCollectionProperties(collection.sitePropertyFields);
-        setBaseline(collection.initialBaseline);
-    }, [props, collection]);
-
-    useEffect(() => {
         setStateInfo(gisStateCounty);
         setSelectedState(gisStateCounty[15]);
         setSelectedCounty(gisStateCounty[15].counties[3]);
@@ -119,6 +114,7 @@ export default memo(function RequestForm(props) {
                     <Divider orientation='vertical' flexItem />
                     <BaselineRadios 
                         className={classes.item}
+                        disableButton={props.status !== "VALID"}
                         baseline={baseline}
                         setBaseline={setBaseline}
                     />
