@@ -117,6 +117,11 @@ export default memo(function RequestForm(props) {
                         disableButton={props.status !== "VALID"}
                         baseline={baseline}
                         setBaseline={setBaseline}
+
+                        setStatus={props.setStatus}
+                        setSparsityData={props.setSparsityData}
+                        setSelectedIndex={props.setSelectedIndex}
+                        setStats={props.setStats}
                     />
                 </Stack>
                 <Stack direction='row' justifyContent='space-between' className={classes.item}>
@@ -153,10 +158,8 @@ export default memo(function RequestForm(props) {
                     baseline={baseline}
 
                     setStatus={props.setStatus}
-                    sparsityData={props.sparsityData}
                     setSparsityData={props.setSparsityData}
                     setSelectedIndex={props.setSelectedIndex}
-                    
                     setStats={props.setStats}
                 />
             </Paper>

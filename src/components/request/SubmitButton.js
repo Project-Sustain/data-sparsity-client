@@ -2,7 +2,6 @@ import { Button } from '@mui/material';
 import { makeStyles } from '@material-ui/core';
 import { colors } from '../../helpers/colors';
 import { sendJsonRequest } from '../../helpers/api';
-
 import chroma from 'chroma-js';
 
 const useStyles = makeStyles({
