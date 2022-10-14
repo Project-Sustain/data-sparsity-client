@@ -102,6 +102,7 @@ export default memo(function RequestForm(props) {
                 <CollectionSelector
                     className={classes.item}
                     setCollection={setCollection}
+                    setBaseline={setBaseline}
                     sparsityMetadata={sparsityMetadata}
                     collection={collection}
                 />
