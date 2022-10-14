@@ -1,7 +1,7 @@
 const waterSiteIdName = "MonitoringLocationIdentifier";
 const waterSiteCollection = "water_quality_sites";
 const waterSiteProperties = ["OrganizationFormalName", "MonitoringLocationName", "MonitoringLocationTypeName", "ProviderName"];
-const waterInitialBaseline = 604800000;
+const waterInitialBaseline = 2629800000;
 
 const aqiSiteIdName = "monitor_id";
 const aqiSiteCollection = "epa_aqi_monitors";
