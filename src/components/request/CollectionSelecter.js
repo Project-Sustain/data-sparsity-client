@@ -12,7 +12,9 @@ export default function CollectionSelector(props) {
     const classes = useStyles();
 
     const updateCollection = (event) => {
-        props.setCollection(event.target.value);
+        const newCollection = event.target.value;
+        props.setCollection(newCollection);
+        props.setBaseline(newCollection.initialBaseline);
     }
 
     if(props.sparsityMetadata.length > 0) {

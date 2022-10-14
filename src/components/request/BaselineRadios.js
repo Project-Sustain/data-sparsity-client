@@ -1,37 +1,27 @@
-import { Button } from '@mui/material';
-import { makeStyles } from '@material-ui/core';
-import { colors } from '../../helpers/colors';
+import { FormControl, FormControlLabel, Radio, RadioGroup, FormLabel, Button } from '@mui/material';
 import { sendJsonRequest } from '../../helpers/api';
 import chroma from 'chroma-js';
+import { colors } from '../../helpers/colors';
 
-const useStyles = makeStyles({
-    root: {
-        width: '100%'
+export default function BaselineRadios(props) {
+
+    const updateBaseline = (event) => {
+        props.setBaseline(Number(event.target.value));
     }
-});
 
-export default function SubmitButton(props) {
-    const classes = useStyles();
-
-    const sendSparsityScoreRequest = async() => {
+    const sendBaselineRequest = async() => {
 
         props.setStatus("PENDING");
         props.setSparsityData([]);
 
         const params = {
-            'collectionName': props.collection.collection,
-            'spatialIdentifier': props.spatialIdentifier,
-            'startTime': props.startTime,
-            'endTime': props.endTime,
-            'siteIdName': props.collection.siteIdName,
-            'siteCollection': props.collection.siteCollection,
-            'measurementTypes': props.measurementTypes,
-            'sitePropertyFields': props.collection.sitePropertyFields,
             'baseline': props.baseline
         };
 
-        const response = await sendJsonRequest("sparsityScores", params);
-        if(response && Object.keys(response).includes("siteData")) {
+        const response = await sendJsonRequest("updateBaseline", params);
+
+        // FIXME This is duplication from SubmitButton - refactor into a hook
+        if(response && Object.keys(response).length > 0) {
             console.log({response})
             props.setStats({
                 'minTimeBetweenObservations': response.diffStats[0],
@@ -77,8 +67,26 @@ export default function SubmitButton(props) {
                 return result ? [parseInt(result[1], 16), parseInt(result[2], 16), parseInt(result[3], 16)] : [0, 0 ,0];
               }
         }
-
+        
     }
 
-    return <Button className={classes.root} variant='outlined' onClick={sendSparsityScoreRequest}>Submit Request</Button>
+    return (
+        <FormControl>
+            <FormLabel id="spatial-scope">Baseline</FormLabel>
+            <RadioGroup
+                row
+                aria-labelledby="baseline"
+                value={props.baseline}
+                onChange={updateBaseline}
+            >
+                <FormControlLabel value="60000" control={<Radio />} label="Minute" />
+                <FormControlLabel value="3600000" control={<Radio />} label="Hour" />
+                <FormControlLabel value="86400000" control={<Radio />} label="Day" />
+                <FormControlLabel value="604800000" control={<Radio />} label="Week" />
+                <FormControlLabel value="2629800000" control={<Radio />} label="Month" />
+            </RadioGroup>
+            <Button disabled={props.disableButton} onClick={sendBaselineRequest} variant='outlined'>Update Baseline</Button>
+        </FormControl>
+    );
+    
 }
