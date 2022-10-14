@@ -31,7 +31,7 @@ export default function SubmitButton(props) {
         };
 
         const response = await sendJsonRequest("sparsityScores", params);
-        if(response && Object.keys(response).length > 0) {
+        if(response && Object.keys(response).includes("siteData")) {
             console.log({response})
             props.setStats({
                 'minTimeBetweenObservations': response.diffStats[0],
