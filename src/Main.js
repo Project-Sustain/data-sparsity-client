@@ -5,11 +5,17 @@ import UsMap from './components/UsMap';
 export default function App() {
     const [selectedIndex, setSelectedIndex] = useState(0);
     const [sparsityData, setSparsityData] = useState([]);
+    const [shapefileCollection, setShapefileCollection] = useState();
 
     return (
         <>
-            <UsMap data={sparsityData} />
+            <UsMap 
+                data={sparsityData} 
+                shapefileCollection={shapefileCollection}    
+            />
             <Dashbaord 
+                shapefileCollection={shapefileCollection}
+                setShapefileCollection={setShapefileCollection}
                 sparsityData={sparsityData} 
                 setSparsityData={setSparsityData}
                 selectedIndex={selectedIndex} 

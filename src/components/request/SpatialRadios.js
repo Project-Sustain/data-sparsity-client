@@ -4,6 +4,7 @@ export default function SpatialRadios(props) {
 
     const updateSpatialScope = (event) => {
         props.setSpatialScope(event.target.value);
+        props.setSpatialScope(event.target.value);
     }
 
     return (

@@ -35,7 +35,7 @@ export default memo(function RequestForm(props) {
     const [selectedCounty, setSelectedCounty] = useState({});
 
     const [collection, setCollection] = useState({});
-    const [spatialScope, setSpatialScope] = useState("COUNTY");
+    const [spatialScope, setSpatialScope] = useState("STATE");
     const [spatialIdentifier, setSpatialIdentifier] = useState("");
     const [temporalRange, setTemporalRange] = useState([]);
     const [baseline, setBaseline] = useState();
@@ -109,6 +109,8 @@ export default memo(function RequestForm(props) {
                 <Stack direction='row' justifyContent='space-evenly' className={classes.item}>
                     <SpatialRadios
                         className={classes.item}
+                        shapefileCollection={props.shapefileCollection}
+                        setShapefileCollection={props.setShapefileCollection}
                         spatialScope={spatialScope}
                         setSpatialScope={setSpatialScope}
                     />

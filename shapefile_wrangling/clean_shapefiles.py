@@ -14,7 +14,7 @@ if __name__ == "__main__":
             name = county['properties']['NAME']
             print(f'Processing {name}')
             coordinates = county['geometry']['coordinates']
-            output.append({'name': name, 'gisjoin': gisjoin, 'coordinates': coordinates})
+            output.append({'name': name, 'gisjoin': gisjoin, 'geometry': {'type': 'MultiPolygon','coordinates': coordinates}})
             print(f'processed {len(output)} counties')
     with open('counties_cleaned.json', 'w') as f:
         f.write(json.dumps(output))
