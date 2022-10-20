@@ -4,8 +4,9 @@ import { StaticMap } from 'react-map-gl';
 import { BASEMAP } from '@deck.gl/carto';
 import { IconLayer } from '@deck.gl/layers';
 import {GeoJsonLayer} from '@deck.gl/layers';
+
 // import minimalStateShapefiles from '../library/shapefiles/STATE_MINIMAL.json';
-import stateShapefiles from '../library/shapefiles/STATE.json';
+// import stateShapefiles from '../library/shapefiles/STATE.json';
 // import countyShapefiles from '../library/shapefiles/COUNTY.json';
 
 // Viewport settings
@@ -34,21 +35,21 @@ export default function UsMap({data, shapefileCollection}) {
     const [selectedState, setSelectedState] = useState('G080');
     const [countyLayer, setCountyLayer] = useState([]);
 
-    useEffect(() => {
-        const geoJsonLayer = new GeoJsonLayer({
-            id: 'geojson', 
-            data: stateShapefiles, 
-            filled: true, 
-            opacity: 0.01, 
-            getFillColor: [76, 201, 240],
-            getLineColor: [0, 0, 0],
-            truelineWidthScale: 10,
-            lineWidthMinPixels: 1,
-            getLineWidth: 1,
-        });
-        setStateLayer(geoJsonLayer);
+    // useEffect(() => {
+    //     const geoJsonLayer = new GeoJsonLayer({
+    //         id: 'geojson', 
+    //         data: stateShapefiles, 
+    //         filled: true, 
+    //         opacity: 0.01, 
+    //         getFillColor: [76, 201, 240],
+    //         getLineColor: [0, 0, 0],
+    //         truelineWidthScale: 10,
+    //         lineWidthMinPixels: 1,
+    //         getLineWidth: 1,
+    //     });
+    //     setStateLayer(geoJsonLayer);
         
-    }, [shapefileCollection]);
+    // }, [shapefileCollection]);
     
 
     const iconLayer = new IconLayer({
