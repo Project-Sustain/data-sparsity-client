@@ -77,7 +77,7 @@ export default function UsMap({data, shapefileCollection}) {
 
     const sendShapefileRequest = async() => {
         setStateLayer([]);
-        // setCountyLayer([]);
+        setCountyLayer([]);
 
         const paramsState = {
             'collection': 'state_geo',
@@ -138,7 +138,7 @@ export default function UsMap({data, shapefileCollection}) {
                 id: 'countylayer', 
                 data: myAsyncIteratorCounty, 
                 filled: true, 
-                opacity: 0.01, 
+                opacity: 0.001, 
                 getFillColor: [76, 201, 240],
                 getLineColor: [0, 0, 0],
                 truelineWidthScale: 10,
