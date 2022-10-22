@@ -1,6 +1,6 @@
 import { BarChart, Bar, XAxis, YAxis, Tooltip, Legend, ResponsiveContainer } from 'recharts';
 import { makeStyles } from "@material-ui/core";
-import { Paper, Typography, LinearProgress, Radio, RadioGroup, FormControl, FormControlLabel, FormLabel, Stack } from "@mui/material";
+import { Paper, Typography, LinearProgress, Stack } from "@mui/material";
 import { useEffect, useState } from 'react';
 import { colors } from '../../../helpers/colors';
 

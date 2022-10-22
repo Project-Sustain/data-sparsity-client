@@ -11,6 +11,7 @@ import SubmitButton from './SubmitButton';
 import { makeStyles } from "@material-ui/core";
 import BaselineRadios from './BaselineRadios';
 import { Divider } from '@mui/material';
+import StreamTest from './StreamTest';
 
 const useStyles = makeStyles({
     paper: {
@@ -165,6 +166,7 @@ export default memo(function RequestForm(props) {
                     setSelectedIndex={props.setSelectedIndex}
                     setStats={props.setStats}
                 />
+                <StreamTest />
             </Paper>
         );
     }

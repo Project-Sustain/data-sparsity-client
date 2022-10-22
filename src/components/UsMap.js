@@ -1,9 +1,9 @@
-import {useState, useEffect} from 'react'
+import {useState} from 'react'
 import DeckGL from '@deck.gl/react';
 import { StaticMap } from 'react-map-gl';
 import { BASEMAP } from '@deck.gl/carto';
 import { IconLayer } from '@deck.gl/layers';
-import {GeoJsonLayer} from '@deck.gl/layers';
+// import {GeoJsonLayer} from '@deck.gl/layers';
 
 // import minimalStateShapefiles from '../library/shapefiles/STATE_MINIMAL.json';
 // import stateShapefiles from '../library/shapefiles/STATE.json';
