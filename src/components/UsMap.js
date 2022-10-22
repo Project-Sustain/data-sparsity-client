@@ -6,6 +6,8 @@ import { IconLayer } from '@deck.gl/layers';
 import {GeoJsonLayer} from '@deck.gl/layers';
 import { Button } from '@mui/material';
 import { makeStyles } from '@material-ui/core';
+import chroma from 'chroma-js';
+import { colors } from '../helpers/colors';
 
 // Viewport settings
 const INITIAL_VIEW_STATE = {
@@ -39,6 +41,19 @@ export default function UsMap({data, shapefileCollection}) {
     const [stateLayer, setStateLayer] = useState([]);
     const [countyLayer, setCountyLayer] = useState([]);
 
+    function getColor() {
+         
+        const num =  Math.floor(Math.random() * 10) + 1;
+        const countyColors = chroma.scale([colors.mapLight, colors.mapDark]).colors(15);
+
+        // Source: https://stackoverflow.com/questions/5623838/rgb-to-hex-and-hex-to-rgb
+        function hexToRgb(hex) {
+            var result = /^#?([a-f\d]{2})([a-f\d]{2})([a-f\d]{2})$/i.exec(hex);
+            return result ? [parseInt(result[1], 16), parseInt(result[2], 16), parseInt(result[3], 16)] : [0, 0 ,0];
+        }
+        return hexToRgb(countyColors[num]);
+    }
+
     async function createIterator(reader){
         const myAsyncIterable = {
             async *[Symbol.asyncIterator]() {
@@ -56,7 +71,7 @@ export default function UsMap({data, shapefileCollection}) {
                         const parsedResponse = response.substring(0, response.indexOf('\n'));
                         const obj = JSON.parse(parsedResponse);
                         response = response.substring(response.indexOf('\n') + 1, response.length);
-                        const geometry = {type: "Feature", geometry: JSON.parse(obj.geometry)};
+                        const geometry = {type: "Feature", color: getColor(), geometry: JSON.parse(obj.geometry)};
                         yield geometry;
                     }
                     if(response.indexOf('\n') === -1 && response.length !== 0){
@@ -138,10 +153,10 @@ export default function UsMap({data, shapefileCollection}) {
                 id: 'countylayer', 
                 data: myAsyncIteratorCounty, 
                 filled: true, 
-                opacity: 0.001, 
-                getFillColor: [76, 201, 240],
+                opacity: 0.01, 
+                getFillColor: d => d.color,
                 getLineColor: [0, 0, 0],
-                truelineWidthScale: 10,
+                truelineWidthScale: 15,
                 lineWidthMinPixels: 1,
                 getLineWidth: 1,
             })
