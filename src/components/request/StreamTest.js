@@ -58,8 +58,6 @@ export default function StreamTest(props) {
                         else{
                             incompleteResponse = "";
                         }
-                            console.log({response});
-                            streamedResults.push(response);
                     } catch(err){
                         console.log("Error while streaming "+ err);
                     }
