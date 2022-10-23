@@ -31,7 +31,6 @@ export default function UseShapefileLoader(props){
                 while (true) {
                     const { done, value } = await reader.read();
                     if (done) {
-                        console.log('The stream is done.');
                         break;
                     }
                     let response = new TextDecoder().decode(value);
