@@ -61,6 +61,7 @@ export default function Dashbaord(props) {
                     status={status}
                     shapefileCollection={props.shapefileCollection}
                     gisjoin={props.gisjoin}
+                    currentShapeName={props.currentShapeName}
                     setShapefileCollection={props.setShapefileCollection}
                     setStatus={setStatus}
                     setStats={setStats}

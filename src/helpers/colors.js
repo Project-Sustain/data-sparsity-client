@@ -5,5 +5,5 @@ export const colors = {
     highlight: '#f5f502',
     countyDark: '#343a40',
     countyLight: '#ced4da',
-    state: '#84a98c',
+    state: '#588157',
 }

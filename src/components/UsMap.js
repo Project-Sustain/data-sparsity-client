@@ -21,7 +21,7 @@ const ICON_MAPPING = {
     marker: {x: 0, y: 0, width: 128, height: 128, mask: true}
   };
 
-export default function UsMap({data, shapefileCollection, setGisjoin}) {
+export default function UsMap({data, shapefileCollection, setGisjoin, setCurrentShapeName}) {
 
     const [selectedState, setSelectedState] = useState('');
     const [selectedShape, setSelectedShape] = useState({});
@@ -32,8 +32,10 @@ export default function UsMap({data, shapefileCollection, setGisjoin}) {
     const stateColors = chroma.scale([colors.state, colors.state]).colors(15);
 
     useEffect(() => {
-      console.log({selectedShape});
-      setGisjoin(selectedShape.gisjoin);
+        if(Object.keys(selectedShape).length > 0) {
+            setGisjoin(selectedShape.gisjoin);
+            setCurrentShapeName(selectedShape.name);
+        }
     }, [selectedShape]);
 
     useEffect(() => {
