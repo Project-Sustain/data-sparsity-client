@@ -5,11 +5,23 @@ import UsMap from './components/UsMap';
 export default function App() {
     const [selectedIndex, setSelectedIndex] = useState(0);
     const [sparsityData, setSparsityData] = useState([]);
+    const [shapefileCollection, setShapefileCollection] = useState('STATE');
+    const [gisjoin, setGisjoin] = useState('G080');
+    const [currentShapeName, setCurrentShapeName] = useState('Colorado');
 
     return (
         <>
-            <UsMap data={sparsityData} />
+            <UsMap 
+                data={sparsityData} 
+                shapefileCollection={shapefileCollection}   
+                setGisjoin={setGisjoin} 
+                setCurrentShapeName={setCurrentShapeName}
+            />
             <Dashbaord 
+                gisjoin={gisjoin}
+                currentShapeName={currentShapeName}
+                shapefileCollection={shapefileCollection}
+                setShapefileCollection={setShapefileCollection}
                 sparsityData={sparsityData} 
                 setSparsityData={setSparsityData}
                 selectedIndex={selectedIndex} 

@@ -1,6 +1,6 @@
 import { BarChart, Bar, XAxis, YAxis, Tooltip, Legend, ResponsiveContainer } from 'recharts';
 import { makeStyles } from "@material-ui/core";
-import { Paper, Typography, LinearProgress, Radio, RadioGroup, FormControl, FormControlLabel, FormLabel, Stack } from "@mui/material";
+import { Paper, Typography, LinearProgress, Stack } from "@mui/material";
 import { useEffect, useState } from 'react';
 import { colors } from '../../../helpers/colors';
 
@@ -35,7 +35,12 @@ export default function SparsityScoresChart(props) {
                     chartData = [0,1,2,3,4].map(index => {
                         const bucketMin = (min+(rangePerBucket*index)).toFixed(3);
                         const bucketMax = (min+(rangePerBucket*(index+1))).toFixed(3);
-                        return {name: `${bucketMin} - ${bucketMax}`, numberOfSites: props.scores.filter(score => score >= bucketMin && score < bucketMax).length};
+                        return {
+                            name: `${bucketMin} - ${bucketMax}`, 
+                            numberOfSites: props.scores.filter(score => {
+                                const lessThanMax = index === 4 ? score <= bucketMax : score < bucketMax;
+                                return score >= bucketMin && lessThanMax;
+                            }).length};
                     });
 
                 } catch (exception) {

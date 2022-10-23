@@ -1,0 +1,1 @@
+mongoexport --uri="mongodb://lattice-100:27018/sustaindb" --username root --password "rootPass" --authenticationDatabase admin  --collection county_geo --fields 'geometry.coordinates,GISJOIN,properties.NAME' --out states.json --jsonArray

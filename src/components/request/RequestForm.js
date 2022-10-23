@@ -3,7 +3,6 @@ import { gisStateCounty } from '../../library/gisInfo';
 import { sendJsonRequest } from '../../helpers/api';
 import { sparsityMetadata } from '../../library/metadata';
 import { Paper, Stack, Typography } from '@mui/material';
-import SpatialDropdown from './SpatialDropdown';
 import SpatialRadios from './SpatialRadios';
 import TemporalSlider from './TemporalSlider';
 import CollectionSelector from './CollectionSelecter';
@@ -31,43 +30,18 @@ export default memo(function RequestForm(props) {
     const [stateInfo, setStateInfo] = useState([]);
     const [firstTime, setFirstTime] = useState();
     const [lastTime, setLastTime] = useState();
-    const [selectedState, setSelectedState] = useState({});
-    const [selectedCounty, setSelectedCounty] = useState({});
 
     const [collection, setCollection] = useState({});
-    const [spatialScope, setSpatialScope] = useState("COUNTY");
-    const [spatialIdentifier, setSpatialIdentifier] = useState("");
     const [temporalRange, setTemporalRange] = useState([]);
     const [baseline, setBaseline] = useState();
     const selectedConstraints = [];
 
     useEffect(() => {
         setStateInfo(gisStateCounty);
-        setSelectedState(gisStateCounty[15]);
-        setSelectedCounty(gisStateCounty[15].counties[3]);
-        setSpatialIdentifier(gisStateCounty[15].GISJOIN);
         setCollection(sparsityMetadata[0]);
         setBaseline(sparsityMetadata[0].initialBaseline);
     }, []);
     
-    useEffect(() => {
-        switch(spatialScope) {
-            case "COUNTRY":
-                setSpatialIdentifier("");
-                break;
-            case "STATE":
-                setSpatialIdentifier(selectedState.GISJOIN);
-                break;
-            case "COUNTY":
-                setSpatialIdentifier(selectedCounty.GISJOIN);
-                break;
-            case "SITE":
-                setSpatialIdentifier(""); // FIXME eventually this is a monitorId?
-                break;
-            default:
-                break;                
-        }
-    }, [selectedState, selectedCounty, spatialScope]);
 
     useEffect(() => {
         (async () => {
@@ -85,16 +59,6 @@ export default memo(function RequestForm(props) {
         })();
     }, [collection]);
 
-    const updateSelectedState = (event) => {
-        const newState = event.target.value;
-        setSelectedState(newState);
-        setSelectedCounty(newState.counties[0]);
-    }
-    
-    const updateSelectedCounty = (event) => {
-        setSelectedCounty(event.target.value);
-    }
-
     if(stateInfo.length > 0 && props.inDashboard) {
         return (
             <Paper elevation={3} className={classes.paper}>
@@ -109,10 +73,11 @@ export default memo(function RequestForm(props) {
                 <Stack direction='row' justifyContent='space-evenly' className={classes.item}>
                     <SpatialRadios
                         className={classes.item}
-                        spatialScope={spatialScope}
-                        setSpatialScope={setSpatialScope}
+                        shapefileCollection={props.shapefileCollection}
+                        setShapefileCollection={props.setShapefileCollection}
+                        currentShapeName={props.currentShapeName}
                     />
-                    <Divider orientation='vertical' flexItem />
+                    {/* <Divider orientation='vertical' flexItem /> */}
                     <BaselineRadios 
                         className={classes.item}
                         disableButton={props.status !== "VALID"}
@@ -123,22 +88,6 @@ export default memo(function RequestForm(props) {
                         setSparsityData={props.setSparsityData}
                         setSelectedIndex={props.setSelectedIndex}
                         setStats={props.setStats}
-                    />
-                </Stack>
-                <Stack direction='row' justifyContent='space-between' className={classes.item}>
-                    <SpatialDropdown
-                        disabled={false}
-                        options={stateInfo}
-                        label='State'
-                        update={updateSelectedState}
-                        value={selectedState}
-                    />
-                    <SpatialDropdown
-                        disabled={spatialScope !== 'COUNTY'}
-                        options={selectedState.counties.sort((a, b) => {return a.collection - b.collection})}
-                        label='County'
-                        update={updateSelectedCounty}
-                        value={selectedCounty}
                     />
                 </Stack>
                 <Stack direction='row' justifyContent='center' className={classes.item}>
@@ -152,11 +101,11 @@ export default memo(function RequestForm(props) {
                 <SubmitButton 
                     className={classes.item}
                     collection={collection}
-                    spatialIdentifier={spatialIdentifier}
                     startTime={temporalRange[0]}
                     endTime={temporalRange[1]}
                     measurementTypes={selectedConstraints}
                     baseline={baseline}
+                    gisjoin={props.gisjoin}
 
                     setStatus={props.setStatus}
                     setSparsityData={props.setSparsityData}
