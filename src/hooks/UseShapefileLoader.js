@@ -4,27 +4,32 @@ import chroma from 'chroma-js';
 import {colors} from '../helpers/colors';
 
 export default function UseShapefileLoader(props){
+
+    const [selectedState, setSelectedState] = useState('');
+    const [selectedCounty, setSelectedCounty] = useState('');
     const [stateLayer, setStateLayer] = useState([]);
     const [countyLayer, setCountyLayer] = useState([]);
+
+    const countyColors = chroma.scale([colors.countyLight, colors.countyDark]).colors(15);
+    const stateColors = chroma.scale([colors.state, colors.state]).colors(15);
 
     useEffect(() => {
         sendShapefileRequest();
     }, []);
 
-    function getColor() {
+    function getColor(scale) {
          
         const num =  Math.floor(Math.random() * 10) + 1;
-        const countyColors = chroma.scale([colors.mapLight, colors.mapDark]).colors(15);
 
         // Source: https://stackoverflow.com/questions/5623838/rgb-to-hex-and-hex-to-rgb
         function hexToRgb(hex) {
             var result = /^#?([a-f\d]{2})([a-f\d]{2})([a-f\d]{2})$/i.exec(hex);
             return result ? [parseInt(result[1], 16), parseInt(result[2], 16), parseInt(result[3], 16)] : [0, 0 ,0];
         }
-        return hexToRgb(countyColors[num]);
+        return hexToRgb(scale[num]);
     }
 
-    async function createIterator(reader){
+    async function createIterator(reader, scale){
         const myAsyncIterable = {
             async *[Symbol.asyncIterator]() {
                 let incompleteResponse = ""
@@ -40,7 +45,7 @@ export default function UseShapefileLoader(props){
                         const parsedResponse = response.substring(0, response.indexOf('\n'));
                         const obj = JSON.parse(parsedResponse);
                         response = response.substring(response.indexOf('\n') + 1, response.length);
-                        const geometry = {type: "Feature", color: getColor(), name: obj.name, geometry: JSON.parse(obj.geometry)};
+                        const geometry = {type: "Feature", color: getColor(scale), name: obj.name, geometry: JSON.parse(obj.geometry)};
                         yield geometry;
                     }
                     if(response.indexOf('\n') === -1 && response.length !== 0){
@@ -56,15 +61,16 @@ export default function UseShapefileLoader(props){
         return myAsyncIterable;
     }
 
-    let myAsyncIteratorState;
     let myAsyncIteratorCounty;
+    let myAsyncIteratorState;
 
     const sendShapefileRequest = async() => {
         setStateLayer([]);
         setCountyLayer([]);
 
         const paramsState = {
-            'collection': 'state_geo'
+            'collection': 'state_geo',
+            'state': ''
         };
 
         const bodyState = {
@@ -83,21 +89,38 @@ export default function UseShapefileLoader(props){
             readerState = response.body.getReader();
         });
 
-        myAsyncIteratorState = await createIterator(readerState);
+        const handleStateClick = (info, event) => {
+            setSelectedState(info.object.name);
+            sendCountyShapefileRequest(info.object.name);
+        }
+
+        myAsyncIteratorState = await createIterator(readerState, stateColors);
         setStateLayer([
             new GeoJsonLayer({
                 id: 'statelayer', 
                 data: myAsyncIteratorState, 
-                filled: false,
+                pickable: true,
+                filled: true, 
+                opacity: 0.01, 
+                getFillColor: d => d.color,
                 getLineColor: [0, 0, 0],
                 truelineWidthScale: 15,
                 lineWidthMinPixels: 2,
                 getLineWidth: 1,
+                onClick: handleStateClick
             })
         ]);
+    }
+
+
+    const sendCountyShapefileRequest = async(stateName) => {
+        setCountyLayer([]);
+
+        const url = "http://127.0.0.1:5000/shapefiles";
 
         const paramsCounty = {
-            'collection': 'county_geo'
+            'collection': 'county_geo',
+            'state': stateName
         };
 
         const bodyCounty = {
@@ -114,7 +137,11 @@ export default function UseShapefileLoader(props){
             readerCounty = response.body.getReader();
         });
 
-        myAsyncIteratorCounty = await createIterator(readerCounty);
+        const handleCountyClick = (info, event) => {
+            setSelectedCounty(info.object.name);
+        }
+
+        myAsyncIteratorCounty = await createIterator(readerCounty, countyColors);
         setCountyLayer([
             new GeoJsonLayer({
                 id: 'countylayer', 
@@ -127,6 +154,7 @@ export default function UseShapefileLoader(props){
                 truelineWidthScale: 15,
                 lineWidthMinPixels: 1,
                 getLineWidth: 1,
+                onClick: handleCountyClick
             })
         ]);
 

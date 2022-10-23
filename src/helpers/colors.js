@@ -3,6 +3,7 @@ export const colors = {
     secondary: '#7209b7',
     tertiary: '#f72585',
     highlight: '#f5f502',
-    mapDark: '#343a40',
-    mapLight: '#ced4da'
+    countyDark: '#343a40',
+    countyLight: '#ced4da',
+    state: '#84a98c',
 }

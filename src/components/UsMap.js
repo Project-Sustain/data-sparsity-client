@@ -18,6 +18,7 @@ const ICON_MAPPING = {
   };
 
 export default function UsMap({data}) {
+    const {stateLayer, countyLayer} = UseShapefileLoader();
 
     const iconLayer = new IconLayer({
         id: 'icon-layer',
@@ -36,8 +37,6 @@ export default function UsMap({data}) {
     function getTooltip({object}) {
         return object && `${object.name}`;
     }
-
-    const {stateLayer, countyLayer} = UseShapefileLoader();
 
     return (
         <>
