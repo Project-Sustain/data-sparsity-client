@@ -159,6 +159,7 @@ export default memo(function RequestForm(props) {
                     endTime={temporalRange[1]}
                     measurementTypes={selectedConstraints}
                     baseline={baseline}
+                    gisjoin={props.gisjoin}
 
                     setStatus={props.setStatus}
                     setSparsityData={props.setSparsityData}

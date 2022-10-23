@@ -20,7 +20,7 @@ export default function SubmitButton(props) {
 
         const params = {
             'collectionName': props.collection.collection,
-            'spatialIdentifier': props.spatialIdentifier,
+            'spatialIdentifier': props.gisjoin,
             'startTime': props.startTime,
             'endTime': props.endTime,
             'siteIdName': props.collection.siteIdName,

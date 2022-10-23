@@ -60,6 +60,7 @@ export default function Dashbaord(props) {
                     inDashboard={request}
                     status={status}
                     shapefileCollection={props.shapefileCollection}
+                    gisjoin={props.gisjoin}
                     setShapefileCollection={props.setShapefileCollection}
                     setStatus={setStatus}
                     setStats={setStats}
