@@ -1,20 +1,19 @@
-import {useState} from 'react'
+import {useEffect, useState} from 'react'
 import DeckGL from '@deck.gl/react';
 import { StaticMap } from 'react-map-gl';
 import { BASEMAP } from '@deck.gl/carto';
 import { IconLayer } from '@deck.gl/layers';
 import {GeoJsonLayer} from '@deck.gl/layers';
-import { Button } from '@mui/material';
 import { makeStyles } from '@material-ui/core';
 import chroma from 'chroma-js';
 import { colors } from '../helpers/colors';
 
 // Viewport settings
 const INITIAL_VIEW_STATE = {
-    longitude: -105.086559,
-    latitude: 40.573733,
-    zoom: 13,
-    pitch: 0,
+    longitude: -98.5795,
+    latitude: 39.8283,
+    zoom: 4.3,
+    pitch: 30,
     bearing: 0
 };
 
@@ -28,8 +27,12 @@ const ICON_MAPPING = {
     }
 });
 
-export default function UsMap({data, shapefileCollection}) {
+export default function UsMap({data}) {
     const classes = useStyles();
+
+    useEffect(() => {
+        sendShapefileRequest();
+    }, [])
 
     /*
     - Get all state shapefiles from mongodb, push into stateLayer
@@ -71,7 +74,7 @@ export default function UsMap({data, shapefileCollection}) {
                         const parsedResponse = response.substring(0, response.indexOf('\n'));
                         const obj = JSON.parse(parsedResponse);
                         response = response.substring(response.indexOf('\n') + 1, response.length);
-                        const geometry = {type: "Feature", color: getColor(), geometry: JSON.parse(obj.geometry)};
+                        const geometry = {type: "Feature", color: getColor(), name: obj.name, geometry: JSON.parse(obj.geometry)};
                         yield geometry;
                     }
                     if(response.indexOf('\n') === -1 && response.length !== 0){
@@ -95,8 +98,7 @@ export default function UsMap({data, shapefileCollection}) {
         setCountyLayer([]);
 
         const paramsState = {
-            'collection': 'state_geo',
-            'stateFP': '00',
+            'collection': 'state_geo'
         };
 
         const bodyState = {
@@ -129,8 +131,7 @@ export default function UsMap({data, shapefileCollection}) {
         ]);
 
         const paramsCounty = {
-            'collection': 'county_geo',
-            'stateFP': '00',
+            'collection': 'county_geo'
         };
 
         const bodyCounty = {
@@ -152,6 +153,7 @@ export default function UsMap({data, shapefileCollection}) {
             new GeoJsonLayer({
                 id: 'countylayer', 
                 data: myAsyncIteratorCounty, 
+                pickable: true,
                 filled: true, 
                 opacity: 0.01, 
                 getFillColor: d => d.color,
@@ -178,14 +180,17 @@ export default function UsMap({data, shapefileCollection}) {
         getFillColor: d => d.color
     });
 
+    function getTooltip({object}) {
+        return object && `${object.name}`;
+    }
+
     return (
         <>
-            <Button className={classes.root} onClick={sendShapefileRequest} variant='outlined'>Stream Shapefiles</Button>
             <DeckGL
                 initialViewState={INITIAL_VIEW_STATE}
                 controller={true}
                 layers={[iconLayer, stateLayer, countyLayer]}
-                getTooltip={({object}) => object && `${object.monitorId}\nAbsolute Sparsity Score: ${object.sparsityScore}`}
+                getTooltip={getTooltip}
               >
                 <StaticMap mapStyle={BASEMAP.POSITRON} />
             </DeckGL>
