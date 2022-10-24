@@ -9,41 +9,6 @@ export default function BaselineRadios(props) {
         props.setBaseline(Number(event.target.value));
     }
 
-
-    async function createIterator(reader){
-        const myAsyncIterable = {
-            async *[Symbol.asyncIterator]() {
-                let incompleteResponse = ""
-                while (true) {
-                    const { done, value } = await reader.read();
-                    if (done) {
-                        break;
-                    }
-                    let response = new TextDecoder().decode(value);
-                    response = incompleteResponse + response;
-
-                    while(response.indexOf('\n') !== -1) {
-                        const parsedResponse = response.substring(0, response.indexOf('\n'));
-                        const obj = JSON.parse(parsedResponse);
-                        response = response.substring(response.indexOf('\n') + 1, response.length);
-                        console.log({obj})
-                        yield obj;
-                    }
-                    if(response.indexOf('\n') === -1 && response.length !== 0){
-                        incompleteResponse = response;
-                    }
-                    else{
-                        incompleteResponse = "";
-                    }
-                }
-            }
-        };
-
-        return myAsyncIterable;
-    }
-
-    let myAsyncInterator;
-
     const sendBaselineRequest = async() => {
 
         props.setStatus("PENDING");
@@ -69,9 +34,31 @@ export default function BaselineRadios(props) {
             reader = response.body.getReader();
         });
 
-        myAsyncInterator = await createIterator(reader);
+        let streamedResults = [];
+        let incompleteResponse = "";
+        while (true) {
+            const { done, value } = await reader.read();
+            if (done) {
+                props.setSparsityData(formatResults(streamedResults));
+                break;
+            }
+            let response = new TextDecoder().decode(value);
+            response = incompleteResponse + response;
 
-
+            while(response.indexOf('\n') !== -1) {
+                const parsedResponse = response.substring(0, response.indexOf('\n'));
+                const obj = JSON.parse(parsedResponse);
+                response = response.substring(response.indexOf('\n') + 1, response.length);
+                console.log({obj})
+                streamedResults.push(obj);
+            }
+            if(response.indexOf('\n') === -1 && response.length !== 0){
+                incompleteResponse = response;
+            }
+            else{
+                incompleteResponse = "";
+            }
+        }
         
         // FIXME do ALL this on the server...
         function formatResults(streamedResults) {
