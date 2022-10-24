@@ -39,7 +39,9 @@ export default function BaselineRadios(props) {
         while (true) {
             const { done, value } = await reader.read();
             if (done) {
-                props.setSparsityData(formatResults(streamedResults));
+                const formattedResults = formatResults(streamedResults);
+                props.setSparsityData(formattedResults);
+                props.setStatus("VALID");
                 break;
             }
             let response = new TextDecoder().decode(value);
@@ -49,7 +51,6 @@ export default function BaselineRadios(props) {
                 const parsedResponse = response.substring(0, response.indexOf('\n'));
                 const obj = JSON.parse(parsedResponse);
                 response = response.substring(response.indexOf('\n') + 1, response.length);
-                console.log({obj})
                 streamedResults.push(obj);
             }
             if(response.indexOf('\n') === -1 && response.length !== 0){
@@ -74,7 +75,7 @@ export default function BaselineRadios(props) {
             function hexToRgb(hex) {
                 var result = /^#?([a-f\d]{2})([a-f\d]{2})([a-f\d]{2})$/i.exec(hex);
                 return result ? [parseInt(result[1], 16), parseInt(result[2], 16), parseInt(result[3], 16)] : [0, 0 ,0];
-              }
+            }
         }
         
     }
@@ -94,7 +95,7 @@ export default function BaselineRadios(props) {
                 <FormControlLabel value="604800000" control={<Radio />} label="Week" />
                 <FormControlLabel value="2629800000" control={<Radio />} label="Month" />
             </RadioGroup>
-            <Button disabled={props.disableButton} onClick={sendBaselineRequest} variant='outlined'>Update Baseline</Button>
+            <Button onClick={sendBaselineRequest} variant='outlined'>Update Baseline</Button>
         </FormControl>
     );
     

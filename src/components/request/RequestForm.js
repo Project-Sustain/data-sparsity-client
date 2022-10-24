@@ -80,7 +80,7 @@ export default memo(function RequestForm(props) {
                     {/* <Divider orientation='vertical' flexItem /> */}
                     <BaselineRadios 
                         className={classes.item}
-                        disableButton={props.status !== "VALID"}
+                        disableButton={props.status !== "VALID"} // FIXME Reconsider
                         baseline={baseline}
                         setBaseline={setBaseline}
 

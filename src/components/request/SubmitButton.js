@@ -15,8 +15,7 @@ export default function SubmitButton(props) {
 
     const sendSparsityScoreRequest = async() => {
 
-        props.setStatus("PENDING");
-        // props.setSparsityData([]);
+        props.setStats({});
 
         const params = {
             'collectionName': props.collection.collection,
@@ -53,12 +52,11 @@ export default function SubmitButton(props) {
             // const formattedResults = formatResults(data);
             // props.setSparsityData(formattedResults);
             // props.setSelectedIndex(0);
-            props.setStatus("VALID");
         }
 
         else {
+            props.setStats({});
             console.log("ERROR in response");
-            props.setStatus("INVALID");
         }
 
         // // FIXME do ALL this on the server...
