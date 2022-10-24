@@ -9,6 +9,41 @@ export default function BaselineRadios(props) {
         props.setBaseline(Number(event.target.value));
     }
 
+
+    async function createIterator(reader){
+        const myAsyncIterable = {
+            async *[Symbol.asyncIterator]() {
+                let incompleteResponse = ""
+                while (true) {
+                    const { done, value } = await reader.read();
+                    if (done) {
+                        break;
+                    }
+                    let response = new TextDecoder().decode(value);
+                    response = incompleteResponse + response;
+
+                    while(response.indexOf('\n') !== -1) {
+                        const parsedResponse = response.substring(0, response.indexOf('\n'));
+                        const obj = JSON.parse(parsedResponse);
+                        response = response.substring(response.indexOf('\n') + 1, response.length);
+                        console.log({obj})
+                        yield obj;
+                    }
+                    if(response.indexOf('\n') === -1 && response.length !== 0){
+                        incompleteResponse = response;
+                    }
+                    else{
+                        incompleteResponse = "";
+                    }
+                }
+            }
+        };
+
+        return myAsyncIterable;
+    }
+
+    let myAsyncInterator;
+
     const sendBaselineRequest = async() => {
 
         props.setStatus("PENDING");
@@ -18,39 +53,26 @@ export default function BaselineRadios(props) {
             'baseline': props.baseline
         };
 
-        const response = await sendJsonRequest("updateBaseline", params);
+        const body = {
+            'method':'POST',
+            headers: {
+                'Content-Type':'application/json'
+            },
+            body: JSON.stringify(params)
+        };
 
-        // FIXME This is duplication from SubmitButton - refactor into a hook
-        if(response && Object.keys(response).length > 0) {
-            console.log({response})
-            props.setStats({
-                'minTimeBetweenObservations': response.diffStats[0],
-                'maxTimeBetweenObservations': response.diffStats[1],
-                'meanTimeBetweenObservations': response.diffStats[2],
-                'stdDevTimeBetweenObservations': response.diffStats[3],
+        const url = "http://127.0.0.1:5000/updateBaseline";
 
-                'minNumberOfObservations': response.obsStats[0],
-                'maxNumberOfObservations': response.obsStats[1],
-                'meanNumberOfObservations': response.obsStats[2],
-                'stdDevNumberOfObservations': response.obsStats[3],
+        let reader;
 
-                'minSparsity': response.sparsityStats[0],
-                'maxSparsity': response.sparsityStats[1],
-                'meanSparsity': response.sparsityStats[2] ? response.sparsityStats[2] : 0.0,
-                'stdDevSparsity': response.sparsityStats[3]
-            });
-            const data = response.siteData;
-            const formattedResults = formatResults(data);
-            props.setSparsityData(formattedResults);
-            props.setSelectedIndex(0);
-            props.setStatus(formattedResults.length > 0 ? "VALID" : "INVALID");
-        }
+        await fetch(url, body).then(response => {
+            reader = response.body.getReader();
+        });
 
-        else {
-            console.log("ERROR in response");
-            props.setStatus("INVALID");
-        }
+        myAsyncInterator = await createIterator(reader);
 
+
+        
         // FIXME do ALL this on the server...
         function formatResults(streamedResults) {
             const initialColorScale = chroma.scale([colors.tertiary, colors.primary]).colors(streamedResults.length);
