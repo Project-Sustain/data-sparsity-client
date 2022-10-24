@@ -7,11 +7,12 @@ export default function UseConnectionStatus() {
 
     const [trigger, setTrigger] = useState(true);
 
-    // useEffect(() => {
-    //     setTimeout(() => {
-    //         setTrigger(!trigger);
-    //     }, 15000);
-    // });
+    // Poke the server every 15 seconds & check of connections
+    useEffect(() => {
+        setTimeout(() => {
+            setTrigger(!trigger);
+        }, 15000);
+    });
 
     useEffect(() => {
         (async () => {
