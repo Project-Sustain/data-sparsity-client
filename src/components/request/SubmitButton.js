@@ -1,6 +1,5 @@
 import { Button } from '@mui/material';
 import { makeStyles } from '@material-ui/core';
-import { sendJsonRequest } from '../../helpers/api';
 import { Api } from '../../helpers/api';
 
 const useStyles = makeStyles({
@@ -28,7 +27,7 @@ export default function SubmitButton(props) {
             'baseline': props.baseline
         };
 
-        const response = await sendJsonRequest("sparsityScores", params);
+        const response = await Api.sendJsonRequest("sparsityScores", params);
         if(response) {
             props.setStats({
                 'minTimeBetweenObservations': response.diffStats[0],

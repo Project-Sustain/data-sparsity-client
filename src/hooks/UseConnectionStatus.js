@@ -1,5 +1,5 @@
 import { useState, useEffect } from 'react';
-import { sendRequest } from '../helpers/api';
+import { Api } from '../helpers/api';
 
 export default function UseConnectionStatus() {
     const [serverConnection, setServerConnection] = useState(false);
@@ -7,15 +7,15 @@ export default function UseConnectionStatus() {
 
     const [trigger, setTrigger] = useState(true);
 
-    useEffect(() => {
-        setTimeout(() => {
-            setTrigger(!trigger);
-        }, 15000);
-    });
+    // useEffect(() => {
+    //     setTimeout(() => {
+    //         setTrigger(!trigger);
+    //     }, 15000);
+    // });
 
     useEffect(() => {
         (async () => {
-            const response = await sendRequest("serverConnection");
+            const response = await Api.sendRequest("serverConnection");
             if(response) {
                 setServerConnection(response);
             }
@@ -25,7 +25,7 @@ export default function UseConnectionStatus() {
 
     useEffect(() => {
         (async () => {
-            const response = await sendRequest("dbConnection");
+            const response = await Api.sendRequest("dbConnection");
             if(response) {
                 setDbConnection(response);
             }
