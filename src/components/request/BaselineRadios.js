@@ -8,10 +8,7 @@ export default function BaselineRadios(props) {
     }
 
     const sendRequest = () => {
-        const params = {
-            'baseline': props.baseline
-        };
-        Api.sendBaselineRequest(params, props.setStatus, props.setSparsityData);
+        Api.sendBaselineRequest(props.baseline, props.setStatus, props.setSparsityData);
     }
 
     return (

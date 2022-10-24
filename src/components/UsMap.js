@@ -148,7 +148,6 @@ export default function UsMap({data, shapefileCollection, setGisjoin, setCurrent
 
 
     const sendCountyShapefileRequest = async(stateName) => {
-      console.log("Sending request for " + stateName)
         setCountyLayer([]);
 
         const url = "http://127.0.0.1:5000/shapefiles";

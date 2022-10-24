@@ -5,11 +5,7 @@ export class Api {
 
     static url = "http://127.0.0.1:5000/";
 
-    static sendBaselineRequest = async(params, setStatus, setSparsityData) => {
-
-        setStatus("PENDING");
-        setSparsityData([]);
-
+    static getRequestBody = (params) => {
         const body = {
             'method':'POST',
             headers: {
@@ -17,6 +13,19 @@ export class Api {
             },
             body: JSON.stringify(params)
         }
+        return body;
+    }
+
+    static sendBaselineRequest = async(baseline, setStatus, setSparsityData) => {
+
+        setStatus("PENDING");
+        setSparsityData([]);
+
+        const params = {
+            'baseline': baseline
+        };
+
+        const body = Api.getRequestBody(params);
 
         let reader;
 
@@ -66,17 +75,6 @@ export class Api {
                 return result ? [parseInt(result[1], 16), parseInt(result[2], 16), parseInt(result[3], 16)] : [0, 0 ,0];
             }
         }
-    }
-
-    #getRequestBody(params) {
-        const body = {
-            'method':'POST',
-            headers: {
-                'Content-Type':'application/json'
-            },
-            body: JSON.stringify(params)
-        }
-        return body;
     }
 }
 
