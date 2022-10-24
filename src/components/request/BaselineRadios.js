@@ -1,7 +1,5 @@
 import { FormControl, FormControlLabel, Radio, RadioGroup, FormLabel, Button } from '@mui/material';
-import { sendJsonRequest } from '../../helpers/api';
-import chroma from 'chroma-js';
-import { colors } from '../../helpers/colors';
+import { Api } from '../../helpers/api';
 
 export default function BaselineRadios(props) {
 
@@ -9,75 +7,11 @@ export default function BaselineRadios(props) {
         props.setBaseline(Number(event.target.value));
     }
 
-    const sendBaselineRequest = async() => {
-
-        props.setStatus("PENDING");
-        props.setSparsityData([]);
-
+    const sendRequest = () => {
         const params = {
             'baseline': props.baseline
         };
-
-        const body = {
-            'method':'POST',
-            headers: {
-                'Content-Type':'application/json'
-            },
-            body: JSON.stringify(params)
-        };
-
-        const url = "http://127.0.0.1:5000/updateBaseline";
-
-        let reader;
-
-        await fetch(url, body).then(response => {
-            reader = response.body.getReader();
-        });
-
-        let streamedResults = [];
-        let incompleteResponse = "";
-        while (true) {
-            const { done, value } = await reader.read();
-            if (done) {
-                const formattedResults = formatResults(streamedResults);
-                props.setSparsityData(formattedResults);
-                props.setStatus("VALID");
-                break;
-            }
-            let response = new TextDecoder().decode(value);
-            response = incompleteResponse + response;
-
-            while(response.indexOf('\n') !== -1) {
-                const parsedResponse = response.substring(0, response.indexOf('\n'));
-                const obj = JSON.parse(parsedResponse);
-                response = response.substring(response.indexOf('\n') + 1, response.length);
-                streamedResults.push(obj);
-            }
-            if(response.indexOf('\n') === -1 && response.length !== 0){
-                incompleteResponse = response;
-            }
-            else{
-                incompleteResponse = "";
-            }
-        }
-        
-        // FIXME do ALL this on the server...
-        function formatResults(streamedResults) {
-            const initialColorScale = chroma.scale([colors.tertiary, colors.primary]).colors(streamedResults.length);
-            const formattedResults = streamedResults.map((result, index) => {
-                result.sparsityScore = result.sparsityScore ? result.sparsityScore : 0;
-                result.color = hexToRgb(initialColorScale[index]);
-                return result;
-            });
-            return formattedResults;
-
-            // Source: https://stackoverflow.com/questions/5623838/rgb-to-hex-and-hex-to-rgb
-            function hexToRgb(hex) {
-                var result = /^#?([a-f\d]{2})([a-f\d]{2})([a-f\d]{2})$/i.exec(hex);
-                return result ? [parseInt(result[1], 16), parseInt(result[2], 16), parseInt(result[3], 16)] : [0, 0 ,0];
-            }
-        }
-        
+        Api.sendBaselineRequest(params, props.setStatus, props.setSparsityData);
     }
 
     return (
@@ -95,7 +29,7 @@ export default function BaselineRadios(props) {
                 <FormControlLabel value="604800000" control={<Radio />} label="Week" />
                 <FormControlLabel value="2629800000" control={<Radio />} label="Month" />
             </RadioGroup>
-            <Button onClick={sendBaselineRequest} variant='outlined'>Update Baseline</Button>
+            <Button onClick={sendRequest} variant='outlined'>Update Baseline</Button>
         </FormControl>
     );
     

@@ -1,8 +1,7 @@
 import { Button } from '@mui/material';
 import { makeStyles } from '@material-ui/core';
-import { colors } from '../../helpers/colors';
 import { sendJsonRequest } from '../../helpers/api';
-import chroma from 'chroma-js';
+import { Api } from '../../helpers/api';
 
 const useStyles = makeStyles({
     root: {
@@ -31,7 +30,6 @@ export default function SubmitButton(props) {
 
         const response = await sendJsonRequest("sparsityScores", params);
         if(response) {
-            console.log({response})
             props.setStats({
                 'minTimeBetweenObservations': response.diffStats[0],
                 'maxTimeBetweenObservations': response.diffStats[1],
@@ -48,33 +46,19 @@ export default function SubmitButton(props) {
                 'meanSparsity': response.sparsityStats[2] ? response.sparsityStats[2] : 0.0,
                 'stdDevSparsity': response.sparsityStats[3]
             });
-            // const data = response.siteData;
-            // const formattedResults = formatResults(data);
-            // props.setSparsityData(formattedResults);
-            // props.setSelectedIndex(0);
+
+
+            const params = {
+                'baseline': props.baseline
+            };
+            Api.sendBaselineRequest(params, props.setStatus, props.setSparsityData);
+        
         }
 
         else {
             props.setStats({});
             console.log("ERROR in response");
         }
-
-        // // FIXME do ALL this on the server...
-        // function formatResults(streamedResults) {
-        //     const initialColorScale = chroma.scale([colors.tertiary, colors.primary]).colors(streamedResults.length);
-        //     const formattedResults = streamedResults.map((result, index) => {
-        //         result.sparsityScore = result.sparsityScore ? result.sparsityScore : 0;
-        //         result.color = hexToRgb(initialColorScale[index]);
-        //         return result;
-        //     });
-        //     return formattedResults;
-
-        //     // Source: https://stackoverflow.com/questions/5623838/rgb-to-hex-and-hex-to-rgb
-        //     function hexToRgb(hex) {
-        //         var result = /^#?([a-f\d]{2})([a-f\d]{2})([a-f\d]{2})$/i.exec(hex);
-        //         return result ? [parseInt(result[1], 16), parseInt(result[2], 16), parseInt(result[3], 16)] : [0, 0 ,0];
-        //     }
-        // }
 
     }
 
