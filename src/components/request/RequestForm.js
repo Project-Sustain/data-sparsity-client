@@ -1,6 +1,6 @@
 import { useState, useEffect, memo } from 'react';
 import { gisStateCounty } from '../../library/gisInfo';
-import { sendJsonRequest } from '../../helpers/api';
+import { Api } from '../../helpers/api';
 import { sparsityMetadata } from '../../library/metadata';
 import { Paper, Stack, Typography } from '@mui/material';
 import SpatialRadios from './SpatialRadios';
@@ -9,7 +9,6 @@ import CollectionSelector from './CollectionSelecter';
 import SubmitButton from './SubmitButton';
 import { makeStyles } from "@material-ui/core";
 import BaselineRadios from './BaselineRadios';
-import { Divider } from '@mui/material';
 
 const useStyles = makeStyles({
     paper: {
@@ -47,7 +46,7 @@ export default memo(function RequestForm(props) {
         (async () => {
             const collectionName = collection.collection;
             const params = {'collectionName': collectionName}
-            const response = await sendJsonRequest("temporalRange", params);
+            const response = await Api.sendJsonRequest("temporalRange", params);
             if(response) {
                 const first = parseInt(response.firstTime);
                 const last = parseInt(response.lastTime);
@@ -80,7 +79,7 @@ export default memo(function RequestForm(props) {
                     {/* <Divider orientation='vertical' flexItem /> */}
                     <BaselineRadios 
                         className={classes.item}
-                        disableButton={props.status !== "VALID"}
+                        disableButton={props.status !== "VALID"} // FIXME Reconsider
                         baseline={baseline}
                         setBaseline={setBaseline}
 

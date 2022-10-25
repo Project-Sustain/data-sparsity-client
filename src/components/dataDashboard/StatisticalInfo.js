@@ -26,7 +26,7 @@ const Item = styled(Paper)(({ theme }) => ({
 export default function StatisticalInfo(props) {
     const classes = useStyles();
 
-    if(props.status === "VALID" && props.inDashboard) {
+    if(Object.keys(props.stats).length > 0 && props.inDashboard) {
         return (
             <Paper elevation={3} className={classes.root}>
                 <Stack 
