@@ -7,8 +7,29 @@ export default function BaselineRadios(props) {
         props.setBaseline(Number(event.target.value));
     }
 
-    const sendRequest = () => {
-        Api.sendBaselineRequest(props.baseline, props.setStatus, props.setSparsityData);
+    const sendRequest = async() => {
+        await Api.sendBaselineRequest(props.baseline, props.setStatus, props.setSparsityData).then();
+
+        const response = await Api.sendJsonRequest("sparsityStats").then();
+        if(response) {
+            console.log({response})
+            props.setStats({
+                'minTimeBetweenObservations': response.diffStats[0],
+                'maxTimeBetweenObservations': response.diffStats[1],
+                'meanTimeBetweenObservations': response.diffStats[2],
+                'stdDevTimeBetweenObservations': response.diffStats[3],
+
+                'minNumberOfObservations': response.obsStats[0],
+                'maxNumberOfObservations': response.obsStats[1],
+                'meanNumberOfObservations': response.obsStats[2],
+                'stdDevNumberOfObservations': response.obsStats[3],
+
+                'minSparsity': response.sparsityStats[0],
+                'maxSparsity': response.sparsityStats[1],
+                'meanSparsity': response.sparsityStats[2] ? response.sparsityStats[2] : 0.0,
+                'stdDevSparsity': response.sparsityStats[3]
+            });
+        }
     }
 
     return (
