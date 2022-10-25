@@ -48,6 +48,7 @@ export default function UsMap({data, shapefileCollection, setGisjoin, setCurrent
     }, [shapefileCollection, selectedState]);
 
     useEffect(() => {
+        console.log('useEffect to send initial shapefile request')
         sendShapefileRequest();
     }, []);
 
@@ -115,7 +116,7 @@ export default function UsMap({data, shapefileCollection, setGisjoin, setCurrent
             body: JSON.stringify(paramsState)
         };
 
-        const url = "http://127.0.0.1:5000/shapefiles";
+        const url = "http://127.0.0.1:5001/shapefiles";
 
         let readerState;
 
@@ -150,7 +151,7 @@ export default function UsMap({data, shapefileCollection, setGisjoin, setCurrent
     const sendCountyShapefileRequest = async(stateName) => {
         setCountyLayer([]);
 
-        const url = "http://127.0.0.1:5000/shapefiles";
+        const url = "http://127.0.0.1:5001/shapefiles";
 
         const paramsCounty = {
             'collection': 'county_geo',
