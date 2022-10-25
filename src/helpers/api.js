@@ -1,9 +1,12 @@
 import chroma from 'chroma-js';
 import { colors } from './colors';
 
+const flaskIp = '127.0.0.1';
+const flaskPort = '5002';
+
 export class Api {
 
-    static url = "http://127.0.0.1:5001/";
+    static url = `http://${flaskIp}:${flaskPort}/`;
 
     static getRequestBody = (params) => {
         const body = {
