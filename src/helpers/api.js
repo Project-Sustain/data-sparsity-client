@@ -93,31 +93,62 @@ export class Api {
         }
         else return null;
     }
+
+    static getStreamReader = async(collection, state, ) => {
+        const params = {
+            'collection': collection,
+            'state': state
+        };
+        const body = Api.getRequestBody(params);
+        let reader;
+        await fetch(Api.url, body).then(response => {
+            reader = response.body.getReader();
+        });
+        return reader;
+    }
+
+    static createIterator = async(reader, scale) => {
+        const myAsyncIterable = {
+            async *[Symbol.asyncIterator]() {
+                let incompleteResponse = ""
+                while (true) {
+                    const { done, value } = await reader.read();
+                    if (done) {
+                        break;
+                    }
+                    let response = new TextDecoder().decode(value);
+                    response = incompleteResponse + response;
+
+                    while(response.indexOf('\n') !== -1) {
+                        const parsedResponse = response.substring(0, response.indexOf('\n'));
+                        const obj = JSON.parse(parsedResponse);
+                        response = response.substring(response.indexOf('\n') + 1, response.length);
+                        const geometry = {type: "Feature", color: Api.#getColor(scale), name: obj.name, gisjoin: obj.gisjoin, geometry: JSON.parse(obj.geometry)};
+                        yield geometry;
+                    }
+                    if(response.indexOf('\n') === -1 && response.length !== 0){
+                        incompleteResponse = response;
+                    }
+                    else{
+                        incompleteResponse = "";
+                    }
+                }
+            }
+        };
+
+        return myAsyncIterable;
+    }
+
+    static #getColor = (scale) => {
+         
+        const num =  Math.floor(Math.random() * 10) + 1;
+
+        // Source: https://stackoverflow.com/questions/5623838/rgb-to-hex-and-hex-to-rgb
+        function hexToRgb(hex) {
+            var result = /^#?([a-f\d]{2})([a-f\d]{2})([a-f\d]{2})$/i.exec(hex);
+            return result ? [parseInt(result[1], 16), parseInt(result[2], 16), parseInt(result[3], 16)] : [0, 0 ,0];
+        }
+        return hexToRgb(scale[num]);
+    }
 }
-
-
-// export async function sendRequest(endpoint) {
-//     const url = "http://127.0.0.1:5000/";
-//     const promise = await fetch(url + endpoint);
-//     if(promise) {
-//         return promise.json();
-//     }
-//     else return null;
-// }
-
-// export async function sendJsonRequest(endpoint, params) {
-//     const url = "http://127.0.0.1:5000/";
-//     const body = {
-//         'method':'POST',
-//         headers: {
-//             'Content-Type':'application/json'
-//         },
-//         body: JSON.stringify(params)
-//     }
-//     const promise = await fetch(url + endpoint, body);
-//     if(promise) {
-//         return promise.json();
-//     }
-//     else return null;
-// }
 
