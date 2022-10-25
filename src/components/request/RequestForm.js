@@ -37,8 +37,10 @@ export default memo(function RequestForm(props) {
 
     useEffect(() => {
         setStateInfo(gisStateCounty);
-        setCollection(sparsityMetadata[0]);
-        setBaseline(sparsityMetadata[0].initialBaseline);
+        const firstCollection = sparsityMetadata[0];
+        setCollection(firstCollection);
+        setBaseline(firstCollection.initialBaseline);
+        props.setCollectionProperties(firstCollection.sitePropertyFields);
     }, []);
     
 
@@ -66,6 +68,7 @@ export default memo(function RequestForm(props) {
                     className={classes.item}
                     setCollection={setCollection}
                     setBaseline={setBaseline}
+                    setCollectionProperties={props.setCollectionProperties}
                     sparsityMetadata={sparsityMetadata}
                     collection={collection}
                 />

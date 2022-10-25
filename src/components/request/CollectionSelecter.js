@@ -15,6 +15,7 @@ export default function CollectionSelector(props) {
         const newCollection = event.target.value;
         props.setCollection(newCollection);
         props.setBaseline(newCollection.initialBaseline);
+        props.setCollectionProperties(newCollection.sitePropertyFields);
     }
 
     if(props.sparsityMetadata.length > 0) {
