@@ -1,7 +1,7 @@
 import { useState, useEffect } from 'react';
 import { makeStyles } from "@material-ui/core";
 import { ResponsiveContainer, PieChart, Pie } from 'recharts';
-import { Paper, Typography, LinearProgress, Table, TableBody, TableHead, TableRow, TableCell, TableContainer, Stack, Button } from '@mui/material';
+import { Paper, Typography, Table, TableBody, TableHead, TableRow, TableCell, TableContainer, Stack, Button } from '@mui/material';
 import { colors } from '../../../helpers/colors';
 import chroma from 'chroma-js';
 // import ArrowForwardIcon from '@mui/icons-material/ArrowForward';
@@ -72,7 +72,7 @@ export default function ScorePieChart(props) {
         setPieData(data);
     }, [props.scores, selectedIndex]);
 
-    if(props.status === "VALID" && pieData.length > 0 && props.inDashboard) {
+    if(pieData.length > 0 && props.inDashboard) {
         return (
             <Paper elevation={3} className={classes.root}>
 
@@ -129,23 +129,6 @@ export default function ScorePieChart(props) {
                 
                 <Button disabled={selectedIndex === -1} color='secondary' variant='outlined' className={classes.button} onClick={() => setSelectedIndex(-1)}>Clear Selection</Button>
             
-            </Paper>
-        );
-    }
-    
-    else if(props.status === "INVALID" && props.inDashboard) {
-        return (
-            <Paper elevation={2} className={classes.root}>
-                <Typography>No Data Matching Request</Typography>
-            </Paper>
-        );
-    }
-
-    else if(props.status === "PENDING" && props.inDashboard) {
-        return (
-            <Paper className={classes.root}>
-                <Typography>Pie Chart Loading...</Typography>
-                <LinearProgress />
             </Paper>
         );
     }

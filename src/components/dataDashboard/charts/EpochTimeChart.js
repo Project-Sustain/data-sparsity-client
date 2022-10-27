@@ -1,6 +1,6 @@
 import { LineChart, Line, XAxis, YAxis, CartesianGrid, Tooltip, Legend, ResponsiveContainer } from 'recharts';
 import { makeStyles } from "@material-ui/core";
-import { Paper, Typography, Slider, Divider, LinearProgress } from "@mui/material";
+import { Paper, Typography, Slider, Divider } from "@mui/material";
 import { useEffect, useState } from 'react';
 import moment from 'moment';
 import { sum } from 'simple-statistics';
@@ -73,7 +73,7 @@ export default function EpochTimeChart(props) {
         }
     }, [props.sparsityData, numBuckets, siteDataMap]);
 
-    if(props.status === "VALID" && props.inDashboard) {
+    if(props.inDashboard) {
         return (
             <Paper elevation={3} className={classes.root}>
                 <Typography variant='h5' align='center'>Number of Observations by Time</Typography>
@@ -116,21 +116,5 @@ export default function EpochTimeChart(props) {
         );
     }
 
-    else if(props.status === "INVALID" && props.inDashboard) {
-        return (
-            <Paper elevation={3} className={classes.root}>
-                <Typography>No Data Matching Request</Typography>
-            </Paper>
-        );
-    }
-
-    else if(props.status === "PENDING" && props.inDashboard) {
-        return (
-            <Paper elevation={3} className={classes.root}>
-                <Typography>Chart Loading...</Typography>
-                <LinearProgress color='tertiary' />
-            </Paper>
-        );
-    }
     else return null;
 }

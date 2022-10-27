@@ -8,6 +8,8 @@ export default function BaselineRadios(props) {
     }
 
     const sendRequest = async() => {
+        props.setSparsityData([]);
+        props.setStatus("PENDING");
         await Api.sendBaselineRequest(props.baseline, props.setStatus, props.setSparsityData).then();
 
         const response = await Api.sendJsonRequest("sparsityStats").then();

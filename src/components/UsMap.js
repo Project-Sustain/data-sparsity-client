@@ -49,7 +49,6 @@ export default function UsMap({data, shapefileCollection, setGisjoin, setCurrent
     }, [shapefileCollection, selectedState]);
 
     useEffect(() => {
-        console.log('useEffect to send initial shapefile request')
         sendShapefileRequest();
     }, []);
 

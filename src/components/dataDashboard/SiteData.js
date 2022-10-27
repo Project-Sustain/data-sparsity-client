@@ -1,4 +1,4 @@
-import { Paper, Typography, LinearProgress, Stack } from "@mui/material";
+import { Paper, Stack } from "@mui/material";
 import { makeStyles } from "@material-ui/core";
 import SparsityTable from "./SparsityTable";
 import SelectedSite from "./SelectedSite";
@@ -39,23 +39,6 @@ export default function SiteData(props) {
                     <SelectedSite collectionProperties={props.collectionProperties} site={props.sparsityData[props.selectedIndex]} scores={props.scores} />
                 </Paper>
             </Stack>
-        );
-    }
-
-    else if(props.status === "INVALID" && props.inDashboard) {
-        return (
-            <Paper elevation={3} className={classes.loading}>
-                <Typography>No Data Matching Request</Typography>
-            </Paper>
-        );
-    }
-
-    else if(props.status === "PENDING" && props.inDashboard) {
-        return (
-            <Paper elevation={3} className={classes.loading}>
-                <Typography>Site Data Loading...</Typography>
-                <LinearProgress />
-            </Paper>
         );
     }
 
