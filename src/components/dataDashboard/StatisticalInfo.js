@@ -1,14 +1,13 @@
 import { makeStyles } from "@material-ui/core";
-import { Paper, Typography, LinearProgress, Stack, Table, TableBody, TableCell, TableContainer, TableHead, TableRow } from "@mui/material";
+import { Paper, Typography, Stack, Table, TableBody, TableCell, TableContainer, TableHead, TableRow } from "@mui/material";
 import { styled } from '@mui/material/styles';
-// import { colors } from '../../helpers/colors';
 
 const useStyles = makeStyles({
     root: {
         margin: "10px",
         padding: "10px",
         zIndex: 5000,
-        opacity: '0.9'
+        opacity: 0.9
     },
     overview: {
         maxWidth: '25vw'
@@ -86,21 +85,5 @@ export default function StatisticalInfo(props) {
         );
     }
 
-    else if(props.status === "INVALID" && props.inDashboard) {
-        return (
-            <Paper elevation={3} className={classes.root}>
-                <Typography>No Data Matching Request</Typography>
-            </Paper>
-        );
-    }
-
-    else if(props.status === "PENDING" && props.inDashboard) {
-        return (
-            <Paper elevation={3} className={classes.root}>
-                <Typography>Statistics Loading...</Typography>
-                <LinearProgress color='tertiary' />
-            </Paper>
-        );
-    }
     else return null;
 }

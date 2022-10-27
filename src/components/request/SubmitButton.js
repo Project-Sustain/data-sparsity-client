@@ -13,6 +13,8 @@ export default function SubmitButton(props) {
 
     const sendSparsityScoreRequest = async() => {
 
+        props.setSparsityData([]);
+        props.setStatus("PENDING");
         props.setStats({});
 
         const params = {

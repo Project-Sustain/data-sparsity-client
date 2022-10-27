@@ -1,5 +1,5 @@
 import { useEffect, useState } from 'react'
-import { Container, Stack } from '@mui/material';
+import { Container, Stack, Paper, Typography, LinearProgress, CircularProgress } from '@mui/material';
 import UseConnectionStatus from '../hooks/UseConnectionStatus';
 import ApplicationStatus from './ApplicationStatus';
 import SparsityScoresChart from './dataDashboard/charts/SparsityScoresChart';
@@ -9,8 +9,20 @@ import ScorePieChart from './dataDashboard/charts/ScorePieChart';
 import SiteData from './dataDashboard/SiteData';
 import DashboardCurator from './dataDashboard/DashboardCurator';
 import StatisticalInfo from './dataDashboard/StatisticalInfo';
+import { makeStyles } from "@material-ui/core";
+
+const useStyles = makeStyles({
+    loading: {
+        margin: "10px",
+        padding: "10px",
+        width: '50vh',
+        zIndex: 5000,
+        opacity: 0.9
+    },
+});
 
 export default function Dashbaord(props) {
+    const classes = useStyles();
 
     const { serverConnection, DbConnection } = UseConnectionStatus();
     const [scores, setScores] = useState([]);
@@ -45,6 +57,83 @@ export default function Dashbaord(props) {
         ]);
     }, [request, appStatus, pieChart, barChart, lineChart, siteData, statInfo]); 
 
+    const DataDashboard = () => {
+        if(status === "VALID" && props.sparsityData.length > 0) {
+            console.log(props.sparsityData)
+            console.log(stats)
+            return (
+                <>
+                    <Container maxWidth='auto'>
+                        <StatisticalInfo 
+                            inDashboard={statInfo} 
+                            status={status} 
+                            stats={stats}
+                        />
+                    </Container>
+    
+                    <Container maxWidth='auto'>
+                        <Stack direction='row' justifyContent='space-evenly'>
+                            <ScorePieChart 
+                                inDashboard={pieChart} 
+                                status={status} 
+                                scores={scores} 
+                            />
+                            <SparsityScoresChart 
+                                inDashboard={barChart} 
+                                status={status} 
+                                scores={scores} 
+                                sparsityData={props.sparsityData}
+                            />
+                        </Stack>
+                    </Container>
+    
+                    <Container maxWidth='auto'>
+                        <SiteData 
+                            status={status} 
+                            collectionProperties={collectionProperties}
+                            inDashboard={siteData} 
+                            selectedIndex={props.selectedIndex} 
+                            sparsityData={props.sparsityData} 
+                            scores={scores} 
+                            setSelectedIndex={props.setSelectedIndex} 
+                        />
+                    </Container>
+    
+                    <Container maxWidth='auto'>
+                        <EpochTimeChart 
+                            inDashboard={lineChart} 
+                            status={status} 
+                            sparsityData={props.sparsityData} 
+                        />
+                    </Container>
+                </>
+            );
+        }
+    
+        else if(status === "PENDING") {
+            return (
+                <Stack direction='column' alignItems='center' justifyContent='center'>
+                    <Paper elevation={3} className={classes.loading}>
+                        <LinearProgress className={classes.progressBar} color='primary' />
+                        <Typography variant='h4' align='center'>Data Loading...</Typography>
+                        <LinearProgress className={classes.progressBar} color='primary' />
+                    </Paper>
+                </Stack>
+            );
+        }
+    
+        else {
+            return (
+                <Stack direction='column' alignItems='center' justifyContent='center'>
+                    <Paper elevation={3} className={classes.loading}>
+                        <Typography variant='h4' align='center'>No Data Matching Request</Typography>
+                    </Paper>
+                </Stack>
+            );
+        }
+    
+    }
+
     return (
         <>
             <Container maxWidth='auto'>
@@ -76,66 +165,8 @@ export default function Dashbaord(props) {
                 </Stack>
             </Container>
 
-            <Container maxWidth='auto'>
-                <StatisticalInfo 
-                    inDashboard={statInfo} 
-                    status={status} 
-                    stats={stats}
-                />
-            </Container>
-
-            <Container maxWidth='auto'>
-                <Stack direction='row' justifyContent='space-evenly'>
-                    <ScorePieChart 
-                        inDashboard={pieChart} 
-                        status={status} 
-                        scores={scores} 
-                    />
-                    <SparsityScoresChart 
-                        inDashboard={barChart} 
-                        status={status} 
-                        scores={scores} 
-                        sparsityData={props.sparsityData}
-                    />
-                </Stack>
-            </Container>
-
-            {/* <Container maxWidth='auto'>
-                <StatisticalInfo 
-                    inDashboard={statInfo} 
-                    status={status} 
-                    stats={stats}
-                />
-            </Container>
-
-            <Container maxWidth='auto'>
-                <SparsityScoresChart 
-                    inDashboard={barChart} 
-                    status={status} 
-                    scores={scores} 
-                    sparsityData={props.sparsityData}
-                />
-            </Container> */}
-
-            <Container maxWidth='auto'>
-                <SiteData 
-                    status={status} 
-                    collectionProperties={collectionProperties}
-                    inDashboard={siteData} 
-                    selectedIndex={props.selectedIndex} 
-                    sparsityData={props.sparsityData} 
-                    scores={scores} 
-                    setSelectedIndex={props.setSelectedIndex} 
-                />
-            </Container>
-
-            <Container maxWidth='auto'>
-                <EpochTimeChart 
-                    inDashboard={lineChart} 
-                    status={status} 
-                    sparsityData={props.sparsityData} 
-                />
-            </Container>
+            <DataDashboard />
         </>
-    );
+    )
+
 }

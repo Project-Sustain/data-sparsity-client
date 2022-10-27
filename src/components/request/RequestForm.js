@@ -79,7 +79,6 @@ export default memo(function RequestForm(props) {
                         setShapefileCollection={props.setShapefileCollection}
                         currentShapeName={props.currentShapeName}
                     />
-                    {/* <Divider orientation='vertical' flexItem /> */}
                     <BaselineRadios 
                         className={classes.item}
                         disableButton={props.status !== "VALID"} // FIXME Reconsider
