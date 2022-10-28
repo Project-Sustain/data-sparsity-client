@@ -59,8 +59,6 @@ export default function Dashbaord(props) {
 
     const DataDashboard = () => {
         if(status === "VALID" && props.sparsityData.length > 0) {
-            console.log(props.sparsityData)
-            console.log(stats)
             return (
                 <>
                     <Container maxWidth='auto'>
