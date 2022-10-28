@@ -41,9 +41,14 @@ export class Api {
         while (true) {
             const { done, value } = await reader.read();
             if (done) {
-                const formattedResults = formatResults(streamedResults);
-                setSparsityData(formattedResults);
-                setStatus("VALID");
+                if(streamedResults.length > 0) {
+                    const formattedResults = formatResults(streamedResults);
+                    setSparsityData(formattedResults);
+                    setStatus("VALID");
+                }
+                else {
+                    setStatus("INVALID");
+                }
                 break;
             }
             let response = new TextDecoder().decode(value);

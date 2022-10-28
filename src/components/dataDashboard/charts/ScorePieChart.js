@@ -72,6 +72,28 @@ export default function ScorePieChart(props) {
         setPieData(data);
     }, [props.scores, selectedIndex]);
 
+    const RenderPieChart = () => {
+        if(pieData.length < 100) {
+            return (
+                <ResponsiveContainer width='100%' height={500}>
+                    <PieChart>
+                        <Pie
+                            data={pieData}
+                            dataKey="sites"
+                            nameKey="score"
+                            cx="50%"
+                            cy="50%"
+                            outerRadius={150}
+                            onClick={pieClick}
+                        />
+                    </PieChart>
+                </ResponsiveContainer>
+            )
+        }
+        
+        else return null;
+    }
+
     if(pieData.length > 0 && props.inDashboard) {
         return (
             <Paper elevation={3} className={classes.root}>
@@ -110,20 +132,8 @@ export default function ScorePieChart(props) {
                             </TableBody>
                         </Table>
                     </TableContainer>
-        
-                    <ResponsiveContainer width='100%' height={500}>
-                        <PieChart>
-                            <Pie
-                                data={pieData}
-                                dataKey="sites"
-                                nameKey="score"
-                                cx="50%"
-                                cy="50%"
-                                outerRadius={150}
-                                onClick={pieClick}
-                            />
-                        </PieChart>
-                    </ResponsiveContainer>
+
+                    <RenderPieChart/>
 
                 </Stack>
                 
