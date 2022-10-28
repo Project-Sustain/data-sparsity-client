@@ -1,5 +1,5 @@
 import { useEffect, useState } from 'react'
-import { Container, Stack, Paper, Typography, LinearProgress, CircularProgress } from '@mui/material';
+import { Container, Stack, Paper, Typography, LinearProgress } from '@mui/material';
 import UseConnectionStatus from '../hooks/UseConnectionStatus';
 import ApplicationStatus from './ApplicationStatus';
 import SparsityScoresChart from './dataDashboard/charts/SparsityScoresChart';
@@ -59,8 +59,6 @@ export default function Dashbaord(props) {
 
     const DataDashboard = () => {
         if(status === "VALID" && props.sparsityData.length > 0) {
-            console.log(props.sparsityData)
-            console.log(stats)
             return (
                 <>
                     <Container maxWidth='auto'>
@@ -122,7 +120,7 @@ export default function Dashbaord(props) {
             );
         }
     
-        else {
+        else if(status === "INVALID"){
             return (
                 <Stack direction='column' alignItems='center' justifyContent='center'>
                     <Paper elevation={3} className={classes.loading}>
@@ -131,6 +129,8 @@ export default function Dashbaord(props) {
                 </Stack>
             );
         }
+
+        else return null;
     
     }
 

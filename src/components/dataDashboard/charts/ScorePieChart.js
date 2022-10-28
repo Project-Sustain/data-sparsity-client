@@ -4,7 +4,7 @@ import { ResponsiveContainer, PieChart, Pie } from 'recharts';
 import { Paper, Typography, Table, TableBody, TableHead, TableRow, TableCell, TableContainer, Stack, Button } from '@mui/material';
 import { colors } from '../../../helpers/colors';
 import chroma from 'chroma-js';
-// import ArrowForwardIcon from '@mui/icons-material/ArrowForward';
+import PieChartIcon from '@mui/icons-material/PieChart';
 
 const useStyles = makeStyles({
     root: {
@@ -30,6 +30,11 @@ const useStyles = makeStyles({
     button: {
         width: "100%",
         marginTop: "20px"
+    },
+    noPieMessage: {
+        margin: "10px",
+        padding: "10px",
+        width: "50%"
     }
 });
 
@@ -72,6 +77,32 @@ export default function ScorePieChart(props) {
         setPieData(data);
     }, [props.scores, selectedIndex]);
 
+    const RenderPieChart = () => {
+        if(pieData.length < 100) {
+            return (
+                <ResponsiveContainer width='100%' height={500}>
+                    <PieChart>
+                        <Pie
+                            data={pieData}
+                            dataKey="sites"
+                            nameKey="score"
+                            cx="50%"
+                            cy="50%"
+                            outerRadius={150}
+                            onClick={pieClick}
+                        />
+                    </PieChart>
+                </ResponsiveContainer>
+            );
+        }
+
+        else return (
+            <Paper elevation={2} className={classes.noPieMessage}>
+                <Typography variant='h4' align='center'><PieChartIcon/> Too many slices to render pie</Typography>
+            </Paper>
+        );
+    }
+
     if(pieData.length > 0 && props.inDashboard) {
         return (
             <Paper elevation={3} className={classes.root}>
@@ -110,20 +141,8 @@ export default function ScorePieChart(props) {
                             </TableBody>
                         </Table>
                     </TableContainer>
-        
-                    <ResponsiveContainer width='100%' height={500}>
-                        <PieChart>
-                            <Pie
-                                data={pieData}
-                                dataKey="sites"
-                                nameKey="score"
-                                cx="50%"
-                                cy="50%"
-                                outerRadius={150}
-                                onClick={pieClick}
-                            />
-                        </PieChart>
-                    </ResponsiveContainer>
+
+                    <RenderPieChart/>
 
                 </Stack>
                 
