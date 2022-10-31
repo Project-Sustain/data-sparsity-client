@@ -43,7 +43,6 @@ export class Api {
             if (done) {
                 if(streamedResults.length > 0) {
                     const formattedResults = formatResults(streamedResults);
-                    // setRequest(false);
                     setSparsityData(formattedResults);
                     setStatus("VALID");
                 }
@@ -60,6 +59,11 @@ export class Api {
                 const obj = JSON.parse(parsedResponse);
                 response = response.substring(response.indexOf('\n') + 1, response.length);
                 streamedResults.push(obj);
+                if(streamedResults.length % 10 === 0) {
+                    const formattedResults = formatResults(streamedResults);
+                    setSparsityData(formattedResults);
+                    setStatus("VALID");
+                }
             }
             if(response.indexOf('\n') === -1 && response.length !== 0){
                 incompleteResponse = response;
