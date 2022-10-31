@@ -44,7 +44,6 @@ export class Api {
                 if(streamedResults.length > 0) {
                     const formattedResults = formatResults(streamedResults);
                     // setRequest(false);
-                    formattedResults.shift(); // FIXME Why does the last element have such an unreasonable score??
                     setSparsityData(formattedResults);
                     setStatus("VALID");
                 }
