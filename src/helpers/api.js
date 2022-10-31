@@ -98,6 +98,7 @@ export class Api {
     static sendJsonRequest = async(endpoint, params) => {
         const body = Api.getRequestBody(params);
         const promise = await fetch(Api.url + endpoint, body);
+
         if(promise) {
             return promise.json();
         }

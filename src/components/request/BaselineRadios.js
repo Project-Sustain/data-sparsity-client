@@ -14,7 +14,6 @@ export default function BaselineRadios(props) {
 
         const response = await Api.sendJsonRequest("sparsityStats").then();
         if(response) {
-            console.log({response})
             props.setStats({
                 'minTimeBetweenObservations': response.diffStats[0],
                 'maxTimeBetweenObservations': response.diffStats[1],
