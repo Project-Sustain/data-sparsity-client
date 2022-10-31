@@ -36,7 +36,14 @@ export default function SiteData(props) {
                     <SparsityTable selectedIndex={props.selectedIndex} setSelectedIndex={props.setSelectedIndex} sparsityData={props.sparsityData} />
                 </Paper>
                 <Paper className={classes.site} elevation={3}>
-                    <SelectedSite collectionProperties={props.collectionProperties} site={props.sparsityData[props.selectedIndex]} scores={props.scores} />
+                    <SelectedSite 
+                        setMapViewState={props.setMapViewState}
+                        setSparsityData={props.setSparsityData} 
+                        sparsityData={props.sparsityData} 
+                        collectionProperties={props.collectionProperties} 
+                        index={props.selectedIndex} site={props.sparsityData[props.selectedIndex]} 
+                        scores={props.scores} 
+                    />
                 </Paper>
             </Stack>
         );

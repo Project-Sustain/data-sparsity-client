@@ -88,10 +88,12 @@ export default function Dashbaord(props) {
     
                     <Container maxWidth='auto'>
                         <SiteData 
+                            setMapViewState={props.setMapViewState}
                             status={status} 
                             collectionProperties={collectionProperties}
                             inDashboard={siteData} 
                             selectedIndex={props.selectedIndex} 
+                            setSparsityData={props.setSparsityData}
                             sparsityData={props.sparsityData} 
                             scores={scores} 
                             setSelectedIndex={props.setSelectedIndex} 

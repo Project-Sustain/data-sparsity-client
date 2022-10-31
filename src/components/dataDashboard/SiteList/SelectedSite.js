@@ -3,6 +3,7 @@ import { makeStyles } from "@material-ui/core";
 import { ResponsiveContainer, PieChart, Pie, Legend } from 'recharts';
 import { Typography, Stack } from '@mui/material';
 import { colors } from '../../../library/colors';
+import { Button } from '@mui/material';
 
 const useStyles = makeStyles({
     table: {
@@ -36,6 +37,22 @@ export default function SelectedSite(props) {
 
         }
     }, [props.site, props.scores]);
+
+    const selectSite = () => {
+        const newViewState = {
+            longitude: props.site.coordinates[0],
+            latitude: props.site.coordinates[1],
+            zoom: 17,
+            pitch: 30,
+            bearing: 0
+        }
+        props.setMapViewState(newViewState);
+        let data = props.sparsityData;
+        // console.log({data})
+        data[props.index].color = [245, 245, 2];
+        // console.log({data})
+        props.setSparsityData(data)
+    }
     
     return (
         <Stack direction='row' justifyContent='space-around' alignItems='flex-start' spacing={2}>
@@ -48,6 +65,7 @@ export default function SelectedSite(props) {
                         return <Typography key={index}><strong>{props.collectionProperties[index]}</strong>: {property}</Typography>
                     })
                 }
+                <Button variant='outlined' onClick={selectSite}>Select</Button>
                 <ResponsiveContainer width='100%' height={250}>
                     <PieChart>
                         <Pie

@@ -9,20 +9,11 @@ import { IconLayer } from '@deck.gl/layers';
 import { Api } from '../library/api';
 // import UseShapefileLoader from '../hooks/UseShapefileLoader';
 
-// Viewport settings
-const INITIAL_VIEW_STATE = {
-    longitude: -98.5795,
-    latitude: 39.8283,
-    zoom: 4.3,
-    pitch: 30,
-    bearing: 0
-};
-
 const ICON_MAPPING = {
     marker: {x: 0, y: 0, width: 128, height: 128, mask: true}
   };
 
-export default function UsMap({data, shapefileCollection, setGisjoin, setCurrentShapeName}) {
+export default function UsMap({mapViewState, setMapViewState, data, shapefileCollection, setGisjoin, setCurrentShapeName}) {
 
     const [selectedState, setSelectedState] = useState('');
     const [selectedShape, setSelectedShape] = useState({});
@@ -60,8 +51,6 @@ export default function UsMap({data, shapefileCollection, setGisjoin, setCurrent
     const handleCountyClick = (info, event) => {
       setSelectedShape(info.object);
     }
-
-    console.log({data})
 
     const iconLayer = new IconLayer({
         id: 'icon-layer',
@@ -137,7 +126,8 @@ export default function UsMap({data, shapefileCollection, setGisjoin, setCurrent
     return (
         <>
             <DeckGL
-                initialViewState={INITIAL_VIEW_STATE}
+                viewState={mapViewState}
+                onViewStateChange={e => setMapViewState(e.viewState)}
                 controller={true}
                 layers={[iconLayer, stateLayer, countyLayer]}
                 getTooltip={getTooltip}
