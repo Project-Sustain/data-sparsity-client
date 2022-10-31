@@ -36,6 +36,7 @@ export class Api {
             reader = response.body.getReader();
         });
 
+        let stateHasNotBeenSet = true;
         let streamedResults = [];
         let incompleteResponse = "";
         while (true) {
@@ -44,7 +45,6 @@ export class Api {
                 if(streamedResults.length > 0) {
                     const formattedResults = formatResults(streamedResults);
                     setSparsityData(formattedResults);
-                    setStatus("VALID");
                 }
                 else {
                     setStatus("INVALID");
@@ -59,10 +59,13 @@ export class Api {
                 const obj = JSON.parse(parsedResponse);
                 response = response.substring(response.indexOf('\n') + 1, response.length);
                 streamedResults.push(obj);
-                if(streamedResults.length % 10 === 0) {
+                if(streamedResults.length % 100 === 0) {
                     const formattedResults = formatResults(streamedResults);
                     setSparsityData(formattedResults);
-                    setStatus("VALID");
+                    if(stateHasNotBeenSet) {
+                        setStatus("VALID");
+                        stateHasNotBeenSet = false;
+                    }
                 }
             }
             if(response.indexOf('\n') === -1 && response.length !== 0){
