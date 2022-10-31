@@ -61,6 +61,8 @@ export default function UsMap({data, shapefileCollection, setGisjoin, setCurrent
       setSelectedShape(info.object);
     }
 
+    console.log({data})
+
     const iconLayer = new IconLayer({
         id: 'icon-layer',
         pickable: true,

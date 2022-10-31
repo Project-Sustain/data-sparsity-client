@@ -6,7 +6,7 @@ import SparsityScoresChart from './dataDashboard/charts/SparsityScoresChart';
 import EpochTimeChart from './dataDashboard/charts/EpochTimeChart';
 import RequestForm from './request/RequestForm';
 import ScorePieChart from './dataDashboard/charts/ScorePieChart';
-import SiteData from './dataDashboard/SiteData';
+import SiteData from './dataDashboard/SiteList/SiteData';
 import DashboardCurator from './dataDashboard/DashboardCurator';
 import StatisticalInfo from './dataDashboard/StatisticalInfo';
 import { makeStyles } from "@material-ui/core";
