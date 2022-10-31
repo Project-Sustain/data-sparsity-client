@@ -10,6 +10,7 @@ import SiteData from './dataDashboard/SiteData';
 import DashboardCurator from './dataDashboard/DashboardCurator';
 import StatisticalInfo from './dataDashboard/StatisticalInfo';
 import { makeStyles } from "@material-ui/core";
+import MapLegend from './MapLegend';
 
 const useStyles = makeStyles({
     loading: {
@@ -33,12 +34,14 @@ export default function Dashbaord(props) {
 
     const [request, setRequest] = useState(true);
     const [appStatus, setAppStatus] = useState(true);
-    const [statInfo, setStatInfo] = useState(true);
-    const [pieChart, setPieChart] = useState(true);
-    const [barChart, setBarChart] = useState(true);
-    const [lineChart, setLineChart] = useState(true);
-    const [siteData, setSiteData] = useState(true);
+    const [statInfo, setStatInfo] = useState(false);
+    const [pieChart, setPieChart] = useState(false);
+    const [barChart, setBarChart] = useState(false);
+    const [lineChart, setLineChart] = useState(false);
+    const [siteData, setSiteData] = useState(false);
     const [dashboardStatus, setDashbaordStatus] = useState([]);
+
+    console.log({request})
 
     useEffect(() => {
         const tempScores = props.sparsityData.map((siteData) => {return siteData.sparsityScore});
@@ -47,7 +50,7 @@ export default function Dashbaord(props) {
 
     useEffect(() => {
         setDashbaordStatus([
-        {"label": "Application Status", "check": appStatus,"set": setAppStatus},
+        // {"label": "Application Status", "check": appStatus,"set": setAppStatus},
         {"label": "Request Form", "check": request, "set": setRequest},
         {"label": "Statistical Info", "check": statInfo, "set": setStatInfo},
         {"label": "Pie Chart", "check": pieChart, "set": setPieChart},
@@ -134,34 +137,48 @@ export default function Dashbaord(props) {
     
     }
 
+    const RenderLegend = () => {
+        if(status === "VALID" && props.sparsityData.length > 0) {
+            return (
+                <MapLegend 
+                    min={props.sparsityData[0].sparsityScore} 
+                    max={props.sparsityData[props.sparsityData.length-1].sparsityScore}
+                />
+            );
+        }
+        else return null;
+    }
+
     return (
         <>
             <Container maxWidth='auto'>
                 <Stack direction='row' justifyContent='flex-end' alignItems='stretch'>
-                <ApplicationStatus
-                    inDashboard={appStatus} 
-                    serverConnection={serverConnection} 
-                    DbConnection={DbConnection} 
-                    setSparsityData={props.setSparsityData} 
-                    setSelectedIndex={props.setSelectedIndex} 
-                />
-                <RequestForm 
-                    inDashboard={request}
-                    status={status}
-                    shapefileCollection={props.shapefileCollection}
-                    gisjoin={props.gisjoin}
-                    currentShapeName={props.currentShapeName}
-                    setShapefileCollection={props.setShapefileCollection}
-                    setStatus={setStatus}
-                    setStats={setStats}
-                    setCollectionProperties={setCollectionProperties} 
-                    setSparsityData={props.setSparsityData} 
-                    setSelectedIndex={props.setSelectedIndex} 
-                />
-                <DashboardCurator 
-                    dashboardStatus={dashboardStatus} 
-                    status={status} 
-                />
+                    {/* <ApplicationStatus
+                        inDashboard={appStatus} 
+                        serverConnection={serverConnection} 
+                        DbConnection={DbConnection} 
+                        setSparsityData={props.setSparsityData} 
+                        setSelectedIndex={props.setSelectedIndex} 
+                    /> */}
+                    <RequestForm 
+                        inDashboard={request}
+                        status={status}
+                        shapefileCollection={props.shapefileCollection}
+                        gisjoin={props.gisjoin}
+                        currentShapeName={props.currentShapeName}
+                        setShapefileCollection={props.setShapefileCollection}
+                        setStatus={setStatus}
+                        setStats={setStats}
+                        setCollectionProperties={setCollectionProperties} 
+                        setRequest={setRequest}
+                        setSparsityData={props.setSparsityData} 
+                        setSelectedIndex={props.setSelectedIndex} 
+                    />
+                    <RenderLegend/>
+                    <DashboardCurator 
+                        dashboardStatus={dashboardStatus} 
+                        status={status} 
+                    />
                 </Stack>
             </Container>
 

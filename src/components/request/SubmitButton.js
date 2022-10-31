@@ -48,7 +48,7 @@ export default function SubmitButton(props) {
                 'stdDevSparsity': response.sparsityStats[3]
             });
 
-            Api.sendBaselineRequest(props.baseline, props.setStatus, props.setSparsityData);
+            Api.sendBaselineRequest(props.baseline, props.setStatus, props.setSparsityData, props.setRequest);
         
         }
 

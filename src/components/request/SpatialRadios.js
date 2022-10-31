@@ -1,4 +1,4 @@
-import { TextField, Stack } from '@mui/material';
+import { Stack, Typography } from '@mui/material';
 import { FormControl, FormControlLabel, Radio, RadioGroup, FormLabel } from '@mui/material';
 
 export default function SpatialRadios(props) {
@@ -25,13 +25,7 @@ export default function SpatialRadios(props) {
                     <FormControlLabel value="COUNTY" control={<Radio />} label="County" />
                 </RadioGroup>
             </FormControl>
-            <TextField
-                fullWidth
-                id='current'
-                // label='Current Scope'
-                variant='standard'
-                value={props.currentShapeName}
-            />
+            <Typography>Selected: {props.currentShapeName}</Typography>
         </Stack>
     );
     
