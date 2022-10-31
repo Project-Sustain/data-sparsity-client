@@ -1,12 +1,12 @@
 import {useState, useEffect} from 'react';
 import {GeoJsonLayer} from '@deck.gl/layers';
 import chroma from 'chroma-js';
-import {colors} from '../helpers/colors';
+import {colors} from '../library/colors';
 import DeckGL from '@deck.gl/react';
 import { StaticMap } from 'react-map-gl';
 import { BASEMAP } from '@deck.gl/carto';
 import { IconLayer } from '@deck.gl/layers';
-import { Api } from '../helpers/api';
+import { Api } from '../library/api';
 // import UseShapefileLoader from '../hooks/UseShapefileLoader';
 
 // Viewport settings

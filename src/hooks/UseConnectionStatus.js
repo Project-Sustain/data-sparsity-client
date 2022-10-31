@@ -1,5 +1,5 @@
 import { useState, useEffect } from 'react';
-import { Api } from '../helpers/api';
+import { Api } from '../library/api';
 
 export default function UseConnectionStatus() {
     const [serverConnection, setServerConnection] = useState(false);

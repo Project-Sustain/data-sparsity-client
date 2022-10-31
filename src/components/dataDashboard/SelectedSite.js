@@ -2,7 +2,7 @@ import { useState, useEffect } from 'react';
 import { makeStyles } from "@material-ui/core";
 import { ResponsiveContainer, PieChart, Pie, Legend } from 'recharts';
 import { Typography, Stack } from '@mui/material';
-import { colors } from '../../helpers/colors';
+import { colors } from '../../library/colors';
 
 const useStyles = makeStyles({
     table: {
