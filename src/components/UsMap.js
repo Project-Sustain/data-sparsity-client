@@ -23,6 +23,26 @@ export default function UsMap({mapViewState, setMapViewState, data, shapefileCol
     const countyColors = chroma.scale([colors.countyLight, colors.countyDark]).colors(15);
     const stateColors = chroma.scale([colors.state, colors.state]).colors(15);
 
+    const [iconLayer, setIconLayer] = useState([]);
+
+    useEffect(() => {
+        console.log({data})
+        const layer = new IconLayer({
+            id: 'icon-layer',
+            pickable: true,
+            data,
+            iconAtlas: 'https://raw.githubusercontent.com/visgl/deck.gl-data/master/website/icon-atlas.png',
+            iconMapping: ICON_MAPPING,
+            sizeScale: 15,
+            getIcon: d => 'marker',
+            getPosition: d => d.coordinates,
+            getSize: d => 2,
+            getColor: d => d.color,
+            getFillColor: d => d.color
+        });
+        setIconLayer([layer])
+    }, [data])
+
     useEffect(() => {
         if(Object.keys(selectedShape).length > 0) {
             setGisjoin(selectedShape.gisjoin);
@@ -51,20 +71,6 @@ export default function UsMap({mapViewState, setMapViewState, data, shapefileCol
     const handleCountyClick = (info, event) => {
       setSelectedShape(info.object);
     }
-
-    const iconLayer = new IconLayer({
-        id: 'icon-layer',
-        pickable: true,
-        data,
-        iconAtlas: 'https://raw.githubusercontent.com/visgl/deck.gl-data/master/website/icon-atlas.png',
-        iconMapping: ICON_MAPPING,
-        sizeScale: 15,
-        getIcon: d => 'marker',
-        getPosition: d => d.coordinates,
-        getSize: d => 2,
-        getColor: d => d.color,
-        getFillColor: d => d.color
-    });
 
     let countyAsyncIterator;
     let stateAsyncIterator;

@@ -47,7 +47,7 @@ export default function SelectedSite(props) {
             bearing: 0
         }
         props.setMapViewState(newViewState);
-        let data = props.sparsityData;
+        let data = [...props.sparsityData];
         // console.log({data})
         data[props.index].color = [245, 245, 2];
         // console.log({data})

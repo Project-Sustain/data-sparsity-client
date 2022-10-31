@@ -1,4 +1,4 @@
-import { useState } from 'react'
+import { useEffect, useState } from 'react'
 import Dashbaord from './components/Dashboard';
 import UsMap from './components/UsMap';
 
@@ -15,6 +15,10 @@ export default function App() {
         pitch: 30,
         bearing: 0
     });
+
+    useEffect(() => {
+        console.log({sparsityData})
+    }, [sparsityData])
 
     return (
         <>

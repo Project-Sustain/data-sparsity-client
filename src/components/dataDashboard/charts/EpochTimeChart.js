@@ -58,7 +58,7 @@ export default function EpochTimeChart(props) {
                 try {
                     bucketData.push(convertBucket(siteDataMap.slice(i*items_per_bucket, (i+1)*items_per_bucket)));
                 } catch(err){
-                    console.log("Error trying to convert buckets");
+                    // console.log("Error trying to convert buckets");
                 }
             }
             setData(bucketData);
