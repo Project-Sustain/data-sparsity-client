@@ -41,8 +41,6 @@ export default function Dashbaord(props) {
     const [siteData, setSiteData] = useState(false);
     const [dashboardStatus, setDashbaordStatus] = useState([]);
 
-    console.log({request})
-
     useEffect(() => {
         const tempScores = props.sparsityData.map((siteData) => {return siteData.sparsityScore});
         setScores(tempScores);

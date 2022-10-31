@@ -26,21 +26,16 @@ const useStyles = makeStyles({
 export default memo(function RequestForm(props) {
     const classes = useStyles();
 
-    const [stateInfo, setStateInfo] = useState([]);
     const [firstTime, setFirstTime] = useState();
     const [lastTime, setLastTime] = useState();
 
-    const [collection, setCollection] = useState({});
+    const [collection, setCollection] = useState(sparsityMetadata[0]);
     const [temporalRange, setTemporalRange] = useState([]);
-    const [baseline, setBaseline] = useState();
+    const [baseline, setBaseline] = useState(sparsityMetadata[0].initialBaseline);
     const selectedConstraints = [];
 
     useEffect(() => {
-        setStateInfo(gisStateCounty);
-        const firstCollection = sparsityMetadata[0];
-        setCollection(firstCollection);
-        setBaseline(firstCollection.initialBaseline);
-        props.setCollectionProperties(firstCollection.sitePropertyFields);
+        props.setCollectionProperties(sparsityMetadata[0].sitePropertyFields);
     }, []);
     
 
@@ -60,7 +55,7 @@ export default memo(function RequestForm(props) {
         })();
     }, [collection]);
 
-    if(stateInfo.length > 0 && props.inDashboard) {
+    if(props.inDashboard) {
         return (
             <Paper elevation={3} className={classes.paper}>
                 <Typography className={classes.item} align='center' variant='h5'>Data Request Form</Typography>
