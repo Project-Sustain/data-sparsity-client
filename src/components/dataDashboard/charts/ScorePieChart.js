@@ -2,7 +2,7 @@ import { useState, useEffect } from 'react';
 import { makeStyles } from "@material-ui/core";
 import { ResponsiveContainer, PieChart, Pie } from 'recharts';
 import { Paper, Typography, Table, TableBody, TableHead, TableRow, TableCell, TableContainer, Stack, Button } from '@mui/material';
-import { colors } from '../../../helpers/colors';
+import { colors } from '../../../library/colors';
 import chroma from 'chroma-js';
 import PieChartIcon from '@mui/icons-material/PieChart';
 

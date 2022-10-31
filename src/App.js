@@ -1,5 +1,5 @@
 import { createTheme, ThemeProvider } from '@mui/material/styles';
-import { colors } from './helpers/colors';
+import { colors } from './library/colors';
 import Main from './Main';
 
 const theme = createTheme({

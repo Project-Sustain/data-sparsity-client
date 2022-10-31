@@ -4,7 +4,7 @@ import { Paper, Typography, Slider, Divider } from "@mui/material";
 import { useEffect, useState } from 'react';
 import moment from 'moment';
 import { sum } from 'simple-statistics';
-import { colors } from '../../../helpers/colors';
+import { colors } from '../../../library/colors';
 
 const useStyles = makeStyles({
     root: {

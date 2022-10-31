@@ -1,6 +1,6 @@
 import { TableContainer, Table, TableBody, TableHead, TableRow, TableCell, Paper, Typography } from '@mui/material';
 import { makeStyles } from "@material-ui/core";
-import { colors } from '../helpers/colors';
+import { colors } from '../library/colors';
 import chroma from 'chroma-js';
 import { Divider } from '@mui/material';
 

@@ -1,6 +1,5 @@
 import { useState, useEffect, memo } from 'react';
-import { gisStateCounty } from '../../library/gisInfo';
-import { Api } from '../../helpers/api';
+import { Api } from '../../library/api';
 import { sparsityMetadata } from '../../library/metadata';
 import { Paper, Stack, Typography } from '@mui/material';
 import SpatialRadios from './SpatialRadios';
