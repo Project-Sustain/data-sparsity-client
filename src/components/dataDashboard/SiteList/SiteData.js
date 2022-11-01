@@ -33,7 +33,11 @@ export default function SiteData(props) {
         return (
             <Stack direction='row' justifyContent='space-evenly'>
                 <Paper className={classes.table} elevation={3}>
-                    <SparsityTable selectedIndex={props.selectedIndex} setSelectedIndex={props.setSelectedIndex} sparsityData={props.sparsityData} />
+                    <SparsityTable 
+                        selectedIndex={props.selectedIndex} 
+                        setSelectedIndex={props.setSelectedIndex} 
+                        sparsityData={props.sparsityData} 
+                    />
                 </Paper>
                 <Paper className={classes.site} elevation={3}>
                     <SelectedSite 

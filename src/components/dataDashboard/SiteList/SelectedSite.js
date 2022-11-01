@@ -15,6 +15,7 @@ const useStyles = makeStyles({
 export default function SelectedSite(props) {
     const classes = useStyles();
     const [pieData, setPieData] = useState([]);
+    const [lastHighlight, setLastHighlight] = useState({});
 
     useEffect(() => {
         if(props.site){
@@ -38,6 +39,10 @@ export default function SelectedSite(props) {
         }
     }, [props.site, props.scores]);
 
+    // useEffect(() => {
+    //     setLastHighlight({});
+    // }, [props.scores]);
+
     const selectSite = () => {
         const newViewState = {
             longitude: props.site.coordinates[0],
@@ -47,11 +52,20 @@ export default function SelectedSite(props) {
             bearing: 0
         }
         props.setMapViewState(newViewState);
+        //FIXME Fly map
+
         let data = [...props.sparsityData];
-        // console.log({data})
-        data[props.index].color = [245, 245, 2];
-        // console.log({data})
-        props.setSparsityData(data)
+        if(Object.keys(lastHighlight) > 0) {
+            data[lastHighlight.index].color = lastHighlight.color;
+        }
+        const lastObj = {
+            'index': props.index,
+            'color': data[props.index].color
+        }
+        console.log({lastObj})
+        setLastHighlight(lastObj);
+        data[props.index].color = [1, 255, 0];
+        props.setSparsityData(data);
     }
     
     return (

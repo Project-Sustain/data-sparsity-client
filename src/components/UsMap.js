@@ -26,7 +26,6 @@ export default function UsMap({mapViewState, setMapViewState, data, shapefileCol
     const [iconLayer, setIconLayer] = useState([]);
 
     useEffect(() => {
-        console.log({data})
         const layer = new IconLayer({
             id: 'icon-layer',
             pickable: true,

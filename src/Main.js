@@ -16,10 +16,6 @@ export default function App() {
         bearing: 0
     });
 
-    useEffect(() => {
-        console.log({sparsityData})
-    }, [sparsityData])
-
     return (
         <>
             <UsMap 
