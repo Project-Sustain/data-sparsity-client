@@ -1,4 +1,4 @@
-import { useState, useEffect } from 'react';
+import { useState, useEffect, memo } from 'react';
 import { makeStyles } from "@material-ui/core";
 import { ResponsiveContainer, PieChart, Pie, Legend } from 'recharts';
 import { Typography, Stack } from '@mui/material';
@@ -12,7 +12,7 @@ const useStyles = makeStyles({
     }
 });
 
-export default function SelectedSite({site, scores, setMapViewState, sparsityData, setSparsityData, index, collectionProperties}) {
+export default memo(function SelectedSite({site, scores, setMapViewState, sparsityData, setSparsityData, index, collectionProperties}) {
     const classes = useStyles();
     const [pieData, setPieData] = useState([]);
     const [lastHighlight, setLastHighlight] = useState({});
@@ -55,15 +55,13 @@ export default function SelectedSite({site, scores, setMapViewState, sparsityDat
         //FIXME Fly map
 
         let data = [...sparsityData];
-        if(Object.keys(lastHighlight) > 0) {
+        if(Object.keys(lastHighlight).length > 0) {
             data[lastHighlight.index].color = lastHighlight.color;
         }
-        const lastObj = {
+        setLastHighlight({
             'index': index,
             'color': data[index].color
-        }
-        console.log({lastObj})
-        setLastHighlight(lastObj);
+        });
         data[index].color = [1, 255, 0];
         setSparsityData(data);
     }
@@ -98,4 +96,4 @@ export default function SelectedSite({site, scores, setMapViewState, sparsityDat
 
         </Stack>
     );
-}
+});
