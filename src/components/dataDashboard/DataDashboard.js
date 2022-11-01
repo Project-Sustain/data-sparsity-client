@@ -16,7 +16,7 @@ const useStyles = makeStyles({
     },
 });
 
-export default function Dashbaord(props) {
+export default function DataDashbaord(props) {
     const classes = useStyles();
 
     if(props.status === "VALID" && props.sparsityData.length > 0) {

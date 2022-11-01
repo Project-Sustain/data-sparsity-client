@@ -1,9 +1,6 @@
 import { useEffect, useState } from 'react'
-import { Container, Stack } from '@mui/material';
-import RequestForm from './request/RequestForm';
-import DashboardCurator from './dataDashboard/DashboardCurator';
-import MapLegend from './MapLegend';
 import DataDashboard from './dataDashboard/DataDashboard';
+import DashboardControl from './DashboardControl';
 
 
 export default function Dashbaord(props) {
@@ -38,43 +35,26 @@ export default function Dashbaord(props) {
         ]);
     }, [request, pieChart, barChart, lineChart, siteData, statInfo]); 
 
-    const RenderLegend = () => {
-        if(status === "VALID" && props.sparsityData.length > 0) {
-            return (
-                <MapLegend 
-                    min={props.sparsityData[0].sparsityScore} 
-                    max={props.sparsityData[props.sparsityData.length-1].sparsityScore}
-                />
-            );
-        }
-        else return null;
-    }
-
     return (
         <>
-            <Container maxWidth='auto'>
-                <Stack direction='row' justifyContent='flex-end' alignItems='stretch'>
-                    <RequestForm 
-                        inDashboard={request}
-                        status={status}
-                        shapefileCollection={props.shapefileCollection}
-                        gisjoin={props.gisjoin}
-                        currentShapeName={props.currentShapeName}
-                        setShapefileCollection={props.setShapefileCollection}
-                        setStatus={setStatus}
-                        setStats={setStats}
-                        setCollectionProperties={setCollectionProperties} 
-                        setRequest={setRequest}
-                        setSparsityData={props.setSparsityData} 
-                        setSelectedIndex={props.setSelectedIndex} 
-                    />
-                    <RenderLegend/>
-                    <DashboardCurator 
-                        dashboardStatus={dashboardStatus} 
-                        status={status} 
-                    />
-                </Stack>
-            </Container>
+            <DashboardControl
+                request={request}
+                status={status}
+                dashboardStatus={dashboardStatus} 
+
+                setStatus={setStatus}
+                setStats={setStats}
+                setCollectionProperties={setCollectionProperties} 
+                setRequest={setRequest}
+
+                shapefileCollection={props.shapefileCollection}
+                gisjoin={props.gisjoin}
+                currentShapeName={props.currentShapeName}
+                setShapefileCollection={props.setShapefileCollection}
+                setSparsityData={props.setSparsityData} 
+                sparsityData={props.sparsityData}
+                setSelectedIndex={props.setSelectedIndex} 
+            />
 
             <DataDashboard
                 scores={scores}
