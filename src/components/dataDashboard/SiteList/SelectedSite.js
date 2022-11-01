@@ -12,20 +12,20 @@ const useStyles = makeStyles({
     }
 });
 
-export default function SelectedSite(props) {
+export default function SelectedSite({site, scores, setMapViewState, sparsityData, setSparsityData, index, collectionProperties}) {
     const classes = useStyles();
     const [pieData, setPieData] = useState([]);
     const [lastHighlight, setLastHighlight] = useState({});
 
     useEffect(() => {
-        if(props.site){
+        if(site){
 
-            const myScore = props.site.sparsityScore;
-            const numberOfSameScores = props.scores.filter(score => {return score === myScore}).length;
-            const numberOfDifferentScores = props.scores.length - numberOfSameScores;
+            const myScore = site.sparsityScore;
+            const numberOfSameScores = scores.filter(score => {return score === myScore}).length;
+            const numberOfDifferentScores = scores.length - numberOfSameScores;
             setPieData([
                 {
-                    "name": props.site.sparsityScore,
+                    "name": site.sparsityScore,
                     "value": numberOfSameScores,
                     "fill": colors.tertiary
                 },
@@ -37,46 +37,46 @@ export default function SelectedSite(props) {
             ]);
 
         }
-    }, [props.site, props.scores]);
+    }, [site, scores]);
 
     // useEffect(() => {
     //     setLastHighlight({});
-    // }, [props.scores]);
+    // }, [scores]);
 
     const selectSite = () => {
         const newViewState = {
-            longitude: props.site.coordinates[0],
-            latitude: props.site.coordinates[1],
+            longitude: site.coordinates[0],
+            latitude: site.coordinates[1],
             zoom: 17,
             pitch: 30,
             bearing: 0
         }
-        props.setMapViewState(newViewState);
+        setMapViewState(newViewState);
         //FIXME Fly map
 
-        let data = [...props.sparsityData];
+        let data = [...sparsityData];
         if(Object.keys(lastHighlight) > 0) {
             data[lastHighlight.index].color = lastHighlight.color;
         }
         const lastObj = {
-            'index': props.index,
-            'color': data[props.index].color
+            'index': index,
+            'color': data[index].color
         }
         console.log({lastObj})
         setLastHighlight(lastObj);
-        data[props.index].color = [1, 255, 0];
-        props.setSparsityData(data);
+        data[index].color = [1, 255, 0];
+        setSparsityData(data);
     }
     
     return (
         <Stack direction='row' justifyContent='space-around' alignItems='flex-start' spacing={2}>
             <Stack direction='column' justifyContent='flex-start' className={classes.section}>
-                <Typography><strong>Mean Time Between Observations:</strong> {props.site.siteMean}</Typography>
-                <Typography><strong>Sparsity Score:</strong> {props.site.sparsityScore}</Typography>
-                <Typography><strong>Total Observations:</strong> {props.site.numberOfMeasurements}</Typography>
+                <Typography><strong>Mean Time Between Observations:</strong> {site.siteMean}</Typography>
+                <Typography><strong>Sparsity Score:</strong> {site.sparsityScore}</Typography>
+                <Typography><strong>Total Observations:</strong> {site.numberOfMeasurements}</Typography>
                 {
-                    props.site.sitePropertyInfo.map((property, index) => {
-                        return <Typography key={index}><strong>{props.collectionProperties[index]}</strong>: {property}</Typography>
+                    site.sitePropertyInfo.map((property, index) => {
+                        return <Typography key={index}><strong>{collectionProperties[index]}</strong>: {property}</Typography>
                     })
                 }
                 <Button variant='outlined' onClick={selectSite}>Select</Button>
