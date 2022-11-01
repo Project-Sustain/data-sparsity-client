@@ -45,6 +45,7 @@ export class Api {
                 if(streamedResults.length > 0) {
                     const formattedResults = formatResults(streamedResults);
                     setSparsityData(formattedResults);
+                    setStatus("VALID");
                 }
                 else {
                     setStatus("INVALID");
