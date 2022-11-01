@@ -66,14 +66,15 @@ export default memo(function ScorePieChart(props) {
                 <Stack direction='row'>
                     <PieTable
                         setSelectedIndex={setSelectedIndex}
+                        selectedIndex={selectedIndex}
                         pieData={pieData}
                         colorScale={colorScale}
                         scoreSet={scoreSet}
                     />
 
                     <CustomPieChart
-                        setSelectedIndex={setSelectedIndex}
                         pieData={pieData}
+                        setSelectedIndex={setSelectedIndex}
                     />
                 </Stack>
 

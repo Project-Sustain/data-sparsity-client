@@ -1,5 +1,6 @@
 import { makeStyles } from "@material-ui/core";
 import { Paper, Table, TableBody, TableHead, TableRow, TableCell, TableContainer } from '@mui/material';
+import { colors } from '../../../../library/colors';
 
 const useStyles = makeStyles({
     root: {
@@ -8,16 +9,20 @@ const useStyles = makeStyles({
     },
 });
 
-export default function PieTable(props) {
+export default function PieTable({setSelectedIndex, selectedIndex, pieData, colorScale, scoreSet}) {
     const classes = useStyles();
 
     const tableClick = (event) => {
         const score = parseFloat((event.target).innerHTML);
-        const index = props.scoreSet.indexOf(score);
+        const index = scoreSet.indexOf(score);
         if(index !== -1) {
-            props.setSelectedIndex(index);
+            setSelectedIndex(index);
         }
         else {}
+    }
+
+    const getColor = (index) => {
+        return index === selectedIndex ? colors.highlight : colorScale[index];
     }
 
     return (
@@ -33,10 +38,10 @@ export default function PieTable(props) {
                 </TableHead>
                 <TableBody>
                     {
-                        props.pieData.map((entry, index) => {
+                        pieData.map((entry, index) => {
                             return (
                                 <TableRow key={index} onClick={tableClick}>
-                                    <TableCell sx={{backgroundColor: props.colorScale[index]}}></TableCell>
+                                    <TableCell sx={{backgroundColor: getColor(index)}}></TableCell>
                                     <TableCell sx={{cursor: 'pointer'}}>{entry.score}</TableCell>
                                     <TableCell>{entry.sites}</TableCell>
                                     <TableCell>{entry.percent}%</TableCell>

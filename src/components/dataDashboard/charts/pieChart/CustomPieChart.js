@@ -12,20 +12,20 @@ const useStyles = makeStyles({
     }
 });
 
-export default memo(function CustomPieChart(props) {
+export default memo(function CustomPieChart({pieData, setSelectedIndex}) {
     const classes = useStyles();
 
     const pieClick = (event, index) => {
-        props.setSelectedIndex(index);
+        setSelectedIndex(index);
     }
 
     
-    if(props.pieData.length < 100) {
+    if(pieData.length < 100) {
         return (
             <ResponsiveContainer width='100%' height={500}>
                 <PieChart>
                     <Pie
-                        data={props.pieData}
+                        data={pieData}
                         dataKey="sites"
                         nameKey="score"
                         cx="50%"
