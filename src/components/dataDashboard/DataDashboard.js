@@ -1,7 +1,7 @@
 import { Container, Stack, Paper, Typography, LinearProgress } from '@mui/material';
 import SparsityScoresChart from './charts/SparsityScoresChart';
 import EpochTimeChart from './charts/EpochTimeChart';
-import ScorePieChart from './charts/ScorePieChart';
+import PieControl from './charts/pieChart/PieControl';
 import SiteData from './SiteList/SiteData';
 import StatisticalInfo from './StatisticalInfo';
 import { makeStyles } from "@material-ui/core";
@@ -32,7 +32,7 @@ export default function DataDashbaord(props) {
 
                 <Container maxWidth='auto'>
                     <Stack direction='row' justifyContent='space-evenly'>
-                        <ScorePieChart 
+                        <PieControl 
                             inDashboard={props.pieChart} 
                             status={props.status} 
                             scores={props.scores} 

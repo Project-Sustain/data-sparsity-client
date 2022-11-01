@@ -51,11 +51,6 @@ export default function SparsityScoresChart(props) {
         }
     }, [props.scores]);
 
-    // const updateScale = (event) => {
-    //     const value = parseInt(event.target.value);
-    //     setScale(scaleArray[value]);
-    // }
-
     if(props.inDashboard) {
         return (
             <Paper elevation={3} className={classes.paper}>
@@ -75,19 +70,6 @@ export default function SparsityScoresChart(props) {
                             <Bar dataKey="numberOfSites" fill={colors.secondary} barSize={30} />
                         </BarChart>
                     </ResponsiveContainer>
-                    {/* <FormControl>
-                        <FormLabel align='center' color='secondary' id="scale">X-Axis Scale</FormLabel>
-                        <RadioGroup
-                            row
-                            aria-labelledby="scale"
-                            value={scaleArray.findIndex((element) => {return element.name === scale.name})}
-                            onChange={updateScale}
-                        >
-                            {scaleArray.map((scale, index) => {
-                                    return <FormControlLabel key={index} value={index} control={<Radio color='secondary' />} label={scale.name} />
-                            })}
-                        </RadioGroup>
-                    </FormControl> */}
                 </Stack>
             </Paper>
         );
