@@ -4,6 +4,7 @@ import { ResponsiveContainer, PieChart, Pie, Legend } from 'recharts';
 import { Typography, Stack } from '@mui/material';
 import { colors } from '../../../library/colors';
 import { Button } from '@mui/material';
+import { ButtonGroup } from '@mui/material';
 
 const useStyles = makeStyles({
     table: {
@@ -39,6 +40,11 @@ export default memo(function SelectedSite({site, scores, setMapViewState, sparsi
         }
     }, [site, scores]);
 
+    /**
+     * There is a bug if you remove the Site Data component from the dashboard. This resets to local state so
+     *  lastHighlight goes back to {}. Store this state higher? The refactor should fix this...
+     */
+
     // useEffect(() => {
     //     setLastHighlight({});
     // }, [scores]);
@@ -65,6 +71,13 @@ export default memo(function SelectedSite({site, scores, setMapViewState, sparsi
         data[index].color = [1, 255, 0];
         setSparsityData(data);
     }
+
+    const deselectSite = () => {
+        let data = [...sparsityData];
+        data[lastHighlight.index].color = lastHighlight.color;
+        setLastHighlight({});
+        setSparsityData(data);
+    }
     
     return (
         <Stack direction='row' justifyContent='space-around' alignItems='flex-start' spacing={2}>
@@ -77,7 +90,10 @@ export default memo(function SelectedSite({site, scores, setMapViewState, sparsi
                         return <Typography key={index}><strong>{collectionProperties[index]}</strong>: {property}</Typography>
                     })
                 }
-                <Button variant='outlined' onClick={selectSite}>Select</Button>
+                <ButtonGroup>
+                    <Button variant='outlined' onClick={selectSite}>Select</Button>
+                    <Button disabled={Object.keys(lastHighlight).length === 0} variant='outlined' onClick={deselectSite}>Deselect</Button>
+                </ButtonGroup>
                 <ResponsiveContainer width='100%' height={250}>
                     <PieChart>
                         <Pie
