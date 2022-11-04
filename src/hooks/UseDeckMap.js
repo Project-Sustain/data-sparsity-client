@@ -48,7 +48,9 @@ export default function UseDeckMap({sparsityData, setCurrentShapeName, setSpatia
 
     useEffect(() => {
         if(stateOrCounty === 'COUNTY') {
-            sendCountyShapefileRequest(selectedState);
+            const setters = [setCountyLayer];
+            const params = { 'collection': 'county_geo', 'state': selectedState };
+            sendShapefileRequest(setters, params, setCountyLayer, countyColors, 'countylayer');
         }
         else {
           setCountyLayer([]);
@@ -56,7 +58,9 @@ export default function UseDeckMap({sparsityData, setCurrentShapeName, setSpatia
     }, [stateOrCounty, selectedState]);
   
     useEffect(() => {
-        sendStateShapefileRequest();
+        const setters = [setStateLayer, setCountyLayer];
+        const params = { 'collection': 'state_geo','state': '' }
+        sendShapefileRequest(setters, params, setStateLayer, stateColors, 'statelayer');
     }, []);
 
 
@@ -70,40 +74,18 @@ export default function UseDeckMap({sparsityData, setCurrentShapeName, setSpatia
         setSelectedShape(info.object);
     };
 
-    let stateAsyncIterator;
-    let countyAsyncIterator;
+    let shapefileIterator;
 
-    const sendStateShapefileRequest = async() => {
-        setStateLayer([]);
-        setCountyLayer([]);
-        const params = {
-            'collection': 'state_geo',
-            'state': ''
-        };
+    const sendShapefileRequest = async(layersToClear, params, layerToSet, colorMap, layerId) => {
+        layersToClear.forEach(setter => setter([]));
         const body = Api.getRequestBody(params);
         let reader;
         await fetch(Api.url+'shapefiles', body).then(response => {
             reader = response.body.getReader();
         });
-        stateAsyncIterator = await Api.createIterator(reader, stateColors);
-        const layer = getGeoJsonLayer('statelayer', stateAsyncIterator, handleStateClick, 2);
-        setStateLayer([layer]);
-    };
-
-    const sendCountyShapefileRequest = async(stateName) => {
-        setCountyLayer([]);
-        const params = {
-            'collection': 'county_geo',
-            'state': stateName
-        };
-        const body = Api.getRequestBody(params);
-        let reader;
-        await fetch(Api.url+'shapefiles', body).then(response => {
-            reader = response.body.getReader();
-        });
-        countyAsyncIterator = await Api.createIterator(reader, countyColors);
-        const layer = getGeoJsonLayer('countylayer', countyAsyncIterator, handleCountyClick, 1);
-        setCountyLayer([layer]);
+        shapefileIterator = await Api.createIterator(reader, colorMap);
+        const layer = getGeoJsonLayer(layerId, shapefileIterator, handleStateClick, 2);
+        layerToSet([layer]);
     };
 
     const getGeoJsonLayer = (id, asyncIterator, onShapeClick, lineWidth) => {
