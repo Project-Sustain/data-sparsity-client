@@ -1,6 +1,6 @@
 import { Button } from '@mui/material';
 import { makeStyles } from '@material-ui/core';
-import { Api } from '../../library/api';
+import { Api } from '../../library/Api';
 
 const useStyles = makeStyles({
     root: {

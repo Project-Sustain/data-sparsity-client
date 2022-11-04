@@ -1,5 +1,5 @@
 import { useState, useEffect, memo } from 'react';
-import { Api } from '../../library/api';
+import { Api } from '../../library/Api';
 import { sparsityMetadata } from '../../library/metadata';
 import { Paper, Stack, Typography } from '@mui/material';
 import SpatialRadios from './SpatialRadios';

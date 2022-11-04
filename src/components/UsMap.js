@@ -6,7 +6,7 @@ import DeckGL from '@deck.gl/react';
 import { StaticMap } from 'react-map-gl';
 import { BASEMAP } from '@deck.gl/carto';
 import { IconLayer } from '@deck.gl/layers';
-import { Api } from '../library/api';
+import { Api } from '../library/Api';
 // import UseShapefileLoader from '../hooks/UseShapefileLoader';
 
 const ICON_MAPPING = {
