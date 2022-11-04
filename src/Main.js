@@ -1,6 +1,8 @@
-import { useEffect, useState } from 'react'
+import { useState } from 'react'
 import Dashbaord from './components/Dashboard';
 import UsMap from './components/UsMap';
+import UseRequest from './hooks/UseRequest';
+import UseSiteSparsity from './hooks/UseSiteSparsity';
 
 export default function App() {
     const [selectedIndex, setSelectedIndex] = useState(0);
@@ -8,6 +10,8 @@ export default function App() {
     const [shapefileCollection, setShapefileCollection] = useState('STATE');
     const [gisjoin, setGisjoin] = useState('G080');
     const [currentShapeName, setCurrentShapeName] = useState('Colorado');
+
+
     const [mapViewState, setMapViewState] = useState({
         longitude: -98.5795,
         latitude: 39.8283,
@@ -15,6 +19,11 @@ export default function App() {
         pitch: 30,
         bearing: 0
     });
+
+    const [ spatialScope, setSpatialScope] = useState('G080');
+    const [requestStatus, setRequestStatus] = useState('INVALID');
+    const { SparsityState, SparsityManagement } = UseSiteSparsity();
+    const { RequestState, RequestManagement } = UseRequest(SparsityState.setSparsityData, SparsityState.setSparsityStats, spatialScope, setRequestStatus);
 
     return (
         <>

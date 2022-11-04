@@ -34,12 +34,12 @@ export default function UseSiteSparsity() {
 
 
     // Functions
-    const updateHighlightedSite = () => {
+    const updateHighlightedSite = (index,) => {
         let data = [...sparsityData];
-        if(Object.keys(lastHighlight).length > 0) {
-            data[lastHighlight.index].color = lastHighlight.color;
+        if(Object.keys(lastHighlightedSite).length > 0) {
+            data[lastHighlightedSite.index].color = lastHighlightedSite.color;
         }
-        setLastHighlight({
+        setLastHighlightedSite({
             'index': index,
             'color': data[index].color
         });
@@ -49,8 +49,8 @@ export default function UseSiteSparsity() {
 
     const deselectSite = () => {
         let data = [...sparsityData];
-        data[lastHighlight.index].color = lastHighlight.color;
-        setLastHighlight({});
+        data[lastHighlightedSite.index].color = lastHighlightedSite.color;
+        setLastHighlightedSite({});
         setSparsityData(data);
     }
 

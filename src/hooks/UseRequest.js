@@ -64,7 +64,7 @@ export default function UseRequest({setSparsityData, setSparsityStats, spatialSc
         }
         
         else {
-            props.setStats({});
+            setSparsityStats({});
             console.log("ERROR in response");
         }
 
