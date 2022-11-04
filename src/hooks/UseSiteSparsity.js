@@ -5,6 +5,7 @@ import chroma from 'chroma-js';
 export default function UseSiteSparsity() {
 
 
+    // State
     const [sparsityData, setSparsityData] = useState([]);
     const [sparsityStats, setSparsityStats] = useState({});
     const [scores, setScores] = useState([]);
@@ -14,6 +15,7 @@ export default function UseSiteSparsity() {
     const [numberOfResponses, setNumberOfResponses] = useState(0); // This informs useEffects when a new sparsity response has arrived
 
 
+    // useEffects
     useEffect(() => {
         setLastHighlightedSite({});
     }, [numberOfResponses]);
@@ -31,6 +33,7 @@ export default function UseSiteSparsity() {
     }, [scores]);
 
 
+    // Functions
     const updateHighlightedSite = () => {
         let data = [...sparsityData];
         if(Object.keys(lastHighlight).length > 0) {
@@ -52,6 +55,7 @@ export default function UseSiteSparsity() {
     }
 
 
+    // Return Vals
     const state = {
         sparsityData, sparsityStats, scores, colorGradient, selectedScore, lastHighlightedSite
     };
@@ -60,7 +64,8 @@ export default function UseSiteSparsity() {
         setSparsityData, setSparsityStats, setSelectedScore, updateHighlightedSite, deselectSite, setNumberOfResponses
     };
 
-    
+
+    // Return
     return { state, functions };
 
 }

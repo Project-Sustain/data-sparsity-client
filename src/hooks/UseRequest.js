@@ -5,12 +5,14 @@ import { Api } from "../library/Api";
 export default function UseRequest({setSparsityData, setSparsityStats, spatialScope, setRequestStatus}) {
 
 
+    // State
     const [collection, setCollection] = useState(sparsityMetadata[0]);
     const [temporalRange, setTemporalRange] = useState([]);
     const [baseline, setBaseline] = useState(sparsityMetadata[0].initialBaseline);
     const [requestParams, setRequestParams] = useState({});
 
 
+    // useEffects
     useEffect(() => {
         setRequestParams({
             'collectionName': collection.collection,
@@ -36,6 +38,7 @@ export default function UseRequest({setSparsityData, setSparsityStats, spatialSc
     }, [collection]);
 
 
+    // Functions
     const sendSparsityScoreRequest = async() => {
         setRequestStatus('PENDING');
         const response = await Api.sendJsonRequest("sparsityScores", requestParams);
@@ -72,15 +75,17 @@ export default function UseRequest({setSparsityData, setSparsityStats, spatialSc
     }
 
 
+    // Return Vals
     const state = {
         requestParams, collection, temporalRange, baseline
     }
 
     const functions = {
-        setCollection, setTemporalRange, setBaseline, sendSparsityStatRequest, sendSparsityScoreRequest
+        setCollection, setTemporalRange, setBaseline, sendUpdateBaselineRequest, sendSparsityScoreRequest
     }
 
 
+    // Return
     return { state, functions };
 
 }
