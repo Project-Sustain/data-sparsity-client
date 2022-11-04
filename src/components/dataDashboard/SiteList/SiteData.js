@@ -41,6 +41,8 @@ export default function SiteData(props) {
                         collectionProperties={props.collectionProperties} 
                         index={props.selectedIndex} site={props.sparsityData[props.selectedIndex]} 
                         scores={props.scores} 
+                        lastHighlight={props.lastHighlight}
+                        setLastHighlight={props.setLastHighlight}
                     />
                 </Paper>
             </Stack>

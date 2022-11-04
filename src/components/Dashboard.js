@@ -19,6 +19,8 @@ export default function Dashbaord(props) {
     const [siteData, setSiteData] = useState(false);
     const [dashboardStatus, setDashbaordStatus] = useState([]);
 
+    const [lastHighlight, setLastHighlight] = useState({});
+
     useEffect(() => {
         const tempScores = props.sparsityData.map((siteData) => {return siteData.sparsityScore});
         setScores(tempScores);
@@ -73,6 +75,8 @@ export default function Dashbaord(props) {
                 barChart={barChart}
                 lineChart={lineChart}
                 siteData={siteData}
+                lastHighlight={lastHighlight}
+                setLastHighlight={setLastHighlight}
             />
         </>
     )
