@@ -2,9 +2,13 @@ import { useState, useEffect } from "react";
 import { sparsityMetadata } from "../library/metadata";
 import { Api } from "../library/Api";
 
-export function UseRequest({setSparsityData, setSparsityStats, spatialScope, setRequestStatus, incrementNumberOfResponses}) {
+// export function UseRequest({setSparsityData, setSparsityStats, spatialScope, setRequestStatus, incrementNumberOfResponses}) {
+export function UseRequest(props) {
 
-    console.log({setRequestStatus});
+    /**
+     * Working on fixing incoming args to this hook. Try {} around call in Main.js? Then don't need props?
+     */
+    console.log({props})
 
     // State
     const [collection, setCollection] = useState(sparsityMetadata[0]);
@@ -17,16 +21,16 @@ export function UseRequest({setSparsityData, setSparsityStats, spatialScope, set
     useEffect(() => {
         setRequestParams({
             'collectionName': collection.collection,
-            'spatialIdentifier': spatialScope,
+            'spatialIdentifier': props.spatialScope,
             'startTime': temporalRange[0],
             'endTime': temporalRange[1],
             'siteIdName': collection.siteIdName,
             'siteCollection': collection.siteCollection,
             'measurementTypes': [],
             'sitePropertyFields': collection.sitePropertyFields,
-            'baseline': baseline
+            'baseline': props.baseline
         });
-    }, [collection, temporalRange, baseline, spatialScope]);
+    }, [collection, temporalRange, props.baseline, props.spatialScope]);
 
     useEffect(() => {
         (async () => {
@@ -41,12 +45,10 @@ export function UseRequest({setSparsityData, setSparsityStats, spatialScope, set
 
     // Functions
     const sendSparsityScoreRequest = async() => {
-
-        console.log({setRequestStatus});
-        setRequestStatus('PENDING');
+        props.setRequestStatus('PENDING');
         const response = await Api.sendJsonRequest("sparsityScores", requestParams);
         if(response) {
-            setSparsityStats({
+            props.setSparsityStats({
                 'minTimeBetweenObservations': response.diffStats[0],
                 'maxTimeBetweenObservations': response.diffStats[1],
                 'meanTimeBetweenObservations': response.diffStats[2],
@@ -63,20 +65,20 @@ export function UseRequest({setSparsityData, setSparsityStats, spatialScope, set
                 'stdDevSparsity': response.sparsityStats[3]
             });
 
-            Api.sendBaselineRequest(baseline, setRequestStatus, setSparsityData, null);
-            incrementNumberOfResponses();
+            Api.sendBaselineRequest(props.baseline, props.setRequestStatus, props.setSparsityData, null);
+            props.incrementNumberOfResponses();
         }
         
         else {
-            setSparsityStats({});
+            props.setSparsityStats({});
             console.log("ERROR in response");
         }
 
     }
 
     const sendUpdateBaselineRequest = async() => {
-        Api.sendBaselineRequest(baseline, setRequestStatus, setSparsityData, null);
-        incrementNumberOfResponses();
+        Api.sendBaselineRequest(baseline, props.setRequestStatus, props.setSparsityData, null);
+        props.incrementNumberOfResponses();
     }
 
 
