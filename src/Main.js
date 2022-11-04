@@ -33,9 +33,13 @@ export default function App() {
     const [ requestStatus, setRequestStatus ] = useState('NO REQUEST');
 
     const { SparsityState, SparsityManagement } = UseSiteSparsity();
-    const { RequestState, RequestManagement } = UseRequest(SparsityState.setSparsityData, SparsityState.setSparsityStats, spatialScope, setRequestStatus, SparsityState.incrementNumberOfResponses);
+    /**
+     * Currently SparsityState is null here, but good inside the hook
+     * Need to get it here so we can pass it's members along to the other hooks
+     */
+    console.log({SparsityState});
+    // const { RequestState, RequestManagement } = UseRequest(SparsityState.setSparsityData, SparsityState.setSparsityStats, spatialScope, setRequestStatus, SparsityState.incrementNumberOfResponses);
     // const { MapState, MapManagement } = UseDeckMap(SparsityState.sparsityData, setCurrentShapeName, setSpatialScope, stateOrCounty);
-
 
 
     return (

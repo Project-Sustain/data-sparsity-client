@@ -71,6 +71,7 @@ export function UseSiteSparsity() {
         incrementNumberOfResponses: () => incrementNumberOfResponses()
     };
 
+    console.log({state})
 
     // Return
     return { state, functions };
