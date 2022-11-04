@@ -36,8 +36,9 @@ export default function App() {
     const Sparsity = UseSiteSparsity();
     const Request = UseRequest(Sparsity.functions.setSparsityData, Sparsity.functions.setSparsityStats, spatialScope, setRequestStatus, Sparsity.functions.incrementNumberOfResponses);
     const Map = UseDeckMap(Sparsity.state.sparsityData, setCurrentShapeName, setSpatialScope, stateOrCounty);
-
     console.log({Sparsity})
+    console.log({Request})
+    console.log({Map})
 
     return (
         <>

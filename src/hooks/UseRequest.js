@@ -4,6 +4,7 @@ import { Api } from "../library/Api";
 
 export function UseRequest({setSparsityData, setSparsityStats, spatialScope, setRequestStatus, incrementNumberOfResponses}) {
 
+    console.log({setRequestStatus});
 
     // State
     const [collection, setCollection] = useState(sparsityMetadata[0]);
@@ -40,6 +41,8 @@ export function UseRequest({setSparsityData, setSparsityStats, spatialScope, set
 
     // Functions
     const sendSparsityScoreRequest = async() => {
+
+        console.log({setRequestStatus});
         setRequestStatus('PENDING');
         const response = await Api.sendJsonRequest("sparsityScores", requestParams);
         if(response) {
@@ -78,14 +81,14 @@ export function UseRequest({setSparsityData, setSparsityStats, spatialScope, set
 
 
     // Return Vals
-    const state = { requestParams, collection, temporalRange, baseline }
+    const state = { requestParams, collection }
 
     const functions = {
         setCollection: (collection) => setCollection(collection), 
         setTemporalRange: (range) => setTemporalRange(range), 
         setBaseline: baseline => setBaseline(baseline), 
         sendUpdateBaselineRequest: () => sendUpdateBaselineRequest(), 
-        sendSparsityScoreRequest: () => sendSparsityScoreRequest
+        sendSparsityScoreRequest: () => sendSparsityScoreRequest()
     }
 
 
