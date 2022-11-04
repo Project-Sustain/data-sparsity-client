@@ -25,15 +25,50 @@ export default function UseRequest({setSparsityData, setSparsityStats, spatialSc
         });
     }, [collection, temporalRange, baseline, spatialScope]);
 
+    useEffect(() => {
+        (async () => {
+            const response = await Api.sendJsonRequest("temporalRange", {'collectionName': collection.collection});
+            if(response) {
+                setTemporalRange([parseInt(response.firstTime), parseInt(response.lastTime)]);
+            }
+            else console.log("ERROR sending temporalRange request");
+        })();
+    }, [collection]);
 
-    const sendSparsityStatRequest = () => {
+
+    const sendSparsityScoreRequest = async() => {
         setRequestStatus('PENDING');
+        const response = await Api.sendJsonRequest("sparsityScores", requestParams);
+        if(response) {
+            setSparsityStats({
+                'minTimeBetweenObservations': response.diffStats[0],
+                'maxTimeBetweenObservations': response.diffStats[1],
+                'meanTimeBetweenObservations': response.diffStats[2],
+                'stdDevTimeBetweenObservations': response.diffStats[3],
+
+                'minNumberOfObservations': response.obsStats[0],
+                'maxNumberOfObservations': response.obsStats[1],
+                'meanNumberOfObservations': response.obsStats[2],
+                'stdDevNumberOfObservations': response.obsStats[3],
+
+                'minSparsity': response.sparsityStats[0],
+                'maxSparsity': response.sparsityStats[1],
+                'meanSparsity': response.sparsityStats[2] ? response.sparsityStats[2] : 0.0,
+                'stdDevSparsity': response.sparsityStats[3]
+            });
+
+            Api.sendBaselineRequest(baseline, setRequestStatus, setSparsityData, null);
+        }
+        
+        else {
+            props.setStats({});
+            console.log("ERROR in response");
+        }
 
     }
 
-    const sendSparsityScoreRequest = () => {
-        setRequestStatus('PENDING');
-
+    const sendUpdateBaselineRequest = async() => {
+        Api.sendBaselineRequest(baseline, setRequestStatus, setSparsityData, null);
     }
 
 
