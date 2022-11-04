@@ -78,6 +78,7 @@ export class Api {
         }
         
         function formatResults(streamedResults) {
+            // FIXME All sites with same score should have same color. Number of colors should be number of UNIQUE scores
             const initialColorScale = chroma.scale([colors.tertiary, colors.primary]).colors(streamedResults.length);
             const formattedResults = streamedResults.map((result, index) => {
                 result.sparsityScore = result.sparsityScore ? result.sparsityScore : 0;
