@@ -1,13 +1,14 @@
 import { useState } from 'react'
 
 // Hooks
-import UseRequest from './hooks/UseRequest';
-import UseSiteSparsity from './hooks/UseSiteSparsity';
-import UseDeckMap from './hooks/UseDeckMap';
+import { UseSiteSparsity } from './hooks/UseSiteSparsity';
+import { UseRequest } from './hooks/UseRequest';
+import { UseDeckMap } from './hooks/UseDeckMap';
 
 // Components
 import Dashbaord from './components/Dashboard';
 import UsMap from './components/UsMap';
+import { Button } from '@mui/material';
 
 
 export default function App() {
@@ -26,18 +27,21 @@ export default function App() {
     });
 
 
-    const [currentShapeName, setCurrentShapeName] = useState('Colorado');
+    const [ currentShapeName, setCurrentShapeName ] = useState('Colorado');
     const [ stateOrCounty, setStateOrCounty ] = useState('STATE');
     const [ spatialScope, setSpatialScope ] = useState('G080');
-    const [requestStatus, setRequestStatus] = useState('NO REQUEST');
+    const [ requestStatus, setRequestStatus ] = useState('NO REQUEST');
 
     const { SparsityState, SparsityManagement } = UseSiteSparsity();
-    const { RequestState, RequestManagement } = UseRequest(SparsityState.setSparsityData, SparsityState.setSparsityStats, spatialScope, setRequestStatus);
-    const { MapState, MapManagement } = UseDeckMap(SparsityState.sparsityData, setCurrentShapeName, setSpatialScope, stateOrCounty);
+    const { RequestState, RequestManagement } = UseRequest(SparsityState.setSparsityData, SparsityState.setSparsityStats, spatialScope, setRequestStatus, SparsityState.incrementNumberOfResponses);
+    // const { MapState, MapManagement } = UseDeckMap(SparsityState.sparsityData, setCurrentShapeName, setSpatialScope, stateOrCounty);
+
+
 
     return (
         <>
-            <UsMap 
+            <Button onClick={() => console.log({SparsityState})}>Test Request</Button>
+            {/* <UsMap 
                 mapViewState={mapViewState}
                 setMapViewState={setMapViewState}
                 data={sparsityData} 
@@ -55,7 +59,7 @@ export default function App() {
                 setSparsityData={setSparsityData}
                 selectedIndex={selectedIndex} 
                 setSelectedIndex={setSelectedIndex}
-            />
+            /> */}
         </>
     );
 }

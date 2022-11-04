@@ -4,7 +4,7 @@ import { Api } from '../library/Api';
 import { colors } from '../library/colors';
 import chroma from 'chroma-js';
 
-export default function UseDeckMap({sparsityData, setCurrentShapeName, setSpatialScope, stateOrCounty}) {
+export function UseDeckMap({sparsityData, setCurrentShapeName, setSpatialScope, stateOrCounty}) {
 
     // Constants
     const countyColors = chroma.scale([colors.countyLight, colors.countyDark]).colors(15);
@@ -110,12 +110,12 @@ export default function UseDeckMap({sparsityData, setCurrentShapeName, setSpatia
 
 
     // Return Vals
-    const state = {
-        iconLayer, countyLayer, stateLayer
-    };
+    const state = { iconLayer, countyLayer, stateLayer };
 
     const functions = {
-        handleStateClick, handleCountyClick, getTooltip
+        handleStateClick: (info, event) => handleStateClick(info, event),
+        handleCountyClick: (info, event) => handleCountyClick(info, event),
+        getTooltip: (object) => getTooltip(object)
     };
 
 

@@ -2,7 +2,7 @@ import { useState, useEffect } from "react";
 import { colors } from "../library/colors";
 import chroma from 'chroma-js';
 
-export default function UseSiteSparsity() {
+export function UseSiteSparsity() {
 
 
     // State
@@ -34,7 +34,7 @@ export default function UseSiteSparsity() {
 
 
     // Functions
-    const updateHighlightedSite = (index,) => {
+    const updateHighlightedSite = (index) => {
         let data = [...sparsityData];
         if(Object.keys(lastHighlightedSite).length > 0) {
             data[lastHighlightedSite.index].color = lastHighlightedSite.color;
@@ -54,14 +54,21 @@ export default function UseSiteSparsity() {
         setSparsityData(data);
     }
 
+    const incrementNumberOfResponses = () => {
+        setNumberOfResponses(numberOfResponses+1);
+    }
+
 
     // Return Vals
-    const state = {
-        sparsityData, sparsityStats, scores, colorGradient, selectedScore, lastHighlightedSite
-    };
+    const state = { sparsityData, sparsityStats, scores, colorGradient, selectedScore, lastHighlightedSite };
 
     const functions = {
-        setSparsityData, setSparsityStats, setSelectedScore, updateHighlightedSite, deselectSite, setNumberOfResponses
+        setSparsityData: (data) => setSparsityData(data), 
+        setSparsityStats: (data) => setSparsityStats(data), 
+        setSelectedScore: (score) => setSelectedScore(score), 
+        updateHighlightedSite: (index) => updateHighlightedSite(index), 
+        deselectSite: () => deselectSite(), 
+        incrementNumberOfResponses: () => incrementNumberOfResponses()
     };
 
 

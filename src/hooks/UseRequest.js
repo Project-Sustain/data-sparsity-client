@@ -2,7 +2,7 @@ import { useState, useEffect } from "react";
 import { sparsityMetadata } from "../library/metadata";
 import { Api } from "../library/Api";
 
-export default function UseRequest({setSparsityData, setSparsityStats, spatialScope, setRequestStatus}) {
+export function UseRequest({setSparsityData, setSparsityStats, spatialScope, setRequestStatus, incrementNumberOfResponses}) {
 
 
     // State
@@ -61,6 +61,7 @@ export default function UseRequest({setSparsityData, setSparsityStats, spatialSc
             });
 
             Api.sendBaselineRequest(baseline, setRequestStatus, setSparsityData, null);
+            incrementNumberOfResponses();
         }
         
         else {
@@ -72,16 +73,19 @@ export default function UseRequest({setSparsityData, setSparsityStats, spatialSc
 
     const sendUpdateBaselineRequest = async() => {
         Api.sendBaselineRequest(baseline, setRequestStatus, setSparsityData, null);
+        incrementNumberOfResponses();
     }
 
 
     // Return Vals
-    const state = {
-        requestParams, collection, temporalRange, baseline
-    }
+    const state = { requestParams, collection, temporalRange, baseline }
 
     const functions = {
-        setCollection, setTemporalRange, setBaseline, sendUpdateBaselineRequest, sendSparsityScoreRequest
+        setCollection: (collection) => setCollection(collection), 
+        setTemporalRange: (range) => setTemporalRange(range), 
+        setBaseline: baseline => setBaseline(baseline), 
+        sendUpdateBaselineRequest: () => sendUpdateBaselineRequest(), 
+        sendSparsityScoreRequest: () => sendSparsityScoreRequest
     }
 
 
