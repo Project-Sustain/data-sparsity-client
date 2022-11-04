@@ -1,15 +1,20 @@
 import { useState } from 'react'
-import Dashbaord from './components/Dashboard';
-import UsMap from './components/UsMap';
+
+// Hooks
 import UseRequest from './hooks/UseRequest';
 import UseSiteSparsity from './hooks/UseSiteSparsity';
+import UseDeckMap from './hooks/UseDeckMap';
+
+// Components
+import Dashbaord from './components/Dashboard';
+import UsMap from './components/UsMap';
+
 
 export default function App() {
     const [selectedIndex, setSelectedIndex] = useState(0);
     const [sparsityData, setSparsityData] = useState([]);
     const [shapefileCollection, setShapefileCollection] = useState('STATE');
     const [gisjoin, setGisjoin] = useState('G080');
-    const [currentShapeName, setCurrentShapeName] = useState('Colorado');
 
 
     const [mapViewState, setMapViewState] = useState({
@@ -20,10 +25,15 @@ export default function App() {
         bearing: 0
     });
 
-    const [ spatialScope, setSpatialScope] = useState('G080');
-    const [requestStatus, setRequestStatus] = useState('INVALID');
+
+    const [currentShapeName, setCurrentShapeName] = useState('Colorado');
+    const [ stateOrCounty, setStateOrCounty ] = useState('STATE');
+    const [ spatialScope, setSpatialScope ] = useState('G080');
+    const [requestStatus, setRequestStatus] = useState('NO REQUEST');
+
     const { SparsityState, SparsityManagement } = UseSiteSparsity();
     const { RequestState, RequestManagement } = UseRequest(SparsityState.setSparsityData, SparsityState.setSparsityStats, spatialScope, setRequestStatus);
+    const { MapState, MapManagement } = UseDeckMap(SparsityState.sparsityData, setCurrentShapeName, setSpatialScope, stateOrCounty);
 
     return (
         <>
