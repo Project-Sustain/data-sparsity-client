@@ -56,7 +56,9 @@ export default function DataDashbaord(props) {
                         setSparsityData={props.setSparsityData}
                         sparsityData={props.sparsityData} 
                         scores={props.scores} 
-                        setSelectedIndex={props.setSelectedIndex} 
+                        setSelectedIndex={props.setSelectedIndex}
+                        lastHighlight={props.lastHighlight}
+                        setLastHighlight={props.setLastHighlight} 
                     />
                 </Container>
 

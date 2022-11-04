@@ -13,10 +13,11 @@ const useStyles = makeStyles({
     }
 });
 
-export default memo(function SelectedSite({site, scores, setMapViewState, sparsityData, setSparsityData, index, collectionProperties}) {
+export default memo(function SelectedSite({lastHighlight, setLastHighlight, site, scores, setMapViewState, sparsityData, setSparsityData, index, collectionProperties}) {
     const classes = useStyles();
     const [pieData, setPieData] = useState([]);
-    const [lastHighlight, setLastHighlight] = useState({});
+
+    console.log({lastHighlight})
 
     useEffect(() => {
         if(site){
@@ -39,15 +40,6 @@ export default memo(function SelectedSite({site, scores, setMapViewState, sparsi
 
         }
     }, [site, scores]);
-
-    /**
-     * There is a bug if you remove the Site Data component from the dashboard. This resets to local state so
-     *  lastHighlight goes back to {}. Store this state higher? The refactor should fix this...
-     */
-
-    // useEffect(() => {
-    //     setLastHighlight({});
-    // }, [scores]);
 
     const selectSite = () => {
         const newViewState = {
