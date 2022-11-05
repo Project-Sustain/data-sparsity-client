@@ -51,6 +51,16 @@ export default function App() {
     const Request = UseRequest(Sparsity.functions.setSparsityData, Sparsity.functions.setSparsityStats, spatialScope, setRequestStatus, Sparsity.functions.incrementNumberOfResponses);
     const Map = UseDeckMap(Sparsity.state.sparsityData, setCurrentShapeName, setSpatialScope, stateOrCounty);
 
+    /**
+     * Saturday 11/5
+     * Add request form to map
+     * Get request form working with hooks
+     * Get icons on map for any state/county
+     * 
+     * Sunday 11/6
+     * Add dashboard components
+     */
+
     return (
         <>
             <Button className={classes.root} variant='outlined' onClick={Request.functions.sendSparsityScoreRequest}>Test Request</Button>
