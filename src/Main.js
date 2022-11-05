@@ -69,7 +69,7 @@ export default function App() {
                 Map={Map}
             />
             <UiCurator
-                CuratorMap={Curator.map}
+                Curator={Curator}
             />
             <RequestForm
                 visible={Curator.state.viewRequestForm}

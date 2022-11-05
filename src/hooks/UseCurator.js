@@ -5,6 +5,7 @@ export function UseCurator() {
 
 
     // State
+
     const [viewRequestForm, setViewRequestForm] = useState(true);
     const [viewMapLegend, setViewMapLegend] = useState(false);
 
@@ -17,14 +18,14 @@ export function UseCurator() {
     // Return Vals
     const state = { viewRequestForm, viewMapLegend }
 
-    const map = [
+    const stateMap = [
         { 'state': viewRequestForm, 'function': updateViewRequest, 'name': 'Request Form' },
         { 'state': viewMapLegend, 'function': updateViewMapLegend, 'name': 'Map Legend' },
     ]
 
 
     // Return
-    return { state, map };
+    return { state, stateMap };
 
 
 }
