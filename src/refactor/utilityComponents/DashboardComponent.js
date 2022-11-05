@@ -1,5 +1,5 @@
 import { makeStyles } from '@material-ui/core';
-import { paperRoot } from '../library/styles';
+import { paperRoot } from '../../library/styles';
 import { Paper } from '@mui/material';
 
 

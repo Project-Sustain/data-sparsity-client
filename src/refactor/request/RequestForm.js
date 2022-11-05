@@ -34,7 +34,7 @@ END OF TERMS AND CONDITIONS
 
 import { Container, Stack, Button, LinearProgress, ButtonGroup } from '@mui/material';
 import { makeStyles } from '@material-ui/core';
-import DashboardComponent from '../DashboardComponent';
+import DashboardComponent from '../utilityComponents/DashboardComponent';
 import CollectionSelector from './components/CollectionSelector';
 import TemporalSlider from './components/TemporalSlider';
 import BaselineSelector from './components/BaselineSelector';
@@ -80,7 +80,7 @@ export default function RequestForm({ Request, sparsityDataLength, currentShapeN
 
 
     return (
-        <Container maxWidth='md'>
+        <Container maxWidth='sm'>
             <DashboardComponent>
                 <Stack
                     direction='column'

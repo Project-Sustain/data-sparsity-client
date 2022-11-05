@@ -36,10 +36,12 @@ END OF TERMS AND CONDITIONS
 import { UseSiteSparsity } from './hooks/UseSiteSparsity';
 import { UseRequest } from './hooks/UseRequest';
 import { UseDeckMap } from './hooks/UseDeckMap';
+import { UseCurator } from './hooks/UseCurator';
 
 // Components
 import DeckMap from './refactor/map/DeckMap';
 import RequestForm from './refactor/request/RequestForm';
+import UiCurator from './refactor/UiCurator';
 
 
 export default function App() {
@@ -48,6 +50,7 @@ export default function App() {
     const Sparsity = UseSiteSparsity();
     const Request = UseRequest(Sparsity.functions);
     const Map = UseDeckMap(Sparsity.state, Request);
+    const Curator = UseCurator();
 
     /**
      * Saturday 11/5
@@ -64,6 +67,9 @@ export default function App() {
         <>
             <DeckMap
                 Map={Map}
+            />
+            <UiCurator
+                Curator={Curator}
             />
             <RequestForm
                 Request={Request}
