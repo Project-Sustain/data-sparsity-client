@@ -12,8 +12,8 @@ const useStyles = makeStyles({
     },
     openButton: {
         position: 'fixed',
-        top: 10,
-        left: 10
+        top: 5,
+        left: 5
     },
     closeButton: {
         display: 'flex',
@@ -46,12 +46,12 @@ export default function UiCurator({Curator}) {
 
     const renderOpenButton = () => {
         if(!open) {
-            return  <Button 
+            return  <IconButton 
                         className={classes.openButton} 
                         onClick={handleDrawerOpen}
                     >
                         <MenuIcon/>
-                    </Button>
+                    </IconButton>
         }
         else return null
     }
