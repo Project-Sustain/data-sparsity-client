@@ -4,7 +4,7 @@ import { Api } from '../library/Api';
 import { colors } from '../library/colors';
 import chroma from 'chroma-js';
 
-export function UseDeckMap(sparsityData, setCurrentShapeName, setSpatialScope, stateOrCounty) {
+export function UseDeckMap(SparsityState, Request) {
 
     // Constants
     const countyColors = chroma.scale([colors.countyLight, colors.countyDark]).colors(15);
@@ -17,9 +17,9 @@ export function UseDeckMap(sparsityData, setCurrentShapeName, setSpatialScope, s
     const [countyLayer, setCountyLayer] = useState([]);
     const [iconLayer, setIconLayer] = useState([]);
 
-    const [selectedState, setSelectedState] = useState('');
     const [selectedShape, setSelectedShape] = useState({});
-
+    const [selectedState, setSelectedState] = useState('');
+    const [currentShapeName, setCurrentShapeName] = useState('Colorado');
 
     const [mapViewState, setMapViewState] = useState({
         longitude: -98.5795,
@@ -32,12 +32,10 @@ export function UseDeckMap(sparsityData, setCurrentShapeName, setSpatialScope, s
 
     // useEffects
     useEffect(() => {
-        console.log('useEffect to set the IconLayer')
-        console.log({sparsityData})
         const layer = new IconLayer({
             id: 'icon-layer',
             pickable: true,
-            data: sparsityData,
+            data: SparsityState.sparsityData,
             iconAtlas: 'https://raw.githubusercontent.com/visgl/deck.gl-data/master/website/icon-atlas.png',
             iconMapping: ICON_MAPPING,
             sizeScale: 15,
@@ -49,17 +47,17 @@ export function UseDeckMap(sparsityData, setCurrentShapeName, setSpatialScope, s
         });
         console.log({layer})
         setIconLayer([layer])
-    }, [sparsityData]);
+    }, [SparsityState.sparsityData]);
 
     useEffect(() => {
         if(Object.keys(selectedShape).length > 0) {
-            setSpatialScope(selectedShape.gisjoin);
+            Request.functions.setSpatialScope(selectedShape.gisjoin);
             setCurrentShapeName(selectedShape.name);
         }
     }, [selectedShape]);
 
     useEffect(() => {
-        if(stateOrCounty === 'COUNTY') {
+        if(Request.state.stateOrCounty === 'COUNTY') {
             const setters = [setCountyLayer];
             const params = { 'collection': 'county_geo', 'state': selectedState };
             sendShapefileRequest(setters, params, setCountyLayer, countyColors, 'countylayer', handleCountyClick);
@@ -67,7 +65,7 @@ export function UseDeckMap(sparsityData, setCurrentShapeName, setSpatialScope, s
         else {
           setCountyLayer([]);
         }
-    }, [stateOrCounty, selectedState]);
+    }, [Request.state.stateOrCounty, selectedState]);
   
     useEffect(() => {
         const setters = [setStateLayer, setCountyLayer];
@@ -122,7 +120,7 @@ export function UseDeckMap(sparsityData, setCurrentShapeName, setSpatialScope, s
 
 
     // Return Vals
-    const state = { iconLayer, countyLayer, stateLayer, mapViewState };
+    const state = { iconLayer, countyLayer, stateLayer, mapViewState, currentShapeName };
 
     const functions = {
         setMapViewState: (viewState) => setMapViewState(viewState),

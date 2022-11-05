@@ -35,14 +35,10 @@ export default function App() {
 
 
     // NEW
-    const [ currentShapeName, setCurrentShapeName ] = useState('Colorado');
-    const [ stateOrCounty, setStateOrCounty ] = useState('COUNTY');
-    const [ spatialScope, setSpatialScope ] = useState('G0800690');
-    const [ requestStatus, setRequestStatus ] = useState('NO REQUEST');
 
     const Sparsity = UseSiteSparsity();
-    const Request = UseRequest(Sparsity.functions.setSparsityData, Sparsity.functions.setSparsityStats, spatialScope, setRequestStatus, Sparsity.functions.incrementNumberOfResponses);
-    const Map = UseDeckMap(Sparsity.state.sparsityData, setCurrentShapeName, setSpatialScope, stateOrCounty);
+    const Request = UseRequest(Sparsity.functions);
+    const Map = UseDeckMap(Sparsity.state, Request);
 
     /**
      * Saturday 11/5

@@ -2,14 +2,18 @@ import { useState, useEffect } from "react";
 import { sparsityMetadata } from "../library/metadata";
 import { Api } from "../library/Api";
 
-export function UseRequest(setSparsityData, setSparsityStats, spatialScope, setRequestStatus, incrementNumberOfResponses) {
+export function UseRequest(SparsityFunctions) {
 
     
     // State
     const [collection, setCollection] = useState(sparsityMetadata[0]);
     const [temporalRange, setTemporalRange] = useState([]);
     const [baseline, setBaseline] = useState(sparsityMetadata[0].initialBaseline);
+    const [spatialScope, setSpatialScope] = useState('G0800690');
     const [requestParams, setRequestParams] = useState({});
+
+    const [ stateOrCounty, setStateOrCounty ] = useState('COUNTY');
+    const [ requestStatus, setRequestStatus ] = useState('NO REQUEST');
 
 
     // useEffects
@@ -43,7 +47,7 @@ export function UseRequest(setSparsityData, setSparsityStats, spatialScope, setR
         setRequestStatus('PENDING');
         const response = await Api.sendJsonRequest("sparsityScores", requestParams);
         if(response) {
-            setSparsityStats({
+            SparsityFunctions.setSparsityStats({
                 'minTimeBetweenObservations': response.diffStats[0],
                 'maxTimeBetweenObservations': response.diffStats[1],
                 'meanTimeBetweenObservations': response.diffStats[2],
@@ -60,28 +64,31 @@ export function UseRequest(setSparsityData, setSparsityStats, spatialScope, setR
                 'stdDevSparsity': response.sparsityStats[3]
             });
 
-            Api.sendBaselineRequest(baseline, setRequestStatus, setSparsityData, incrementNumberOfResponses);
+            Api.sendBaselineRequest(baseline, setRequestStatus, SparsityFunctions.setSparsityData, SparsityFunctions.incrementNumberOfResponses);
         }
         
         else {
-            setSparsityStats({});
+            SparsityFunctions.setSparsityStats({});
             console.log("ERROR in response");
         }
 
     }
 
     const sendUpdateBaselineRequest = async() => {
-        Api.sendBaselineRequest(baseline, setRequestStatus, setSparsityData, incrementNumberOfResponses);
+        Api.sendBaselineRequest(baseline, setRequestStatus, SparsityFunctions.setSparsityData, SparsityFunctions.incrementNumberOfResponses, spatialScope, requestStatus);
     }
 
 
     // Return Vals
-    const state = { requestParams, collection }
+    const state = { requestParams, collection, spatialScope, requestStatus, stateOrCounty }
 
     const functions = {
         setCollection: (collection) => setCollection(collection), 
         setTemporalRange: (range) => setTemporalRange(range), 
-        setBaseline: baseline => setBaseline(baseline), 
+        setBaseline: (baseline) => setBaseline(baseline), 
+        setSpatialScope: (scope) => setSpatialScope(scope),
+        setRequestStatus: (status) => setRequestStatus(status),
+        setStateOrCounty: (value) => setStateOrCounty(value),
         sendUpdateBaselineRequest: () => sendUpdateBaselineRequest(), 
         sendSparsityScoreRequest: () => sendSparsityScoreRequest()
     }
