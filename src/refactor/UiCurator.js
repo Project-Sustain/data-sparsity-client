@@ -1,6 +1,8 @@
 import { useState } from "react";
-import { Box, Drawer, Button, FormGroup, FormControlLabel, Checkbox } from "@mui/material";
+import { Box, Drawer, Divider, Button, IconButton, FormGroup, FormControlLabel, Checkbox } from "@mui/material";
 import { makeStyles } from "@material-ui/core";
+import MenuIcon from '@mui/icons-material/Menu';
+import ChevronLeftIcon from '@mui/icons-material/ChevronLeft';
 
 
 const useStyles = makeStyles({
@@ -13,13 +15,18 @@ const useStyles = makeStyles({
         top: 10,
         left: 10
     },
+    closeButton: {
+        display: 'flex',
+        alignItems: 'center',
+        justifyContent: 'flex-end',
+        marginRight: '10px'
+    },
     formGroup: {
         margin: '10px',
         padding: '10px'
     },
     drawer: {
-        width: 250,
-        height: 250
+        width: 250
     }
 });
 
@@ -39,7 +46,12 @@ export default function UiCurator({Curator}) {
 
     const renderOpenButton = () => {
         if(!open) {
-            return <Button className={classes.openButton} onClick={handleDrawerOpen}>Curator</Button>
+            return  <Button 
+                        className={classes.openButton} 
+                        onClick={handleDrawerOpen}
+                    >
+                        <MenuIcon/>
+                    </Button>
         }
         else return null
     }
@@ -59,8 +71,11 @@ export default function UiCurator({Curator}) {
                     className={classes.drawer}
                     role='presentation'
                 >
+                    <div className={classes.closeButton}>
+                        <IconButton onClick={handleDrawerClose}><ChevronLeftIcon/></IconButton>
+                    </div>
+                    <Divider/>
                     <FormGroup className={classes.formGroup}>
-                        <Button onClick={handleDrawerClose}>Close</Button>
                         {
                             Curator.stateMap.map((element, index) => {
                                 return (
