@@ -12,8 +12,8 @@ export function UseRequest(SparsityFunctions) {
     const [spatialScope, setSpatialScope] = useState('G0800690');
     const [requestParams, setRequestParams] = useState({});
 
-    const [ stateOrCounty, setStateOrCounty ] = useState('COUNTY');
-    const [ requestStatus, setRequestStatus ] = useState('NO REQUEST');
+    const [stateOrCounty, setStateOrCounty] = useState('COUNTY');
+    const [requestStatus, setRequestStatus] = useState('NO REQUEST');
 
 
     // useEffects

@@ -1,13 +1,17 @@
-import { useState, useEffect } from 'react';
-import { makeStyles } from '@material-ui/core';
-import { paperRoot } from '../../library/styles';
+import DashboardComponent from '../DashboardComponent';
+import CollectionSelector from '../../components/request/CollectionSelecter';
 
 
-const useStyles = makeStyles({
-    root: paperRoot
-})
+export default function RequestForm({Request}) {
 
+    return (
+        <DashboardComponent>
+            <CollectionSelector
+                collection={Request.state.collection}
+                setCollection={Request.functions.setCollection}
+                setBaseline={Request.functions.setBaseline}
+            />
+        </DashboardComponent>
+    );
 
-export default function RequestForm({}) {
-    
 }

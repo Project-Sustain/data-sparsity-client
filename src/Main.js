@@ -11,6 +11,7 @@ import Dashbaord from './components/Dashboard';
 import UsMap from './components/UsMap';
 import { Button } from '@mui/material';
 import DeckMap from './refactor/map/DeckMap';
+import RequestForm from './refactor/request/RequestForm';
 
 
 const useStyles = makeStyles({
@@ -35,7 +36,6 @@ export default function App() {
 
 
     // NEW
-
     const Sparsity = UseSiteSparsity();
     const Request = UseRequest(Sparsity.functions);
     const Map = UseDeckMap(Sparsity.state, Request);
@@ -55,6 +55,9 @@ export default function App() {
             <Button className={classes.root} variant='outlined' onClick={Request.functions.sendSparsityScoreRequest}>Test Request</Button>
             <DeckMap
                 Map={Map}
+            />
+            <RequestForm
+                Request={Request}
             />
             {/* <UsMap 
                 mapViewState={mapViewState}

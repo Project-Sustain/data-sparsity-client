@@ -1,38 +1,37 @@
-import { FormControl, InputLabel, Select, MenuItem, } from '@mui/material';
+import { FormControl, InputLabel, Select, MenuItem } from '@mui/material';
 import { makeStyles } from "@material-ui/core";
+import { sparsityMetadata } from '../../library/metadata';
 
 const useStyles = makeStyles({
     root: {
         margin: "10px",
     }
-  });
+});
 
 
-export default function CollectionSelector(props) {
+export default function CollectionSelector({collection, setCollection, setBaseline}) {
     const classes = useStyles();
 
     const updateCollection = (event) => {
         const newCollection = event.target.value;
-        props.setCollection(newCollection);
-        props.setBaseline(newCollection.initialBaseline);
-        props.setCollectionProperties(newCollection.sitePropertyFields);
+        setCollection(newCollection);
+        setBaseline(newCollection.initialBaseline);
     }
 
-    if(props.sparsityMetadata.length > 0) {
+    if(sparsityMetadata.length > 0) {
         return (
-            <FormControl fullWidth className={classes.root}>
+            <FormControl className={classes.root}>
                 <InputLabel>Dataset</InputLabel>
                 <Select
                     MenuProps={{
                         style: {zIndex: 5001}
                     }}
-                    className={classes.select}
-                    value={props.collection}
+                    value={collection}
                     label="Dataset"
                     onChange={updateCollection}
                 >
                     {
-                        props.sparsityMetadata.map((dataset, index) => {
+                        sparsityMetadata.map((dataset, index) => {
                             return (
                                 <MenuItem key={index} value={dataset}>{dataset.label}</MenuItem>
                             );
