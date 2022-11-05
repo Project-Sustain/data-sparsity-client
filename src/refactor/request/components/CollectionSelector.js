@@ -31,8 +31,9 @@ You may add Your own copyright statement to Your modifications and may provide a
 END OF TERMS AND CONDITIONS
 */
 
+
 import { FormControl, InputLabel, Select, MenuItem } from '@mui/material';
-import { sparsityMetadata } from '../../library/metadata';
+import { sparsityMetadata } from '../../../library/metadata';
 
 
 export default function CollectionSelector({ collection, setCollection, setBaseline }) {

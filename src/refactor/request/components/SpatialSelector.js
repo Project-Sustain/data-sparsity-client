@@ -32,94 +32,34 @@ END OF TERMS AND CONDITIONS
 */
 
 
-import { Container, Stack, Button, LinearProgress, ButtonGroup } from '@mui/material';
-import { makeStyles } from '@material-ui/core';
-import DashboardComponent from '../DashboardComponent';
-import CollectionSelector from './components/CollectionSelector';
-import TemporalSlider from './components/TemporalSlider';
-import BaselineSelector from './components/BaselineSelector';
-import SpatialSelector from './components/SpatialSelector';
+
+import { FormControl, InputLabel, Select, MenuItem } from '@mui/material';
 
 
-const useStyles = makeStyles({
-    divider: {
-        width: '25%'
-    }
-});
+export default function SpatialSelector({ stateOrCounty, setStateOrCounty }) {
+    
 
-
-export default function RequestForm({ Request, sparsityDataLength, currentShapeName }) {
-
-    const classes = useStyles();
-
-
-    const renderButtonOrLoading = () => {
-        if(Request.state.requestStatus === 'PENDING') {
-            return (
-                <LinearProgress
-                    color='tertiary'
-                />
-            );
-        }
-        else {
-            return (
-                <ButtonGroup>
-                    <Button onClick={Request.functions.sendSparsityScoreRequest}>
-                        Submit Request: {currentShapeName}
-                    </Button>
-                    <Button
-                        disabled={sparsityDataLength < 1}
-                        onClick={Request.functions.sendUpdateBaselineRequest}
-                    >
-                        Update Baseline
-                    </Button>
-                </ButtonGroup>
-            );
-        }
+    const updateSpatialScope = (event) => {
+        setStateOrCounty(event.target.value);
     }
 
 
     return (
-        <Container maxWidth='md'>
-            <DashboardComponent>
-                <Stack
-                    direction='column'
-                    spacing={1.5}
-                    justifyContent='center'
-                    alignItems='center'
-                >
-                    <Stack
-                        direction='row'
-                        spacing={1}
-                        justifyContent='center'
-                        alignItems='center'
-                    >
-                        <CollectionSelector
-                            collection={Request.state.collection}
-                            setCollection={Request.functions.setCollection}
-                            setBaseline={Request.functions.setBaseline}
-                        />
-                        <BaselineSelector
-                            sendUpdateBaselineRequest={Request.functions.sendUpdateBaselineRequest}
-                            baseline={Request.state.baseline}
-                            setBaseline={Request.functions.setBaseline}
-                        />
-                        <SpatialSelector
-                            stateOrCounty={Request.state.stateOrCounty}
-                            setStateOrCounty={Request.functions.setStateOrCounty}
-                        />
-                    </Stack>
-                    <TemporalSlider
-                        temporalRange={Request.state.temporalRange}
-                        setTemporalRange={Request.functions.setTemporalRange}
-                        min={Request.state.startTime}
-                        max={Request.state.endTime}
-                    />
-                    {renderButtonOrLoading()}
-                </Stack>
-            </DashboardComponent>
-        </Container>
+        <FormControl>
+            <InputLabel>State/County</InputLabel>
+            <Select
+                MenuProps={{
+                    style: {zIndex: 5001}
+                }}
+                value={stateOrCounty}
+                label="SpatialScope"
+                onChange={updateSpatialScope}
+            >
+                <MenuItem value='STATE'>State</MenuItem>
+                <MenuItem value='COUNTY'>County</MenuItem>
+            </Select>
+        </FormControl>
     );
-
-
+    
+    
 }
