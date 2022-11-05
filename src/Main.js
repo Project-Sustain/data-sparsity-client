@@ -1,4 +1,5 @@
 import { useState } from 'react'
+import { makeStyles } from "@material-ui/core";
 
 // Hooks
 import { UseSiteSparsity } from './hooks/UseSiteSparsity';
@@ -12,7 +13,19 @@ import { Button } from '@mui/material';
 import DeckMap from './refactor/DeckMap';
 
 
+const useStyles = makeStyles({
+    root: {
+        zIndex: 5000,
+        opacity: 0.9,
+        margin: '10px',
+        padding: '10px',
+        width: '10vw'
+    }
+})
+
+
 export default function App() {
+    const classes = useStyles();
 
     // OLD
     const [selectedIndex, setSelectedIndex] = useState(0);
@@ -30,7 +43,7 @@ export default function App() {
         bearing: 0
     });
     const [ currentShapeName, setCurrentShapeName ] = useState('Colorado');
-    const [ stateOrCounty, setStateOrCounty ] = useState('STATE');
+    const [ stateOrCounty, setStateOrCounty ] = useState('COUNTY');
     const [ spatialScope, setSpatialScope ] = useState('G0800690');
     const [ requestStatus, setRequestStatus ] = useState('NO REQUEST');
 
@@ -40,7 +53,7 @@ export default function App() {
 
     return (
         <>
-            <Button variant='outlined' onClick={Request.functions.sendSparsityScoreRequest}>Test Request</Button>
+            <Button className={classes.root} variant='outlined' onClick={Request.functions.sendSparsityScoreRequest}>Test Request</Button>
             <DeckMap
                 stateLayer={Map.state.stateLayer}
                 countyLayer={Map.state.countyLayer}
