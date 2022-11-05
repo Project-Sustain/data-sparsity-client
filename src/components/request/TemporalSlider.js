@@ -9,25 +9,28 @@ const useStyles = makeStyles({
     }
 });
 
-export default function TemporalSlider(props) {
+export default function TemporalSlider({temporalRange, setTemporalRange, min, max}) {
     const classes = useStyles();
+
+
     const handleChange = (event, newValue) => {
-        props.setTemporalRange(newValue);
+        setTemporalRange(newValue);
     };
 
     function valueText(value) {
         return moment.unix(value/1000).format('MM/DD/YYYY');
     }
 
-  if(props.temporalRange.length > 0 && props.min && props.max) {
+
+  if(temporalRange && min && max) {
     return (
         <FormControl className={classes.root}>
-            <FormLabel id='temporalSlider' align='center'>{valueText(props.temporalRange[0])} - {valueText(props.temporalRange[1])}</FormLabel>
+            <FormLabel id='temporalSlider' align='center'>{valueText(temporalRange[0])} - {valueText(temporalRange[1])}</FormLabel>
             <Slider
                 aria-labelledby='temporalSlider'
-                min={props.min}
-                max={props.max}
-                value={props.temporalRange}
+                min={min}
+                max={max}
+                value={temporalRange}
                 onChange={handleChange}
                 valueLabelDisplay="auto"
                 disableSwap

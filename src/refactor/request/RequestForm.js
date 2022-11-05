@@ -1,11 +1,33 @@
+import { Container, Grid, Button } from '@mui/material';
 import DashboardComponent from '../DashboardComponent';
 import CollectionSelector from '../../components/request/CollectionSelecter';
-import { Container, Grid, Button } from '@mui/material';
 import BaselineRadios from '../../components/request/BaselineRadios';
 import SpatialRadios from '../../components/request/SpatialRadios';
+import TemporalSlider from '../../components/request/TemporalSlider';
+import { LinearProgress } from '@mui/material';
 
 
 export default function RequestForm({Request, currentShapeName}) {
+
+
+    const renderButtonOrLoading = () => {
+        if(Request.state.requestStatus === 'PENDING') {
+            return (
+                <LinearProgress/>
+            );
+        }
+        else {
+            return (
+                <Button
+                    fullWidth
+                    variant='outlined'
+                    onClick={Request.functions.sendSparsityScoreRequest}
+                >
+                    Submit Request
+                </Button>
+            );
+        }
+    }
 
 
     return (
@@ -39,13 +61,15 @@ export default function RequestForm({Request, currentShapeName}) {
                         />
                     </Grid>
                     <Grid item xs={12}>
-                        <Button
-                            fullWidth
-                            variant='outlined'
-                            onClick={Request.functions.sendSparsityScoreRequest}
-                        >
-                            Submit Request
-                        </Button>
+                        <TemporalSlider
+                            temporalRange={Request.state.temporalRange}
+                            setTemporalRange={Request.functions.setTemporalRange}
+                            min={Request.state.startTime}
+                            max={Request.state.endTime}
+                        />
+                    </Grid>
+                    <Grid item xs={12}>
+                        {renderButtonOrLoading()}
                     </Grid>
                 </Grid>
             </DashboardComponent>

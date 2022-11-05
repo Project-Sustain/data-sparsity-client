@@ -1,4 +1,4 @@
-import { Stack, Typography } from '@mui/material';
+import { Stack } from '@mui/material';
 import { FormControl, FormControlLabel, Radio, RadioGroup, FormLabel } from '@mui/material';
 
 export default function SpatialRadios({stateOrCounty, setStateOrCounty, currentShapeName}) {

@@ -7,11 +7,13 @@ export function UseRequest(SparsityFunctions) {
     
     // State
     const [collection, setCollection] = useState(sparsityMetadata[0]);
-    const [temporalRange, setTemporalRange] = useState([]);
     const [baseline, setBaseline] = useState(sparsityMetadata[0].initialBaseline);
     const [spatialScope, setSpatialScope] = useState('G0800690');
     const [requestParams, setRequestParams] = useState({});
+    const [startTime, setStartTime] = useState();
+    const [endTime, setEndTime] = useState();
 
+    const [temporalRange, setTemporalRange] = useState([]);
     const [stateOrCounty, setStateOrCounty] = useState('COUNTY');
     const [requestStatus, setRequestStatus] = useState('NO REQUEST');
 
@@ -35,7 +37,12 @@ export function UseRequest(SparsityFunctions) {
         (async () => {
             const response = await Api.sendJsonRequest("temporalRange", {'collectionName': collection.collection});
             if(response) {
-                setTemporalRange([parseInt(response.firstTime), parseInt(response.lastTime)]);
+                console.log({response})
+                const first = parseInt(response.firstTime);
+                const last = parseInt(response.lastTime)
+                setTemporalRange([first, last]);
+                setStartTime(first);
+                setEndTime(last);
             }
             else console.log("ERROR sending temporalRange request");
         })();
@@ -80,14 +87,13 @@ export function UseRequest(SparsityFunctions) {
 
 
     // Return Vals
-    const state = { requestParams, collection, spatialScope, requestStatus, stateOrCounty, baseline }
+    const state = { requestParams, collection, spatialScope, requestStatus, stateOrCounty, temporalRange, baseline, startTime, endTime }
 
     const functions = {
         setCollection: (collection) => setCollection(collection), 
         setTemporalRange: (range) => setTemporalRange(range), 
         setBaseline: (baseline) => setBaseline(baseline), 
         setSpatialScope: (scope) => setSpatialScope(scope),
-        setRequestStatus: (status) => setRequestStatus(status),
         setStateOrCounty: (value) => setStateOrCounty(value),
         sendUpdateBaselineRequest: () => sendUpdateBaselineRequest(), 
         sendSparsityScoreRequest: () => sendSparsityScoreRequest()
