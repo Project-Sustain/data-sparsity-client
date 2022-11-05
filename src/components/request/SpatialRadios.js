@@ -1,10 +1,10 @@
 import { Stack, Typography } from '@mui/material';
 import { FormControl, FormControlLabel, Radio, RadioGroup, FormLabel } from '@mui/material';
 
-export default function SpatialRadios(props) {
+export default function SpatialRadios({stateOrCounty, setStateOrCounty, currentShapeName}) {
 
     const updateSpatialScope = (event) => {
-        props.setShapefileCollection(event.target.value);
+        setStateOrCounty(event.target.value);
     }
 
     return (
@@ -14,18 +14,17 @@ export default function SpatialRadios(props) {
             alignItems="center"
         >
             <FormControl fullWidth>
-                <FormLabel id="spatial-scope">Spatial Scope</FormLabel>
+                <FormLabel id="spatial-scope">{currentShapeName}</FormLabel>
                 <RadioGroup
                     row
                     aria-labelledby="spatial-scope"
-                    value={props.shapefileCollection}
+                    value={stateOrCounty}
                     onChange={updateSpatialScope}
                 >
                     <FormControlLabel value="STATE" control={<Radio />} label="State" />
                     <FormControlLabel value="COUNTY" control={<Radio />} label="County" />
                 </RadioGroup>
             </FormControl>
-            <Typography>Selected: {props.currentShapeName}</Typography>
         </Stack>
     );
     

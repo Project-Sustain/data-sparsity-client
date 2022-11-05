@@ -45,7 +45,6 @@ export function UseDeckMap(SparsityState, Request) {
             getColor: d => d.color,
             getFillColor: d => d.color
         });
-        console.log({layer})
         setIconLayer([layer])
     }, [SparsityState.sparsityData]);
 

@@ -80,7 +80,7 @@ export function UseRequest(SparsityFunctions) {
 
 
     // Return Vals
-    const state = { requestParams, collection, spatialScope, requestStatus, stateOrCounty }
+    const state = { requestParams, collection, spatialScope, requestStatus, stateOrCounty, baseline }
 
     const functions = {
         setCollection: (collection) => setCollection(collection), 

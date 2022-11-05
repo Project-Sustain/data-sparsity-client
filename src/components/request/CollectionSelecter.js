@@ -20,7 +20,7 @@ export default function CollectionSelector({collection, setCollection, setBaseli
 
     if(sparsityMetadata.length > 0) {
         return (
-            <FormControl className={classes.root}>
+            <FormControl fullWidth className={classes.root}>
                 <InputLabel>Dataset</InputLabel>
                 <Select
                     MenuProps={{
