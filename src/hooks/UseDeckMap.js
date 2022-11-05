@@ -110,11 +110,16 @@ export function UseDeckMap(SparsityState, Request) {
             lineWidthMinPixels: lineWidth,
             getLineWidth: 1,
             onClick: onShapeClick
-        })
+        });
     };
 
-    function getTooltip({object}) {
-        return object && `${object.name}`;
+    const getTooltip = ({object}) => {
+        if(object && object.name) {
+            return object && `${object.name}`;
+        }
+        else {
+            return object && `Sparsity Score: ${object.sparsityScore}\nSite Mean: ${object.siteMean}\nNumber of Observations: ${object.numberOfMeasurements}`
+        }
     };
 
 

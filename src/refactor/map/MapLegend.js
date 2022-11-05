@@ -13,7 +13,6 @@ const useStyles = makeStyles({
 
 
 export default function MapLegend({visible, min, max, requestStatus, close}) {
-    console.log({requestStatus})
 
     const classes = useStyles();
     const numberOfBins = 7;
