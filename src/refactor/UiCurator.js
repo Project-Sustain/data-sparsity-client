@@ -2,13 +2,13 @@ import { FormGroup, FormControlLabel, Checkbox } from "@mui/material";
 import DashboardComponent from "./utilityComponents/DashboardComponent";
 
 
-export default function UiCurator({Curator}) {
+export default function UiCurator({CuratorMap}) {
 
     return (
         <DashboardComponent>
             <FormGroup>
                 {
-                    Curator.state.map((element, index) => {
+                    CuratorMap.map((element, index) => {
                         return (
                             <FormControlLabel
                                 key={index}

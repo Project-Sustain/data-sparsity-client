@@ -69,9 +69,10 @@ export default function App() {
                 Map={Map}
             />
             <UiCurator
-                Curator={Curator}
+                CuratorMap={Curator.map}
             />
             <RequestForm
+                visible={Curator.state.viewRequestForm}
                 Request={Request}
                 sparsityDataLength={Sparsity.state.sparsityData.length}
                 currentShapeName={Map.state.currentShapeName}

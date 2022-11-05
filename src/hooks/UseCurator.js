@@ -5,24 +5,26 @@ export function UseCurator() {
 
 
     // State
-    const [viewRequest, setViewRequest] = useState(true);
+    const [viewRequestForm, setViewRequestForm] = useState(true);
     const [viewMapLegend, setViewMapLegend] = useState(false);
 
 
     // Functions
-    const updateViewRequest = () => setViewRequest(!viewRequest)
+    const updateViewRequest = () => setViewRequestForm(!viewRequestForm)
     const updateViewMapLegend = () => setViewMapLegend(!viewMapLegend)
 
 
     // Return Vals
-    const state = [
-        { 'state': viewRequest, 'function': updateViewRequest, 'name': 'Request Form' },
+    const state = { viewRequestForm, viewMapLegend }
+
+    const map = [
+        { 'state': viewRequestForm, 'function': updateViewRequest, 'name': 'Request Form' },
         { 'state': viewMapLegend, 'function': updateViewMapLegend, 'name': 'Map Legend' },
     ]
 
 
     // Return
-    return { state };
+    return { state, map };
 
 
 }

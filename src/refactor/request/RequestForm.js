@@ -48,7 +48,7 @@ const useStyles = makeStyles({
 });
 
 
-export default function RequestForm({ Request, sparsityDataLength, currentShapeName }) {
+export default function RequestForm({ visible, Request, sparsityDataLength, currentShapeName }) {
 
     const classes = useStyles();
 
@@ -79,47 +79,51 @@ export default function RequestForm({ Request, sparsityDataLength, currentShapeN
     }
 
 
-    return (
-        <Container maxWidth='sm'>
-            <DashboardComponent>
-                <Stack
-                    direction='column'
-                    spacing={1.5}
-                    justifyContent='center'
-                    alignItems='center'
-                >
+    if(visible) {
+        return (
+            <Container maxWidth='sm'>
+                <DashboardComponent>
                     <Stack
-                        direction='row'
-                        spacing={1}
+                        direction='column'
+                        spacing={1.5}
                         justifyContent='center'
                         alignItems='center'
                     >
-                        <CollectionSelector
-                            collection={Request.state.collection}
-                            setCollection={Request.functions.setCollection}
-                            setBaseline={Request.functions.setBaseline}
+                        <Stack
+                            direction='row'
+                            spacing={1}
+                            justifyContent='center'
+                            alignItems='center'
+                        >
+                            <CollectionSelector
+                                collection={Request.state.collection}
+                                setCollection={Request.functions.setCollection}
+                                setBaseline={Request.functions.setBaseline}
+                            />
+                            <BaselineSelector
+                                sendUpdateBaselineRequest={Request.functions.sendUpdateBaselineRequest}
+                                baseline={Request.state.baseline}
+                                setBaseline={Request.functions.setBaseline}
+                            />
+                            <SpatialSelector
+                                stateOrCounty={Request.state.stateOrCounty}
+                                setStateOrCounty={Request.functions.setStateOrCounty}
+                            />
+                        </Stack>
+                        <TemporalSlider
+                            temporalRange={Request.state.temporalRange}
+                            setTemporalRange={Request.functions.setTemporalRange}
+                            min={Request.state.startTime}
+                            max={Request.state.endTime}
                         />
-                        <BaselineSelector
-                            sendUpdateBaselineRequest={Request.functions.sendUpdateBaselineRequest}
-                            baseline={Request.state.baseline}
-                            setBaseline={Request.functions.setBaseline}
-                        />
-                        <SpatialSelector
-                            stateOrCounty={Request.state.stateOrCounty}
-                            setStateOrCounty={Request.functions.setStateOrCounty}
-                        />
+                        {renderButtonOrLoading()}
                     </Stack>
-                    <TemporalSlider
-                        temporalRange={Request.state.temporalRange}
-                        setTemporalRange={Request.functions.setTemporalRange}
-                        min={Request.state.startTime}
-                        max={Request.state.endTime}
-                    />
-                    {renderButtonOrLoading()}
-                </Stack>
-            </DashboardComponent>
-        </Container>
-    );
+                </DashboardComponent>
+            </Container>
+        );
+    }
+
+    else return null;
 
 
 }
