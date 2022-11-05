@@ -52,7 +52,6 @@ export default function App() {
 
     return (
         <>
-            <Button className={classes.root} variant='outlined' onClick={Request.functions.sendSparsityScoreRequest}>Test Request</Button>
             <DeckMap
                 Map={Map}
             />

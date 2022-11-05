@@ -1,5 +1,6 @@
 import DashboardComponent from '../DashboardComponent';
 import CollectionSelector from '../../components/request/CollectionSelecter';
+import { Button } from '@mui/material';
 
 
 export default function RequestForm({Request}) {
@@ -11,6 +12,12 @@ export default function RequestForm({Request}) {
                 setCollection={Request.functions.setCollection}
                 setBaseline={Request.functions.setBaseline}
             />
+            <Button
+                variant='outlined'
+                onClick={Request.functions.sendSparsityScoreRequest}
+            >
+                Submit Request
+            </Button>
         </DashboardComponent>
     );
 
