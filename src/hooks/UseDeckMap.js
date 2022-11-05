@@ -23,10 +23,12 @@ export function UseDeckMap(sparsityData, setCurrentShapeName, setSpatialScope, s
 
     // useEffects
     useEffect(() => {
+        console.log('useEffect to set the IconLayer')
+        console.log({sparsityData})
         const layer = new IconLayer({
             id: 'icon-layer',
             pickable: true,
-            sparsityData,
+            data: sparsityData,
             iconAtlas: 'https://raw.githubusercontent.com/visgl/deck.gl-data/master/website/icon-atlas.png',
             iconMapping: ICON_MAPPING,
             sizeScale: 15,
@@ -36,6 +38,7 @@ export function UseDeckMap(sparsityData, setCurrentShapeName, setSpatialScope, s
             getColor: d => d.color,
             getFillColor: d => d.color
         });
+        console.log({layer})
         setIconLayer([layer])
     }, [sparsityData]);
 
