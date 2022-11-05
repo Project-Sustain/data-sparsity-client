@@ -66,27 +66,29 @@ export default function App() {
             <DeckMap
                 Map={Map}
             />
-            <UiCurator
-                Curator={Curator}
-                requestStatus={Request.state.requestStatus}
-            />
             <Stack
                 direction="row"
-                justifyContent="center"
+                justifyContent="space-between"
                 alignItems="flex-start"
                 spacing={2}
             >
+                <UiCurator
+                    Curator={Curator}
+                    requestStatus={Request.state.requestStatus}
+                />
                 <RequestForm
                     visible={Curator.state.viewRequestForm}
                     Request={Request}
                     sparsityDataLength={Sparsity.state.sparsityData.length}
                     currentShapeName={Map.state.currentShapeName}
+                    close={Curator.functions.updateViewRequest}
                 />
                 <MapLegend
                     visible={Curator.state.viewMapLegend}
                     min={Sparsity.state.scores[0]}
                     max={Sparsity.state.scores[Sparsity.state.scores.length-1]}
                     requestStatus={Request.state.requestStatus}
+                    close={Curator.functions.updateViewMapLegend}
                 />
             </Stack>
         </>

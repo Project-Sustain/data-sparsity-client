@@ -48,7 +48,7 @@ const useStyles = makeStyles({
 });
 
 
-export default function RequestForm({ visible, Request, sparsityDataLength, currentShapeName }) {
+export default function RequestForm({ visible, Request, sparsityDataLength, currentShapeName, close }) {
 
     const classes = useStyles();
 
@@ -73,6 +73,7 @@ export default function RequestForm({ visible, Request, sparsityDataLength, curr
                     >
                         Update Baseline
                     </Button>
+                    <Button onClick={close}>Close</Button>
                 </ButtonGroup>
             );
         }

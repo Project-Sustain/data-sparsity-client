@@ -17,6 +17,8 @@ export function UseCurator() {
     // Return Vals
     const state = { viewRequestForm, viewMapLegend }
 
+    const functions = { updateViewRequest, updateViewMapLegend }
+
     const stateMap = [
         { 'state': viewRequestForm, 'function': updateViewRequest, 'name': 'Request Form' },
         { 'state': viewMapLegend, 'function': updateViewMapLegend, 'name': 'Map Legend' },
@@ -24,7 +26,7 @@ export function UseCurator() {
 
 
     // Return
-    return { state, stateMap };
+    return { state, functions, stateMap };
 
 
 }

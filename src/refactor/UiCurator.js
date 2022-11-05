@@ -44,31 +44,28 @@ export default function UiCurator({Curator, requestStatus}) {
         setOpen(false);
     }
 
-    const renderOpenButton = () => {
-        if(!open) {
-            return  <IconButton 
-                        className={classes.openButton} 
-                        onClick={handleDrawerOpen}
-                    >
-                        <MenuIcon/>
-                    </IconButton>
-        }
-        else return null
-    }
-
+    /**
+     * Only display Request Form & Map Legend until data returns, then display all
+     * @returns Array of Curator.stateMap items
+     */
     const getOptionsList = () => {
         if(requestStatus === 'VALID') {
             return Curator.stateMap;
         }
         else {
-            return [Curator.stateMap[0]];
+            return [Curator.stateMap[0], Curator.stateMap[1]];
         }
     }
 
 
     return (
         <>
-            {renderOpenButton()}
+            <IconButton 
+                className={classes.openButton} 
+                onClick={handleDrawerOpen}
+            >
+                <MenuIcon/>
+            </IconButton>
             <Drawer
                 className={classes.root}
                 variant='persistent'
