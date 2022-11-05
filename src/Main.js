@@ -43,7 +43,7 @@ import { UseCurator } from './hooks/UseCurator';
 // Components
 import DeckMap from './refactor/map/DeckMap';
 import RequestForm from './refactor/request/RequestForm';
-import UiCurator from './refactor/UiCurator';
+import DataDashboard from './refactor/dataDashboard/DataDashboard';
 import MapLegend from './refactor/map/MapLegend';
 
 
@@ -58,6 +58,7 @@ export default function App() {
     /**
      * Sunday 11/6
      * Add dashboard components
+     * Try putting them all into a drawer that pops up from the bottom
      */
 
 
@@ -72,7 +73,7 @@ export default function App() {
                 alignItems="flex-start"
                 spacing={2}
             >
-                <UiCurator
+                <DataDashboard
                     Curator={Curator}
                     requestStatus={Request.state.requestStatus}
                 />
