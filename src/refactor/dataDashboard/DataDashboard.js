@@ -3,13 +3,14 @@ import { Box, Drawer, Divider, IconButton } from "@mui/material";
 import { makeStyles } from "@material-ui/core";
 import MenuIcon from '@mui/icons-material/Menu';
 import { Typography } from "@mui/material";
-import UiCurator from "../UiCurator";
+import UiCurator from "./UiCurator";
 
 
 const useStyles = makeStyles({
     root: {
         zIndex: 5000,
-        opacity: 0.9
+        opacity: 0.9,
+        overflow: 'auto'
     },
     openButton: {
         position: 'fixed',
