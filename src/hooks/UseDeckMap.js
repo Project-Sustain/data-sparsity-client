@@ -4,7 +4,7 @@ import { Api } from '../library/Api';
 import { colors } from '../library/colors';
 import chroma from 'chroma-js';
 
-export function UseDeckMap({sparsityData, setCurrentShapeName, setSpatialScope, stateOrCounty}) {
+export function UseDeckMap(sparsityData, setCurrentShapeName, setSpatialScope, stateOrCounty) {
 
     // Constants
     const countyColors = chroma.scale([colors.countyLight, colors.countyDark]).colors(15);
