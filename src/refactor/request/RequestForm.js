@@ -1,10 +1,9 @@
-import { Container, Grid, Button } from '@mui/material';
+import { Container, Grid, Button, LinearProgress } from '@mui/material';
 import DashboardComponent from '../DashboardComponent';
 import CollectionSelector from '../../components/request/CollectionSelecter';
 import BaselineRadios from '../../components/request/BaselineRadios';
 import SpatialRadios from '../../components/request/SpatialRadios';
 import TemporalSlider from '../../components/request/TemporalSlider';
-import { LinearProgress } from '@mui/material';
 
 
 export default function RequestForm({Request, currentShapeName}) {
@@ -13,7 +12,9 @@ export default function RequestForm({Request, currentShapeName}) {
     const renderButtonOrLoading = () => {
         if(Request.state.requestStatus === 'PENDING') {
             return (
-                <LinearProgress/>
+                <LinearProgress
+                    color='tertiary'
+                />
             );
         }
         else {
