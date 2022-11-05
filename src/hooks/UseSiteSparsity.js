@@ -21,13 +21,13 @@ export function UseSiteSparsity() {
     }, [numberOfResponses]);
 
     useEffect(() => {
-        let tempScores = sparsityData.map((siteData) => {return siteData.sparsityScore});
+        let tempScores = sparsityData.map((siteData) => { return siteData.sparsityScore });
         tempScores.sort();
         setScores(tempScores);
     }, [numberOfResponses]);
 
     useEffect(() => {
-        const numberOfUniqueScores = new Set(scores).length;
+        const numberOfUniqueScores = new Set(scores).size;
         const tempGradient = chroma.scale([colors.tertiary, colors.primary]).colors(numberOfUniqueScores);
         setColorGradient(tempGradient);
     }, [scores]);

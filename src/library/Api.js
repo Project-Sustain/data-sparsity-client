@@ -19,7 +19,7 @@ export class Api {
         return body;
     }
 
-    static sendBaselineRequest = async(baseline, setStatus, setSparsityData, setRequest) => {
+    static sendBaselineRequest = async(baseline, setStatus, setSparsityData, incrementNumberOfResponses) => {
 
         setStatus("PENDING");
         setSparsityData([]);
@@ -46,6 +46,7 @@ export class Api {
                     const formattedResults = formatResults(streamedResults);
                     setSparsityData(formattedResults);
                     setStatus("VALID");
+                    incrementNumberOfResponses();
                 }
                 else {
                     setStatus("INVALID");

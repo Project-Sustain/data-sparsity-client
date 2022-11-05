@@ -3,13 +3,8 @@ import { sparsityMetadata } from "../library/metadata";
 import { Api } from "../library/Api";
 
 export function UseRequest(setSparsityData, setSparsityStats, spatialScope, setRequestStatus, incrementNumberOfResponses) {
-// export function UseRequest(props) {
 
-    /**
-     * Working on fixing incoming args to this hook. Try {} around call in Main.js? Then don't need props?
-     */
-    console.log({setSparsityData})
-
+    
     // State
     const [collection, setCollection] = useState(sparsityMetadata[0]);
     const [temporalRange, setTemporalRange] = useState([]);
@@ -65,8 +60,7 @@ export function UseRequest(setSparsityData, setSparsityStats, spatialScope, setR
                 'stdDevSparsity': response.sparsityStats[3]
             });
 
-            Api.sendBaselineRequest(baseline, setRequestStatus, setSparsityData, null);
-            incrementNumberOfResponses();
+            Api.sendBaselineRequest(baseline, setRequestStatus, setSparsityData, incrementNumberOfResponses);
         }
         
         else {
@@ -77,8 +71,7 @@ export function UseRequest(setSparsityData, setSparsityStats, spatialScope, setR
     }
 
     const sendUpdateBaselineRequest = async() => {
-        Api.sendBaselineRequest(baseline, setRequestStatus, setSparsityData, null);
-        incrementNumberOfResponses();
+        Api.sendBaselineRequest(baseline, setRequestStatus, setSparsityData, incrementNumberOfResponses);
     }
 
 
