@@ -9,6 +9,7 @@ import { UseDeckMap } from './hooks/UseDeckMap';
 import Dashbaord from './components/Dashboard';
 import UsMap from './components/UsMap';
 import { Button } from '@mui/material';
+import DeckMap from './refactor/DeckMap';
 
 
 export default function App() {
@@ -36,13 +37,18 @@ export default function App() {
     const Sparsity = UseSiteSparsity();
     const Request = UseRequest(Sparsity.functions.setSparsityData, Sparsity.functions.setSparsityStats, spatialScope, setRequestStatus, Sparsity.functions.incrementNumberOfResponses);
     const Map = UseDeckMap(Sparsity.state.sparsityData, setCurrentShapeName, setSpatialScope, stateOrCounty);
-    console.log({Sparsity})
-    console.log({Request})
-    console.log({Map})
 
     return (
         <>
             <Button variant='outlined' onClick={Request.functions.sendSparsityScoreRequest}>Test Request</Button>
+            <DeckMap
+                stateLayer={Map.state.stateLayer}
+                countyLayer={Map.state.countyLayer}
+                iconLayer={Map.state.iconLayer}
+                mapViewState={mapViewState}
+                setMapViewState={setMapViewState}
+                getTooltip={Map.functions.getTooltip}
+            />
             {/* <UsMap 
                 mapViewState={mapViewState}
                 setMapViewState={setMapViewState}

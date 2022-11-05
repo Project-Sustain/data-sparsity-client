@@ -50,7 +50,7 @@ export function UseDeckMap(sparsityData, setCurrentShapeName, setSpatialScope, s
         if(stateOrCounty === 'COUNTY') {
             const setters = [setCountyLayer];
             const params = { 'collection': 'county_geo', 'state': selectedState };
-            sendShapefileRequest(setters, params, setCountyLayer, countyColors, 'countylayer');
+            sendShapefileRequest(setters, params, setCountyLayer, countyColors, 'countylayer', handleCountyClick);
         }
         else {
           setCountyLayer([]);
@@ -60,7 +60,7 @@ export function UseDeckMap(sparsityData, setCurrentShapeName, setSpatialScope, s
     useEffect(() => {
         const setters = [setStateLayer, setCountyLayer];
         const params = { 'collection': 'state_geo','state': '' }
-        sendShapefileRequest(setters, params, setStateLayer, stateColors, 'statelayer');
+        sendShapefileRequest(setters, params, setStateLayer, stateColors, 'statelayer', handleStateClick);
     }, []);
 
 
@@ -76,7 +76,7 @@ export function UseDeckMap(sparsityData, setCurrentShapeName, setSpatialScope, s
 
     let shapefileIterator;
 
-    const sendShapefileRequest = async(layersToClear, params, layerToSet, colorMap, layerId) => {
+    const sendShapefileRequest = async(layersToClear, params, layerToSet, colorMap, layerId, onShapeClick) => {
         layersToClear.forEach(setter => setter([]));
         const body = Api.getRequestBody(params);
         let reader;
@@ -84,7 +84,7 @@ export function UseDeckMap(sparsityData, setCurrentShapeName, setSpatialScope, s
             reader = response.body.getReader();
         });
         shapefileIterator = await Api.createIterator(reader, colorMap);
-        const layer = getGeoJsonLayer(layerId, shapefileIterator, handleStateClick, 2);
+        const layer = getGeoJsonLayer(layerId, shapefileIterator, onShapeClick, 2);
         layerToSet([layer]);
     };
 
@@ -113,8 +113,6 @@ export function UseDeckMap(sparsityData, setCurrentShapeName, setSpatialScope, s
     const state = { iconLayer, countyLayer, stateLayer };
 
     const functions = {
-        handleStateClick: (info, event) => handleStateClick(info, event),
-        handleCountyClick: (info, event) => handleCountyClick(info, event),
         getTooltip: (object) => getTooltip(object)
     };
 
