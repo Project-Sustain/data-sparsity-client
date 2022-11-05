@@ -10,7 +10,7 @@ import { UseDeckMap } from './hooks/UseDeckMap';
 import Dashbaord from './components/Dashboard';
 import UsMap from './components/UsMap';
 import { Button } from '@mui/material';
-import DeckMap from './refactor/DeckMap';
+import DeckMap from './refactor/map/DeckMap';
 
 
 const useStyles = makeStyles({
@@ -35,13 +35,6 @@ export default function App() {
 
 
     // NEW
-    const [mapViewState, setMapViewState] = useState({
-        longitude: -98.5795,
-        latitude: 39.8283,
-        zoom: 4.3,
-        pitch: 30,
-        bearing: 0
-    });
     const [ currentShapeName, setCurrentShapeName ] = useState('Colorado');
     const [ stateOrCounty, setStateOrCounty ] = useState('COUNTY');
     const [ spatialScope, setSpatialScope ] = useState('G0800690');
@@ -65,12 +58,7 @@ export default function App() {
         <>
             <Button className={classes.root} variant='outlined' onClick={Request.functions.sendSparsityScoreRequest}>Test Request</Button>
             <DeckMap
-                stateLayer={Map.state.stateLayer}
-                countyLayer={Map.state.countyLayer}
-                iconLayer={Map.state.iconLayer}
-                mapViewState={mapViewState}
-                setMapViewState={setMapViewState}
-                getTooltip={Map.functions.getTooltip}
+                Map={Map}
             />
             {/* <UsMap 
                 mapViewState={mapViewState}

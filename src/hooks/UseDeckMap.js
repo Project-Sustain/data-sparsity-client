@@ -21,6 +21,15 @@ export function UseDeckMap(sparsityData, setCurrentShapeName, setSpatialScope, s
     const [selectedShape, setSelectedShape] = useState({});
 
 
+    const [mapViewState, setMapViewState] = useState({
+        longitude: -98.5795,
+        latitude: 39.8283,
+        zoom: 4.3,
+        pitch: 30,
+        bearing: 0
+    });
+
+
     // useEffects
     useEffect(() => {
         console.log('useEffect to set the IconLayer')
@@ -113,9 +122,10 @@ export function UseDeckMap(sparsityData, setCurrentShapeName, setSpatialScope, s
 
 
     // Return Vals
-    const state = { iconLayer, countyLayer, stateLayer };
+    const state = { iconLayer, countyLayer, stateLayer, mapViewState };
 
     const functions = {
+        setMapViewState: (viewState) => setMapViewState(viewState),
         getTooltip: (object) => getTooltip(object)
     };
 

@@ -73,6 +73,6 @@ export function UseSiteSparsity() {
 
 
     // Return
-    return {state, functions};
+    return { state, functions };
 
 }
