@@ -37,7 +37,6 @@ export function UseRequest(SparsityFunctions) {
         (async () => {
             const response = await Api.sendJsonRequest("temporalRange", {'collectionName': collection.collection});
             if(response) {
-                console.log({response})
                 const first = parseInt(response.firstTime);
                 const last = parseInt(response.lastTime)
                 setTemporalRange([first, last]);

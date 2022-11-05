@@ -1,7 +1,7 @@
-import { FormControl, FormControlLabel, Radio, RadioGroup, FormLabel, Button } from '@mui/material';
+import { FormControl, FormControlLabel, Radio, RadioGroup, FormLabel } from '@mui/material';
 
 
-export default function BaselineRadios({sendUpdateBaselineRequest, baseline, setBaseline}) {
+export default function BaselineRadios({baseline, setBaseline}) {
 
 
     const updateBaseline = (event) => {
@@ -11,12 +11,9 @@ export default function BaselineRadios({sendUpdateBaselineRequest, baseline, set
 
     return (
         <FormControl>
-            <FormLabel id="spatial-scope">
-                <Button onClick={sendUpdateBaselineRequest}>Update Baseline</Button>
-                </FormLabel>
+            <FormLabel>Baseline</FormLabel>
             <RadioGroup
                 row
-                aria-labelledby="baseline"
                 value={baseline}
                 onChange={updateBaseline}
             >

@@ -31,46 +31,36 @@ You may add Your own copyright statement to Your modifications and may provide a
 END OF TERMS AND CONDITIONS
 */
 
-// Hooks
-import { UseSiteSparsity } from './hooks/UseSiteSparsity';
-import { UseRequest } from './hooks/UseRequest';
-import { UseDeckMap } from './hooks/UseDeckMap';
-
-// Components
-import DeckMap from './refactor/map/DeckMap';
-import RequestForm from './refactor/request/RequestForm';
+import { FormControl, InputLabel, Select, MenuItem } from '@mui/material';
 
 
-export default function App() {
+export default function BaselineSelector({ baseline, setBaseline }) {
+    
 
-
-    const Sparsity = UseSiteSparsity();
-    const Request = UseRequest(Sparsity.functions);
-    const Map = UseDeckMap(Sparsity.state, Request);
-
-    /**
-     * Saturday 11/5
-     * Add request form to map
-     * Get request form working with hooks
-     * Get icons on map for any state/county
-     * 
-     * Sunday 11/6
-     * Add dashboard components
-     */
+    const updateBaseline = (event) => {
+        setBaseline(Number(event.target.value));
+    }
 
 
     return (
-        <>
-            <DeckMap
-                Map={Map}
-            />
-            <RequestForm
-                Request={Request}
-                sparsityDataLength={Sparsity.state.sparsityData.length}
-                currentShapeName={Map.state.currentShapeName}
-            />
-        </>
+        <FormControl>
+            <InputLabel>Baseline</InputLabel>
+            <Select
+                MenuProps={{
+                    style: {zIndex: 5001}
+                }}
+                value={baseline}
+                label="Baseline"
+                onChange={updateBaseline}
+            >
+                <MenuItem value='60000'>Minute</MenuItem>
+                <MenuItem value='3600000'>Hour</MenuItem>
+                <MenuItem value='86400000'>Day</MenuItem>
+                <MenuItem value='604800000'>Week</MenuItem>
+                <MenuItem value='2629800000'>Month</MenuItem>
+            </Select>
+        </FormControl>
     );
-
-
+    
+    
 }

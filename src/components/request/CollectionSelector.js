@@ -31,46 +31,42 @@ You may add Your own copyright statement to Your modifications and may provide a
 END OF TERMS AND CONDITIONS
 */
 
-// Hooks
-import { UseSiteSparsity } from './hooks/UseSiteSparsity';
-import { UseRequest } from './hooks/UseRequest';
-import { UseDeckMap } from './hooks/UseDeckMap';
-
-// Components
-import DeckMap from './refactor/map/DeckMap';
-import RequestForm from './refactor/request/RequestForm';
+import { FormControl, InputLabel, Select, MenuItem } from '@mui/material';
+import { sparsityMetadata } from '../../library/metadata';
 
 
-export default function App() {
+export default function CollectionSelector({ collection, setCollection, setBaseline }) {
 
+    const updateCollection = (event) => {
+        const newCollection = event.target.value;
+        setCollection(newCollection);
+        setBaseline(newCollection.initialBaseline);
+    }
 
-    const Sparsity = UseSiteSparsity();
-    const Request = UseRequest(Sparsity.functions);
-    const Map = UseDeckMap(Sparsity.state, Request);
+    if(sparsityMetadata.length > 0) {
+        return (
+            <FormControl>
+                <InputLabel>Dataset</InputLabel>
+                <Select
+                    MenuProps={{
+                        style: {zIndex: 5001}
+                    }}
+                    value={collection}
+                    label="Dataset"
+                    onChange={updateCollection}
+                >
+                    {
+                        sparsityMetadata.map((dataset, index) => {
+                            return (
+                                <MenuItem key={index} value={dataset}>{dataset.label}</MenuItem>
+                            );
+                        })
+                    }
+                </Select>
+            </FormControl>
+        );
+    }
 
-    /**
-     * Saturday 11/5
-     * Add request form to map
-     * Get request form working with hooks
-     * Get icons on map for any state/county
-     * 
-     * Sunday 11/6
-     * Add dashboard components
-     */
-
-
-    return (
-        <>
-            <DeckMap
-                Map={Map}
-            />
-            <RequestForm
-                Request={Request}
-                sparsityDataLength={Sparsity.state.sparsityData.length}
-                currentShapeName={Map.state.currentShapeName}
-            />
-        </>
-    );
-
-
+    else return null;
+    
 }
