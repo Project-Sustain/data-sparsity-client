@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { Box, Drawer, Divider, Button, IconButton, FormGroup, FormControlLabel, Checkbox } from "@mui/material";
+import { Box, Drawer, Divider, IconButton, FormGroup, FormControlLabel, Checkbox } from "@mui/material";
 import { makeStyles } from "@material-ui/core";
 import MenuIcon from '@mui/icons-material/Menu';
 import ChevronLeftIcon from '@mui/icons-material/ChevronLeft';
@@ -31,7 +31,7 @@ const useStyles = makeStyles({
 });
 
 
-export default function UiCurator({Curator}) {
+export default function UiCurator({Curator, requestStatus}) {
     const classes = useStyles();
     const [open, setOpen] = useState(false);
 
@@ -56,6 +56,15 @@ export default function UiCurator({Curator}) {
         else return null
     }
 
+    const getOptionsList = () => {
+        if(requestStatus === 'VALID') {
+            return Curator.stateMap;
+        }
+        else {
+            return [Curator.stateMap[0]];
+        }
+    }
+
 
     return (
         <>
@@ -77,7 +86,7 @@ export default function UiCurator({Curator}) {
                     <Divider/>
                     <FormGroup className={classes.formGroup}>
                         {
-                            Curator.stateMap.map((element, index) => {
+                            getOptionsList().map((element, index) => {
                                 return (
                                     <FormControlLabel
                                         key={index}

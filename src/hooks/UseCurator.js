@@ -5,9 +5,8 @@ export function UseCurator() {
 
 
     // State
-
     const [viewRequestForm, setViewRequestForm] = useState(true);
-    const [viewMapLegend, setViewMapLegend] = useState(false);
+    const [viewMapLegend, setViewMapLegend] = useState(true);
 
 
     // Functions

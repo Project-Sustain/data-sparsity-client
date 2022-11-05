@@ -32,6 +32,8 @@ END OF TERMS AND CONDITIONS
 */
 
 
+import { Stack } from '@mui/material';
+
 // Hooks
 import { UseSiteSparsity } from './hooks/UseSiteSparsity';
 import { UseRequest } from './hooks/UseRequest';
@@ -42,6 +44,7 @@ import { UseCurator } from './hooks/UseCurator';
 import DeckMap from './refactor/map/DeckMap';
 import RequestForm from './refactor/request/RequestForm';
 import UiCurator from './refactor/UiCurator';
+import MapLegend from './refactor/map/MapLegend';
 
 
 export default function App() {
@@ -53,11 +56,6 @@ export default function App() {
     const Curator = UseCurator();
 
     /**
-     * Saturday 11/5
-     * Add request form to map
-     * Get request form working with hooks
-     * Get icons on map for any state/county
-     * 
      * Sunday 11/6
      * Add dashboard components
      */
@@ -70,13 +68,27 @@ export default function App() {
             />
             <UiCurator
                 Curator={Curator}
+                requestStatus={Request.state.requestStatus}
             />
-            <RequestForm
-                visible={Curator.state.viewRequestForm}
-                Request={Request}
-                sparsityDataLength={Sparsity.state.sparsityData.length}
-                currentShapeName={Map.state.currentShapeName}
-            />
+            <Stack
+                direction="row"
+                justifyContent="center"
+                alignItems="flex-start"
+                spacing={2}
+            >
+                <RequestForm
+                    visible={Curator.state.viewRequestForm}
+                    Request={Request}
+                    sparsityDataLength={Sparsity.state.sparsityData.length}
+                    currentShapeName={Map.state.currentShapeName}
+                />
+                <MapLegend
+                    visible={Curator.state.viewMapLegend}
+                    min={Sparsity.state.scores[0]}
+                    max={Sparsity.state.scores[Sparsity.state.scores.length-1]}
+                    requestStatus={Request.state.requestStatus}
+                />
+            </Stack>
         </>
     );
 
