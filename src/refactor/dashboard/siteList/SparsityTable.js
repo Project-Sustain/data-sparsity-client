@@ -32,33 +32,53 @@ END OF TERMS AND CONDITIONS
 */
 
 
-import RequestTab from './tabs/RequestTab';
-import StatisticsTab from './tabs/StatisticsTab';
-import CustomBarChart from './tabs/CustomBarChart';
-import PieChartTab from './tabs/PieChartTab';
-import TimeSeriesChart from './tabs/TimeSeriesChart';
-import SiteDataTab from './tabs/SiteDataTab';
+import { React } from 'react'
+import { makeStyles } from '@material-ui/core';
+import { Typography, Grid } from '@mui/material';
+import { DataGrid } from '@mui/x-data-grid';
+import DashboardComponent from '../../utilityComponents/DashboardComponent';
 
 
-export default function CurrentTab({currentTab, Request, Sparsity, Map}) {
+const useStyles = makeStyles({
+  root: {
+    width: 500,
+    height: 350
+  }
+});
 
-    
-    switch (currentTab) {
-        case 0:
-            return <RequestTab Request={Request} Sparsity={Sparsity} Map={Map} />;
-        case 1:
-            return <StatisticsTab stats={Sparsity.state.sparsityStats} />;
-        case 2:
-            return <PieChartTab scores={Sparsity.state.scores} />;
-        case 3:
-            return <CustomBarChart scores={Sparsity.state.scores} />;
-        case 4:
-            return <TimeSeriesChart sparsityData={Sparsity.state.sparsityData} />;
-        case 5:
-            return <SiteDataTab Request={Request} Sparsity={Sparsity} Map={Map} />;
-        default:
-            return null;
-    }
+
+export default function SparsityTable({setSelectedSite, sparsityData}) {
+
+  const classes = useStyles();
+
+
+  const columns = [
+    {field: 'id', headerName: '', width: 50},
+    {field: 'monitorId', headerName: 'Monitor ID', width: 300},
+    {field: 'sparsityScore', headerName: 'Sparsity Score', width: 125}
+  ]
+
+  const rows = sparsityData.map((site, index) => {
+    return {id: index, monitorId: site.monitorId, sparsityScore: site.sparsityScore};
+  });
+
+
+  return (
+    <Grid item xs={4}>
+      <DashboardComponent>
+        <Typography align='center' variant='h5'>Sparsity Score Table</Typography>
+        <div className={classes.root}>
+          <DataGrid
+            rows={rows}
+            columns={columns}
+            pageSize={100}
+            rowsPerPageOptions={[100]}
+            onCellClick={params => {setSelectedSite(params.id)}}
+          />
+        </div>
+      </DashboardComponent>
+    </Grid>
+  );
 
 
 }

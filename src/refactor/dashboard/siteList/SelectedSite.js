@@ -32,33 +32,75 @@ END OF TERMS AND CONDITIONS
 */
 
 
-import RequestTab from './tabs/RequestTab';
-import StatisticsTab from './tabs/StatisticsTab';
-import CustomBarChart from './tabs/CustomBarChart';
-import PieChartTab from './tabs/PieChartTab';
-import TimeSeriesChart from './tabs/TimeSeriesChart';
-import SiteDataTab from './tabs/SiteDataTab';
+import { useState, useEffect, memo } from 'react';
+import { ResponsiveContainer, PieChart, Pie, Legend } from 'recharts';
+import { Typography, Grid, ButtonGroup, Button } from '@mui/material';
+import { colors } from '../../../library/colors';
+import DashboardComponent from '../../utilityComponents/DashboardComponent';
 
 
-export default function CurrentTab({currentTab, Request, Sparsity, Map}) {
-
+export default memo(function SelectedSite({updateHighlightedSite, deselectSite, site, scores, updateMapViewState, index, collectionProperties, disable}) {
     
-    switch (currentTab) {
-        case 0:
-            return <RequestTab Request={Request} Sparsity={Sparsity} Map={Map} />;
-        case 1:
-            return <StatisticsTab stats={Sparsity.state.sparsityStats} />;
-        case 2:
-            return <PieChartTab scores={Sparsity.state.scores} />;
-        case 3:
-            return <CustomBarChart scores={Sparsity.state.scores} />;
-        case 4:
-            return <TimeSeriesChart sparsityData={Sparsity.state.sparsityData} />;
-        case 5:
-            return <SiteDataTab Request={Request} Sparsity={Sparsity} Map={Map} />;
-        default:
-            return null;
+    const [pieData, setPieData] = useState([]);
+
+
+    useEffect(() => {
+        if(site){
+
+            const myScore = site.sparsityScore;
+            const numberOfSameScores = scores.filter(score => {return score === myScore}).length;
+            const numberOfDifferentScores = scores.length - numberOfSameScores;
+            setPieData([
+                {
+                    "name": site.sparsityScore,
+                    "value": numberOfSameScores,
+                    "fill": colors.tertiary
+                },
+                {
+                    "name": "Other",
+                    "value": numberOfDifferentScores,
+                    "fill": colors.primary
+                }
+            ]);
+
+        }
+    }, [site, scores]);
+
+    const selectSite = () => {
+        updateMapViewState(site.coordinates)
+        updateHighlightedSite(index);
     }
-
-
-}
+    
+    return (
+        <Grid item xs={5}>
+            <DashboardComponent>
+                <Typography><strong>Mean Time Between Observations:</strong> {site.siteMean}</Typography>
+                <Typography><strong>Sparsity Score:</strong> {site.sparsityScore}</Typography>
+                <Typography><strong>Total Observations:</strong> {site.numberOfMeasurements}</Typography>
+                {
+                    site.sitePropertyInfo.map((property, index) => {
+                        return <Typography key={index}><strong>{collectionProperties[index]}</strong>: {property}</Typography>
+                    })
+                }
+                <ButtonGroup>
+                    <Button variant='outlined' onClick={selectSite}>Select</Button>
+                    <Button disabled={disable} variant='outlined' onClick={deselectSite}>Deselect</Button>
+                </ButtonGroup>
+                <ResponsiveContainer width='100%' height={250}>
+                    <PieChart>
+                        <Pie
+                            data={pieData}
+                            dataKey="value"
+                            nameKey="name"
+                            cx="50%"
+                            cy="50%"
+                            outerRadius={75}
+                            label
+                        />
+                        <Legend />
+                    </PieChart>
+                </ResponsiveContainer>
+            </DashboardComponent>
+        </Grid>
+    );
+});

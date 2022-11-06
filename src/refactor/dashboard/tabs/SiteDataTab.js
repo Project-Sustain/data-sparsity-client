@@ -32,33 +32,37 @@ END OF TERMS AND CONDITIONS
 */
 
 
-import RequestTab from './tabs/RequestTab';
-import StatisticsTab from './tabs/StatisticsTab';
-import CustomBarChart from './tabs/CustomBarChart';
-import PieChartTab from './tabs/PieChartTab';
-import TimeSeriesChart from './tabs/TimeSeriesChart';
-import SiteDataTab from './tabs/SiteDataTab';
+import { useState } from "react";
+import SparsityTable from "../siteList/SparsityTable";
+import SelectedSite from "../siteList/SelectedSite";
 
 
-export default function CurrentTab({currentTab, Request, Sparsity, Map}) {
+export default function SiteDataTab({Request, Sparsity, Map}) {
+
+    const [selectedSite, setSelectedSite] = useState(0)
 
     
-    switch (currentTab) {
-        case 0:
-            return <RequestTab Request={Request} Sparsity={Sparsity} Map={Map} />;
-        case 1:
-            return <StatisticsTab stats={Sparsity.state.sparsityStats} />;
-        case 2:
-            return <PieChartTab scores={Sparsity.state.scores} />;
-        case 3:
-            return <CustomBarChart scores={Sparsity.state.scores} />;
-        case 4:
-            return <TimeSeriesChart sparsityData={Sparsity.state.sparsityData} />;
-        case 5:
-            return <SiteDataTab Request={Request} Sparsity={Sparsity} Map={Map} />;
-        default:
-            return null;
-    }
+    return (
+        <>
+            <SparsityTable 
+                setSelectedSite={setSelectedSite}
+                sparsityData={Sparsity.state.sparsityData}
+            />
+            <SelectedSite 
+                updateMapViewState={Map.functions.updateMapViewState}
+                
+                updateHighlightedSite={Sparsity.functions.updateHighlightedSite}
+                deselectSite={Sparsity.functions.deselectSite}
+                site={Sparsity.state.sparsityData[selectedSite]} 
+                scores={Sparsity.state.scores}
+                disable={Object.keys(Sparsity.state.lastHighlightedSite).length === 0}
 
+                collectionProperties={Request.state.collection.sitePropertyFields}
 
+                index={selectedSite}
+            />
+        </>
+    );
+
+    
 }
