@@ -32,26 +32,64 @@ END OF TERMS AND CONDITIONS
 */
 
 
-import RequestTab from './tabs/RequestTab';
-import StatisticsTab from './tabs/StatisticsTab';
-import CustomBarChart from './CustomBarChart';
-import PieControl from './pieChart/PieControl';
+import { BarChart, Bar, XAxis, YAxis, Tooltip, Legend, ResponsiveContainer } from 'recharts';
+import { Grid, Typography } from "@mui/material";
+import { useEffect, useState } from 'react';
+import { colors } from '../../library/colors';
+import DashboardComponent from '../utilityComponents/DashboardComponent';
 
 
-export default function CurrentTab({currentTab, Request, Sparsity, Map}) {
+export default function CustomBarChart({scores}) {
 
-    switch (currentTab) {
-        case 0:
-            return <RequestTab Request={Request} Sparsity={Sparsity} Map={Map} />;
-        case 1:
-            return <StatisticsTab stats={Sparsity.state.sparsityStats} />;
-        case 2:
-            return <PieControl scores={Sparsity.state.scores} />;
-        case 3:
-            return <CustomBarChart scores={Sparsity.state.scores} />;
-        default:
-            return null;
-    }
+    const [data, setData] = useState({});
 
 
+    useEffect(() => {
+            let chartData = [];
+            if(scores.length > 0) {
+                try {
+                    const numBuckets = 5;
+                    const min = scores[scores.length-1];
+                    const max = scores[0];
+                    const range = max - min;
+                    const rangePerBucket = range / numBuckets;
+
+                    chartData = [0,1,2,3,4].map(index => {
+                        const bucketMin = (min+(rangePerBucket*index)).toFixed(3);
+                        const bucketMax = (min+(rangePerBucket*(index+1))).toFixed(3);
+                        return {
+                            name: `${bucketMin} - ${bucketMax}`, 
+                            numberOfSites: scores.filter(score => {
+                                const lessThanMax = index === 4 ? score <= bucketMax : score < bucketMax;
+                                return score >= bucketMin && lessThanMax;
+                            }).length};
+                    });
+
+                } catch (exception) {
+                    console.log({exception}); // FIXME Set a flag to display a message...
+                }
+
+            setData(chartData);
+        }
+    }, [scores]);
+
+
+    return (
+        <Grid item xs={11}>
+            <DashboardComponent>
+                <Typography variant='h5' align='center'>Number of Sites Within Sparsity Range</Typography>
+                <ResponsiveContainer width='100%' height={350}>
+                    <BarChart data={data}>
+                        <XAxis dataKey="name" />
+                        <YAxis />
+                        <Tooltip />
+                        <Legend />
+                        <Bar dataKey="numberOfSites" fill={colors.secondary} barSize={30} />
+                    </BarChart>
+                </ResponsiveContainer>
+            </DashboardComponent>
+        </Grid>
+    );
+
+    
 }

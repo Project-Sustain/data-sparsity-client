@@ -49,7 +49,7 @@ export default function TabSystem({currentTab, setCurrentTab, handleDrawerClose}
     const classes = useStyles();
 
     const tabs = [
-        'Request Form', 'Statistics', 'Pie & Bar Chart', 'Time Series', 'Site Data'
+        'Request Form', 'Statistics', 'Pie Chart', 'Bar Chart', 'Time Series', 'Site Data'
     ];
 
 

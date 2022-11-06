@@ -21,8 +21,8 @@ export function UseSiteSparsity() {
     }, [numberOfResponses]);
 
     useEffect(() => {
-        let tempScores = sparsityData.map((siteData) => { return siteData.sparsityScore });
-        tempScores.sort();
+        let tempScores = sparsityData.map((siteData) => { return Number(siteData.sparsityScore) });
+        tempScores.sort(function(a, b) {return b - a});
         setScores(tempScores);
     }, [numberOfResponses]);
 

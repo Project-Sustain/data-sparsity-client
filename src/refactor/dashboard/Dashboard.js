@@ -62,7 +62,7 @@ export default function Dashboard({Request, Sparsity, Map}) {
     const classes = useStyles();
 
 
-    const [open, setOpen] = useState(false);
+    const [open, setOpen] = useState(true);
     const [currentTab, setCurrentTab] = useState(0);
 
 

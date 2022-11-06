@@ -32,26 +32,67 @@ END OF TERMS AND CONDITIONS
 */
 
 
-import RequestTab from './tabs/RequestTab';
-import StatisticsTab from './tabs/StatisticsTab';
-import CustomBarChart from './CustomBarChart';
-import PieControl from './pieChart/PieControl';
+import { makeStyles } from "@material-ui/core";
+import { Paper, Table, TableBody, TableHead, TableRow, TableCell, TableContainer, Grid, Button } from '@mui/material';
+import { colors } from "../../../library/colors";
+import DashboardComponent from "../../utilityComponents/DashboardComponent";
 
-
-export default function CurrentTab({currentTab, Request, Sparsity, Map}) {
-
-    switch (currentTab) {
-        case 0:
-            return <RequestTab Request={Request} Sparsity={Sparsity} Map={Map} />;
-        case 1:
-            return <StatisticsTab stats={Sparsity.state.sparsityStats} />;
-        case 2:
-            return <PieControl scores={Sparsity.state.scores} />;
-        case 3:
-            return <CustomBarChart scores={Sparsity.state.scores} />;
-        default:
-            return null;
+const useStyles = makeStyles({
+    root: {
+        overflow: 'auto',
+        maxHeight: 350
+    },
+    cell: {
+        cursor: 'pointer'
     }
+});
+
+export default function PieTable({setSelectedIndex, selectedIndex, pieData, colorScale, scoreSet}) {
+
+    const classes = useStyles();
+
+
+    const getColor = (index) => {
+        return index === selectedIndex ? colors.highlight : colorScale[index];
+    }
+
+    const getFirstHeadText = () => {
+        return selectedIndex === -1 ? '' : 'Clear';
+    }
+
+
+    return (
+        <Grid item xs={5}>
+            <DashboardComponent>
+                <TableContainer className={classes.root} component={Paper}>
+                    <Table stickyHeader>
+                        <TableHead>
+                            <TableRow onClick={() => setSelectedIndex(-1)}>
+                                <TableCell className={classes.cell}>{getFirstHeadText()}</TableCell>
+                                <TableCell>Sparsity Score</TableCell>
+                                <TableCell>Number of Sites</TableCell>
+                                <TableCell>% of Pie</TableCell>
+                            </TableRow>
+                        </TableHead>
+                        <TableBody>
+                            {
+                                pieData.map((entry, index) => {
+                                    return (
+                                        <TableRow key={index} onClick={() => setSelectedIndex(index)}>
+                                            <TableCell className={classes.cell} sx={{backgroundColor: getColor(index)}}></TableCell>
+                                            <TableCell className={classes.cell}>{entry.score}</TableCell>
+                                            <TableCell className={classes.cell}>{entry.sites}</TableCell>
+                                            <TableCell className={classes.cell}>{entry.percent}%</TableCell>
+                                        </TableRow>
+                                    );
+                                })
+                            }
+                        </TableBody>
+                    </Table>
+                </TableContainer>
+            </DashboardComponent>
+        </Grid>
+    );
 
 
 }

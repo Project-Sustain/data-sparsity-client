@@ -32,26 +32,81 @@ END OF TERMS AND CONDITIONS
 */
 
 
-import RequestTab from './tabs/RequestTab';
-import StatisticsTab from './tabs/StatisticsTab';
-import CustomBarChart from './CustomBarChart';
-import PieControl from './pieChart/PieControl';
+import { useState, useEffect, memo } from 'react';
+import { Grid, Button } from '@mui/material';
+import { makeStyles } from "@material-ui/core";
+import { colors } from '../../../library/colors';
+import chroma from 'chroma-js';
+import PieTable from './PieTable';
+import CustomPieChart from './CustomPieChart';
+import DashboardComponent from '../../utilityComponents/DashboardComponent';
 
+const useStyles = makeStyles({
+    root: {
+        margin: "10px",
+        padding: "10px",
+        width: '50vw',
+        zIndex: 5000,
+        opacity: '0.9'
+    },
+    low: {
+        color: colors.primary
+    },
+    high: {
+        color: colors.tertiary
+    },
+    button: {
+        width: "100%",
+        marginTop: "20px"
+    },
+});
 
-export default function CurrentTab({currentTab, Request, Sparsity, Map}) {
+export default memo(function ScorePieChart({scores}) {
+    const classes = useStyles();
+    const [pieData, setPieData] = useState([]);
+    const [colorScale, setColorScale] = useState([]);
+    const [selectedIndex, setSelectedIndex] = useState(-1);
+    const [scoreSet, setScoreSet] = useState([]);
 
-    switch (currentTab) {
-        case 0:
-            return <RequestTab Request={Request} Sparsity={Sparsity} Map={Map} />;
-        case 1:
-            return <StatisticsTab stats={Sparsity.state.sparsityStats} />;
-        case 2:
-            return <PieControl scores={Sparsity.state.scores} />;
-        case 3:
-            return <CustomBarChart scores={Sparsity.state.scores} />;
-        default:
-            return null;
+    useEffect(() => {
+        const initialScoreSet = [...new Set(scores)];
+        setScoreSet(initialScoreSet);
+        const initialColorScale = chroma.scale([colors.tertiary, colors.primary]).colors(initialScoreSet.length);
+        setColorScale(initialColorScale);
+        const data = initialScoreSet.map((score, index) => {
+            const numberWithThisScore = scores.filter(entry => {return entry === score}).length;
+            const percent = ((numberWithThisScore / scores.length) * 100).toFixed(2);
+            const color = index === selectedIndex ? colors.highlight : initialColorScale[index];
+            return {
+                "score": score,
+                "sites": numberWithThisScore,
+                "fill": color,
+                "percent": percent
+            }
+        });
+        setPieData(data);
+    }, [scores, selectedIndex]);
+
+    if(pieData.length > 0) {
+        return (
+            <>
+                <PieTable
+                    setSelectedIndex={setSelectedIndex}
+                    selectedIndex={selectedIndex}
+                    pieData={pieData}
+                    colorScale={colorScale}
+                    scoreSet={scoreSet}
+                />
+
+                <CustomPieChart
+                    pieData={pieData}
+                    setSelectedIndex={setSelectedIndex}
+                />
+            </>
+        );
     }
 
+    else return null;
 
-}
+
+});

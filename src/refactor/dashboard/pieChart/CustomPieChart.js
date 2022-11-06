@@ -32,26 +32,45 @@ END OF TERMS AND CONDITIONS
 */
 
 
-import RequestTab from './tabs/RequestTab';
-import StatisticsTab from './tabs/StatisticsTab';
-import CustomBarChart from './CustomBarChart';
-import PieControl from './pieChart/PieControl';
+import { memo } from 'react';
+import { ResponsiveContainer, PieChart, Pie } from 'recharts';
+import { Typography, Grid } from '@mui/material';
+import PieChartIcon from '@mui/icons-material/PieChart';
+import DashboardComponent from '../../utilityComponents/DashboardComponent';
 
 
-export default function CurrentTab({currentTab, Request, Sparsity, Map}) {
+export default memo(function CustomPieChart({pieData, setSelectedIndex}) {
 
-    switch (currentTab) {
-        case 0:
-            return <RequestTab Request={Request} Sparsity={Sparsity} Map={Map} />;
-        case 1:
-            return <StatisticsTab stats={Sparsity.state.sparsityStats} />;
-        case 2:
-            return <PieControl scores={Sparsity.state.scores} />;
-        case 3:
-            return <CustomBarChart scores={Sparsity.state.scores} />;
-        default:
-            return null;
+    const pieClick = (event, index) => {
+        setSelectedIndex(index);
     }
 
+    
+    if(pieData.length < 100) {
+        return (
+            <Grid item xs={4}>
+                <DashboardComponent>
+                    <ResponsiveContainer width='100%' height={350}>
+                        <PieChart>
+                            <Pie
+                                data={pieData}
+                                dataKey="sites"
+                                nameKey="score"
+                                cx="50%"
+                                cy="50%"
+                                outerRadius={150}
+                                onClick={pieClick}
+                            />
+                        </PieChart>
+                    </ResponsiveContainer>
+                </DashboardComponent>
+            </Grid>
+        );
+    }
 
-}
+    else return (
+        <DashboardComponent>
+            <Typography variant='h4' align='center'><PieChartIcon/> Too many slices to render pie</Typography>
+        </DashboardComponent>
+    );
+});
