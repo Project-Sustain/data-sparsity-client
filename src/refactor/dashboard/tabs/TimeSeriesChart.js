@@ -34,7 +34,7 @@ END OF TERMS AND CONDITIONS
 
 import { useEffect, useState } from 'react';
 import { makeStyles } from "@material-ui/core";
-import { Grid, Typography, Slider, Divider } from "@mui/material";
+import { Grid, Slider, Divider } from "@mui/material";
 import { LineChart, Line, XAxis, YAxis, CartesianGrid, Tooltip, Legend, ResponsiveContainer } from 'recharts';
 import { sum } from 'simple-statistics';
 import { colors } from '../../../library/colors';
@@ -51,11 +51,12 @@ const useStyles = makeStyles({
     }
 });
 
-export default function TimeSeriesChart({sparsityData}) {
+export default function TimeSeriesChart({sparsityData, numBuckets, setNumBuckets}) {
+
     const classes = useStyles();
+
     const [data, setData] = useState([]);
     const [siteDataMap, setSiteDataMap] = useState([]);
-    const [numBuckets, setNumbuckets] = useState(100);
 
 
     useEffect(() => {
@@ -136,7 +137,7 @@ export default function TimeSeriesChart({sparsityData}) {
                     max={200}
                     color='tertiary'
                     step={1}
-                    onChange={(event, newValue) => setNumbuckets(newValue)}
+                    onChange={(event, newValue) => setNumBuckets(newValue)}
                 />
             </DashboardComponent>
         </Grid>

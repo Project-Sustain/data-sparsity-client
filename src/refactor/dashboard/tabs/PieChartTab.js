@@ -39,10 +39,9 @@ import PieTable from '../pieChart/PieTable';
 import CustomPieChart from '../pieChart/CustomPieChart';
 
 
-export default memo(function PieChartTab({scores}) {
+export default memo(function PieChartTab({scores, selectedIndex, setSelectedIndex}) {
     const [pieData, setPieData] = useState([]);
     const [colorScale, setColorScale] = useState([]);
-    const [selectedIndex, setSelectedIndex] = useState(-1);
     const [scoreSet, setScoreSet] = useState([]);
 
     useEffect(() => {

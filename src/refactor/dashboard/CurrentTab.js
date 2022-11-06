@@ -43,7 +43,9 @@ import SiteDataTab from './tabs/SiteDataTab';
 
 export default function CurrentTab({currentTab, Request, Sparsity, Map}) {
 
-    const [selectedSite, setSelectedSite] = useState(0)
+    const [siteIndex, setSiteIndex] = useState(0)
+    const [pieIndex, setPieIndex] = useState(-1);
+    const [numTimeSeriesBuckets, setNumTimeSeriesBuckets] = useState(100);
 
 
     switch (currentTab) {
@@ -52,13 +54,13 @@ export default function CurrentTab({currentTab, Request, Sparsity, Map}) {
         case 1:
             return <StatisticsTab stats={Sparsity.state.sparsityStats} />;
         case 2:
-            return <PieChartTab scores={Sparsity.state.scores} />;
+            return <PieChartTab scores={Sparsity.state.scores} selectedIndex={pieIndex} setSelectedIndex={setPieIndex} />;
         case 3:
             return <CustomBarChart scores={Sparsity.state.scores} />;
         case 4:
-            return <TimeSeriesChart sparsityData={Sparsity.state.sparsityData} />;
+            return <TimeSeriesChart sparsityData={Sparsity.state.sparsityData} numBuckets={numTimeSeriesBuckets} setNumBuckets={setNumTimeSeriesBuckets} />;
         case 5:
-            return <SiteDataTab Request={Request} Sparsity={Sparsity} Map={Map} selectedSite={selectedSite} setSelectedSite={setSelectedSite} />;
+            return <SiteDataTab Request={Request} Sparsity={Sparsity} Map={Map} selectedIndex={siteIndex} setSelectedIndex={setSiteIndex} />;
         default:
             return null;
     }

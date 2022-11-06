@@ -47,7 +47,7 @@ const useStyles = makeStyles({
 });
 
 
-export default function SparsityTable({setSelectedSite, sparsityData}) {
+export default function SparsityTable({setSelectedIndex, sparsityData}) {
 
   const classes = useStyles();
 
@@ -73,7 +73,7 @@ export default function SparsityTable({setSelectedSite, sparsityData}) {
             columns={columns}
             pageSize={100}
             rowsPerPageOptions={[100]}
-            onCellClick={params => {setSelectedSite(params.id)}}
+            onCellClick={params => {setSelectedIndex(params.id)}}
           />
         </div>
       </DashboardComponent>
