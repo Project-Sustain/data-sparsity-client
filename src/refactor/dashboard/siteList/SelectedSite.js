@@ -33,12 +33,25 @@ END OF TERMS AND CONDITIONS
 
 
 import { memo } from 'react';
-import { Typography, Grid, ButtonGroup, Button } from '@mui/material';
-import DashboardComponent from '../../utilityComponents/DashboardComponent';
+import { makeStyles } from '@material-ui/core';
+import { Typography, Grid, ButtonGroup, Button, Paper } from '@mui/material';
+import { paperRoot } from '../../../library/styles';
+import { Divider } from '@mui/material';
+import { Stack } from '@mui/material';
+
+
+const useStyles = makeStyles({
+    root: paperRoot,
+    section: {
+        margin: '10px'
+    }
+});
 
 
 export default memo(function SelectedSite({updateHighlightedSite, deselectSite, site, updateMapViewState, index, collectionProperties, disable}) {
     
+    const classes = useStyles();
+
 
     const selectSite = () => {
         updateMapViewState(site.coordinates)
@@ -47,20 +60,27 @@ export default memo(function SelectedSite({updateHighlightedSite, deselectSite, 
     
     return (
         <Grid item xs={4}>
-            <DashboardComponent>
-                <Typography><strong>Mean Time Between Observations:</strong> {site.siteMean}</Typography>
-                <Typography><strong>Sparsity Score:</strong> {site.sparsityScore}</Typography>
-                <Typography><strong>Total Observations:</strong> {site.numberOfMeasurements}</Typography>
-                {
-                    site.sitePropertyInfo.map((property, index) => {
-                        return <Typography key={index}><strong>{collectionProperties[index]}</strong>: {property}</Typography>
-                    })
-                }
-                <ButtonGroup>
-                    <Button variant='outlined' onClick={selectSite}>Select</Button>
-                    <Button disabled={disable} variant='outlined' onClick={deselectSite}>Deselect</Button>
-                </ButtonGroup>
-            </DashboardComponent>
+            <Paper elevation={3} className={classes.root}>
+                <div className={classes.section}>
+                    <Typography><strong>Sparsity Score:</strong> {site.sparsityScore}</Typography>
+                    <Typography><strong>Mean Time Between Observations:</strong> {site.siteMean}</Typography>
+                    <Typography><strong>Total Observations:</strong> {site.numberOfMeasurements}</Typography>
+                </div>
+                <Divider />
+                <div className={classes.section}>
+                    {
+                        site.sitePropertyInfo.map((property, index) => {
+                            return <Typography key={index}><strong>{collectionProperties[index]}</strong>: {property}</Typography>
+                        })
+                    }
+                </div>
+                <Stack direction='column' alignItems='center'>
+                    <ButtonGroup className={classes.section}>
+                        <Button variant='outlined' onClick={selectSite}>Select</Button>
+                        <Button disabled={disable} variant='outlined' onClick={deselectSite}>Deselect</Button>
+                    </ButtonGroup>
+                </Stack>
+            </Paper>
         </Grid>
     );
 });
