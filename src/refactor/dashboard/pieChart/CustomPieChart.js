@@ -34,8 +34,7 @@ END OF TERMS AND CONDITIONS
 
 import { memo } from 'react';
 import { ResponsiveContainer, PieChart, Pie } from 'recharts';
-import { Typography, Grid } from '@mui/material';
-import PieChartIcon from '@mui/icons-material/PieChart';
+import { Grid } from '@mui/material';
 import DashboardComponent from '../../utilityComponents/DashboardComponent';
 
 
@@ -46,31 +45,25 @@ export default memo(function CustomPieChart({pieData, setSelectedIndex}) {
     }
 
     
-    if(pieData.length < 100) {
-        return (
-            <Grid item xs={4}>
-                <DashboardComponent>
-                    <ResponsiveContainer width='100%' height={350}>
-                        <PieChart>
-                            <Pie
-                                data={pieData}
-                                dataKey="sites"
-                                nameKey="score"
-                                cx="50%"
-                                cy="50%"
-                                outerRadius={150}
-                                onClick={pieClick}
-                            />
-                        </PieChart>
-                    </ResponsiveContainer>
-                </DashboardComponent>
-            </Grid>
-        );
-    }
-
-    else return (
-        <DashboardComponent>
-            <Typography variant='h4' align='center'><PieChartIcon/> Too many slices to render pie</Typography>
-        </DashboardComponent>
+    return (
+        <Grid item xs={4}>
+            <DashboardComponent>
+                <ResponsiveContainer width='100%' height={350}>
+                    <PieChart>
+                        <Pie
+                            data={pieData}
+                            dataKey="sites"
+                            nameKey="score"
+                            cx="50%"
+                            cy="50%"
+                            outerRadius={150}
+                            onClick={pieClick}
+                        />
+                    </PieChart>
+                </ResponsiveContainer>
+            </DashboardComponent>
+        </Grid>
     );
+
+
 });

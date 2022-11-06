@@ -42,11 +42,8 @@ import moment from 'moment';
 import DashboardComponent from '../../utilityComponents/DashboardComponent';
 
 const useStyles = makeStyles({
-    chart: {
-        width: "100%",
-        height: 300
-    },
     divider: {
+        width: '100%',
         margin: '20px'
     }
 });
@@ -59,6 +56,9 @@ export default function TimeSeriesChart({sparsityData, numBuckets, setNumBuckets
     const [siteDataMap, setSiteDataMap] = useState([]);
 
 
+    /**
+     * This is very compute intensive. Consider doing this on the server
+     */
     useEffect(() => {
         if(sparsityData.length > 0) {
             const timeLists = sparsityData.map((siteData) => {

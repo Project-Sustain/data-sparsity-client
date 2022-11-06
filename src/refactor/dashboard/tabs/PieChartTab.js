@@ -34,9 +34,12 @@ END OF TERMS AND CONDITIONS
 
 import { useState, useEffect, memo } from 'react';
 import { colors } from '../../../library/colors';
+import { Typography, Grid } from '@mui/material';
 import chroma from 'chroma-js';
 import PieTable from '../pieChart/PieTable';
 import CustomPieChart from '../pieChart/CustomPieChart';
+import DashboardComponent from '../../utilityComponents/DashboardComponent';
+import PieChartIcon from '@mui/icons-material/PieChart';
 
 
 export default memo(function PieChartTab({scores, selectedIndex, setSelectedIndex}) {
@@ -63,7 +66,7 @@ export default memo(function PieChartTab({scores, selectedIndex, setSelectedInde
         setPieData(data);
     }, [scores, selectedIndex]);
 
-    if(pieData.length > 0) {
+    if(pieData.length > 0 && pieData.length < 100) {
         return (
             <>
                 <PieTable
@@ -82,7 +85,13 @@ export default memo(function PieChartTab({scores, selectedIndex, setSelectedInde
         );
     }
 
-    else return null;
+    else return (
+        <Grid item xs={4}>
+            <DashboardComponent>
+                <Typography variant='h4' align='center'><PieChartIcon/>Too many slices to render pie</Typography>
+            </DashboardComponent>
+        </Grid>
+    );
 
 
 });
