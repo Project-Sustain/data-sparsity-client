@@ -32,7 +32,7 @@ END OF TERMS AND CONDITIONS
 */
 
 
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import RequestTab from './tabs/RequestTab';
 import StatisticsTab from './tabs/StatisticsTab';
 import CustomBarChart from './tabs/CustomBarChart';
@@ -46,6 +46,13 @@ export default function CurrentTab({currentTab, Request, Sparsity, Map}) {
     const [siteIndex, setSiteIndex] = useState(0)
     const [pieIndex, setPieIndex] = useState(-1);
     const [numTimeSeriesBuckets, setNumTimeSeriesBuckets] = useState(100);
+
+
+    useEffect(() => {
+        setSiteIndex(0);
+        setPieIndex(-1);
+        setNumTimeSeriesBuckets(100);
+    }, [Request.state.requestStatus]);
 
 
     switch (currentTab) {
