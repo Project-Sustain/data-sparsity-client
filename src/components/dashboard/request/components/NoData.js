@@ -33,18 +33,32 @@ END OF TERMS AND CONDITIONS
 
 
 import { Alert, Grid } from "@mui/material";
+import { useEffect, useState } from "react";
 import DashboardComponent from "../../../utilityComponents/DashboardComponent";
-import ReportGmailerrorredIcon from '@mui/icons-material/ReportGmailerrorred';
 
 
 export default function NoData({requestStatus}) {
 
+    const [open, setOpen] = useState(false);
 
-    if(requestStatus === 'INVALID') {
+
+    useEffect(() => {
+        if(requestStatus === 'INVALID') {
+            setOpen(true);
+        }
+    }, [requestStatus]);
+
+
+    const closeAlert = () => {
+        setOpen(false);
+    }
+
+
+    if(open) {
         return (
             <Grid item>
                 <DashboardComponent>
-                    <Alert severity='error'>No Data Matching Request</Alert>
+                    <Alert onClose={closeAlert} severity='error'>No Data Matching Request</Alert>
                 </DashboardComponent>
             </Grid>
         );
