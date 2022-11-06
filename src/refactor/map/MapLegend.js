@@ -63,7 +63,7 @@ export default function MapLegend({visible, min, max, requestStatus}) {
                     <Table className={classes.table} size="small">
                         <TableHead>
                             <TableRow>
-                                <TableCell><strong>Sparsity Score</strong></TableCell>
+                                <TableCell><strong>Legend</strong></TableCell>
                             </TableRow>
                         </TableHead>
                         <TableBody>
@@ -96,8 +96,6 @@ export default function MapLegend({visible, min, max, requestStatus}) {
                         justifyContent='center'
                         alignItems='center'
                     >
-                        <Typography align="center" variant='h5'>Map Legend</Typography>
-                        <Divider className={classes.divider} />
                         {renderTable()}
                     </Stack>
                 </DashboardComponent>

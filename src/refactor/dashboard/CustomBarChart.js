@@ -48,13 +48,13 @@ export default function CustomBarChart({scores}) {
             let chartData = [];
             if(scores.length > 0) {
                 try {
-                    const numBuckets = 5;
+                    const numBuckets = 7;
                     const min = scores[scores.length-1];
                     const max = scores[0];
                     const range = max - min;
                     const rangePerBucket = range / numBuckets;
 
-                    chartData = [0,1,2,3,4].map(index => {
+                    chartData = [...Array(numBuckets).keys()].map(index => {
                         const bucketMin = (min+(rangePerBucket*index)).toFixed(3);
                         const bucketMax = (min+(rangePerBucket*(index+1))).toFixed(3);
                         return {
