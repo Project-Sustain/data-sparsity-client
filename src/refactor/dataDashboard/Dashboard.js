@@ -3,7 +3,6 @@ import { Box, Drawer, Divider, IconButton } from "@mui/material";
 import { makeStyles } from "@material-ui/core";
 import MenuIcon from '@mui/icons-material/Menu';
 import { Typography } from "@mui/material";
-import UiCurator from "./UiCurator";
 
 
 const useStyles = makeStyles({
@@ -33,13 +32,21 @@ const useStyles = makeStyles({
 });
 
 
-export default function DataDashboard({Curator, requestStatus}) {
+export default function Dashboard({Curator, requestStatus}) {
+
     const classes = useStyles();
+
+
     const [open, setOpen] = useState(false);
+    const [currentTab, setCurrentTab] = useState(0);
 
 
     const handleDrawerClose = () => {
         setOpen(false);
+    }
+
+    const updateCurrentTab = (index) => {
+        setCurrentTab(index);
     }
 
 
@@ -64,10 +71,6 @@ export default function DataDashboard({Curator, requestStatus}) {
                 >
                     <Typography className={classes.titleText} align='center' variant='h5'>Dashboard Control</Typography>
                     <Divider/>
-                    <UiCurator
-                        Curator={Curator}
-                        requestStatus={requestStatus}
-                    />
                 </Box>
             </Drawer>
         </>

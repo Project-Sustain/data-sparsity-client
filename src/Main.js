@@ -38,12 +38,11 @@ import { Stack } from '@mui/material';
 import { UseSiteSparsity } from './hooks/UseSiteSparsity';
 import { UseRequest } from './hooks/UseRequest';
 import { UseDeckMap } from './hooks/UseDeckMap';
-import { UseCurator } from './hooks/UseCurator';
 
 // Components
 import DeckMap from './refactor/map/DeckMap';
 import RequestForm from './refactor/request/RequestForm';
-import DataDashboard from './refactor/dataDashboard/DataDashboard';
+import DataDashboard from './refactor/dataDashboard/Dashboard';
 import MapLegend from './refactor/map/MapLegend';
 
 
@@ -53,7 +52,6 @@ export default function App() {
     const Sparsity = UseSiteSparsity();
     const Request = UseRequest(Sparsity.functions);
     const Map = UseDeckMap(Sparsity.state, Request);
-    const Curator = UseCurator();
 
     /**
      * Sunday 11/6
@@ -74,22 +72,19 @@ export default function App() {
                 spacing={2}
             >
                 <DataDashboard
-                    Curator={Curator}
                     requestStatus={Request.state.requestStatus}
                 />
-                <RequestForm
+                {/* <RequestForm
                     visible={Curator.state.viewRequestForm}
                     Request={Request}
                     sparsityDataLength={Sparsity.state.sparsityData.length}
                     currentShapeName={Map.state.currentShapeName}
                     close={Curator.functions.updateViewRequest}
-                />
+                /> */}
                 <MapLegend
-                    visible={Curator.state.viewMapLegend}
                     min={Sparsity.state.scores[0]}
                     max={Sparsity.state.scores[Sparsity.state.scores.length-1]}
                     requestStatus={Request.state.requestStatus}
-                    close={Curator.functions.updateViewMapLegend}
                 />
             </Stack>
         </>
