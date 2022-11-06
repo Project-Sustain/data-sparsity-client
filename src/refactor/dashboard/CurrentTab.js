@@ -32,6 +32,7 @@ END OF TERMS AND CONDITIONS
 */
 
 
+import { useState } from "react";
 import RequestTab from './tabs/RequestTab';
 import StatisticsTab from './tabs/StatisticsTab';
 import CustomBarChart from './tabs/CustomBarChart';
@@ -42,7 +43,9 @@ import SiteDataTab from './tabs/SiteDataTab';
 
 export default function CurrentTab({currentTab, Request, Sparsity, Map}) {
 
-    
+    const [selectedSite, setSelectedSite] = useState(0)
+
+
     switch (currentTab) {
         case 0:
             return <RequestTab Request={Request} Sparsity={Sparsity} Map={Map} />;
@@ -55,7 +58,7 @@ export default function CurrentTab({currentTab, Request, Sparsity, Map}) {
         case 4:
             return <TimeSeriesChart sparsityData={Sparsity.state.sparsityData} />;
         case 5:
-            return <SiteDataTab Request={Request} Sparsity={Sparsity} Map={Map} />;
+            return <SiteDataTab Request={Request} Sparsity={Sparsity} Map={Map} selectedSite={selectedSite} setSelectedSite={setSelectedSite} />;
         default:
             return null;
     }

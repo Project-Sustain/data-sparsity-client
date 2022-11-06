@@ -32,15 +32,12 @@ END OF TERMS AND CONDITIONS
 */
 
 
-import { useState } from "react";
 import SparsityTable from "../siteList/SparsityTable";
 import SelectedSite from "../siteList/SelectedSite";
 import SitePieChart from "../siteList/SitePieChart";
 
 
-export default function SiteDataTab({Request, Sparsity, Map}) {
-
-    const [selectedSite, setSelectedSite] = useState(0)
+export default function SiteDataTab({Request, Sparsity, Map, selectedSite, setSelectedSite}) {
 
     
     return (
