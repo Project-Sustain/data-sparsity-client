@@ -32,99 +32,28 @@ END OF TERMS AND CONDITIONS
 */
 
 
-import { Container, Stack, Button, LinearProgress, ButtonGroup } from '@mui/material';
-import { makeStyles } from '@material-ui/core';
-import DashboardComponent from '../utilityComponents/DashboardComponent';
-import CollectionSelector from './components/CollectionSelector';
-import TemporalSlider from './components/TemporalSlider';
-import BaselineSelector from './components/BaselineSelector';
-import SpatialSelector from './components/SpatialSelector';
+import { makeStyles } from "@material-ui/core";
+import RequestForm from "./request/RequestForm";
 
 
 const useStyles = makeStyles({
-    divider: {
-        width: '25%'
+    root: {
+
     }
 });
 
 
-export default function RequestForm({ visible, Request, sparsityDataLength, currentShapeName, close }) {
+export default function CurrentTab({currentTab, Request, Sparsity, Map}) {
 
     const classes = useStyles();
 
 
-    const renderButtonOrLoading = () => {
-        if(Request.state.requestStatus === 'PENDING') {
-            return (
-                <LinearProgress
-                    color='tertiary'
-                />
-            );
-        }
-        else {
-            return (
-                <ButtonGroup>
-                    <Button onClick={Request.functions.sendSparsityScoreRequest}>
-                        Submit Request: {currentShapeName}
-                    </Button>
-                    <Button
-                        disabled={sparsityDataLength < 1}
-                        onClick={Request.functions.sendUpdateBaselineRequest}
-                    >
-                        Update Baseline
-                    </Button>
-                    <Button onClick={close}>Close</Button>
-                </ButtonGroup>
-            );
-        }
+    switch (currentTab) {
+        case 0:
+            return <RequestForm Request={Request} sparsityDataLength={Sparsity.state.sparsityData.length} currentShapeName={Map.state.currentShapeName} />
+        default:
+            return null;
     }
-
-
-    if(visible) {
-        return (
-            <Container maxWidth='sm'>
-                <DashboardComponent>
-                    <Stack
-                        direction='column'
-                        spacing={1.5}
-                        justifyContent='center'
-                        alignItems='center'
-                    >
-                        <Stack
-                            direction='row'
-                            spacing={1}
-                            justifyContent='center'
-                            alignItems='center'
-                        >
-                            <CollectionSelector
-                                collection={Request.state.collection}
-                                setCollection={Request.functions.setCollection}
-                                setBaseline={Request.functions.setBaseline}
-                            />
-                            <BaselineSelector
-                                sendUpdateBaselineRequest={Request.functions.sendUpdateBaselineRequest}
-                                baseline={Request.state.baseline}
-                                setBaseline={Request.functions.setBaseline}
-                            />
-                            <SpatialSelector
-                                stateOrCounty={Request.state.stateOrCounty}
-                                setStateOrCounty={Request.functions.setStateOrCounty}
-                            />
-                        </Stack>
-                        <TemporalSlider
-                            temporalRange={Request.state.temporalRange}
-                            setTemporalRange={Request.functions.setTemporalRange}
-                            min={Request.state.startTime}
-                            max={Request.state.endTime}
-                        />
-                        {renderButtonOrLoading()}
-                    </Stack>
-                </DashboardComponent>
-            </Container>
-        );
-    }
-
-    else return null;
 
 
 }

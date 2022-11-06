@@ -32,61 +32,93 @@ END OF TERMS AND CONDITIONS
 */
 
 
-import { Stack } from '@mui/material';
-
-// Hooks
-import { UseSiteSparsity } from './hooks/UseSiteSparsity';
-import { UseRequest } from './hooks/UseRequest';
-import { UseDeckMap } from './hooks/UseDeckMap';
-
-// Components
-import DeckMap from './refactor/map/DeckMap';
-import DataDashboard from './refactor/dashboard/Dashboard';
-import MapLegend from './refactor/map/MapLegend';
+import { Container, Stack, Button, LinearProgress, ButtonGroup } from '@mui/material';
+import { makeStyles } from '@material-ui/core';
+import DashboardComponent from '../../utilityComponents/DashboardComponent';
+import CollectionSelector from './components/CollectionSelector';
+import TemporalSlider from './components/TemporalSlider';
+import BaselineSelector from './components/BaselineSelector';
+import SpatialSelector from './components/SpatialSelector';
 
 
-export default function App() {
+const useStyles = makeStyles({
+    divider: {
+        width: '25%'
+    }
+});
 
 
-    const Sparsity = UseSiteSparsity();
-    const Request = UseRequest(Sparsity.functions);
-    const Map = UseDeckMap(Sparsity.state, Request);
+export default function RequestForm({ Request, sparsityDataLength, currentShapeName }) {
 
-    /**
-     * Sunday 11/6
-     * Add dashboard components
-     * Try putting them all into a drawer that pops up from the bottom
-     */
+    const classes = useStyles();
+
+
+    const renderButtonOrLoading = () => {
+        if(Request.state.requestStatus === 'PENDING') {
+            return (
+                <LinearProgress
+                    color='tertiary'
+                />
+            );
+        }
+        else {
+            return (
+                <ButtonGroup>
+                    <Button onClick={Request.functions.sendSparsityScoreRequest}>
+                        Submit Request: {currentShapeName}
+                    </Button>
+                    <Button
+                        disabled={sparsityDataLength < 1}
+                        onClick={Request.functions.sendUpdateBaselineRequest}
+                    >
+                        Update Baseline
+                    </Button>
+                </ButtonGroup>
+            );
+        }
+    }
 
 
     return (
-        <>
-            <DeckMap
-                Map={Map}
-            />
-            <Stack
-                direction="row"
-                justifyContent="space-between"
-                alignItems="flex-start"
-                spacing={2}
-            >
-                <DataDashboard
-                    Request={Request}
-                    Sparsity={Sparsity}
-                    Map={Map}
-                />
-                {/* <RequestForm
-                    Request={Request}
-                    sparsityDataLength={Sparsity.state.sparsityData.length}
-                    currentShapeName={Map.state.currentShapeName}
-                /> */}
-                <MapLegend
-                    min={Sparsity.state.scores[0]}
-                    max={Sparsity.state.scores[Sparsity.state.scores.length-1]}
-                    requestStatus={Request.state.requestStatus}
-                />
-            </Stack>
-        </>
+        <Container maxWidth='sm'>
+            <DashboardComponent>
+                <Stack
+                    direction='column'
+                    spacing={1.5}
+                    justifyContent='center'
+                    alignItems='center'
+                >
+                    <Stack
+                        direction='row'
+                        spacing={1}
+                        justifyContent='center'
+                        alignItems='center'
+                    >
+                        <CollectionSelector
+                            collection={Request.state.collection}
+                            setCollection={Request.functions.setCollection}
+                            setBaseline={Request.functions.setBaseline}
+                        />
+                        <BaselineSelector
+                            sendUpdateBaselineRequest={Request.functions.sendUpdateBaselineRequest}
+                            baseline={Request.state.baseline}
+                            setBaseline={Request.functions.setBaseline}
+                        />
+                        <SpatialSelector
+                            stateOrCounty={Request.state.stateOrCounty}
+                            setStateOrCounty={Request.functions.setStateOrCounty}
+                        />
+                    </Stack>
+                    <TemporalSlider
+                        temporalRange={Request.state.temporalRange}
+                        setTemporalRange={Request.functions.setTemporalRange}
+                        min={Request.state.startTime}
+                        max={Request.state.endTime}
+                    />
+                    {renderButtonOrLoading()}
+                </Stack>
+            </DashboardComponent>
+        </Container>
     );
 
 

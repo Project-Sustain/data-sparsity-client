@@ -32,42 +32,91 @@ END OF TERMS AND CONDITIONS
 */
 
 
-import { FormControl, InputLabel, Select, MenuItem } from '@mui/material';
-import { sparsityMetadata } from '../../../library/metadata';
+import { useState } from "react";
+import { Box, Drawer, Divider, IconButton } from "@mui/material";
+import { makeStyles } from "@material-ui/core";
+import MenuIcon from '@mui/icons-material/Menu';
+import TabSystem from "./TabSystem";
+import { Grid } from "@mui/material";
+import CurrentTab from "./CurrentTab";
 
 
-export default function CollectionSelector({ collection, setCollection, setBaseline }) {
+const useStyles = makeStyles({
+    root: {
+        zIndex: 5000,
+        opacity: 0.9,
+        overflow: 'auto'
+    },
+    openButton: {
+        position: 'fixed',
+        top: 5,
+        left: 5
+    },
+    closeButton: {
+        display: 'flex',
+        alignItems: 'center',
+        justifyContent: 'flex-end',
+        marginRight: '10px'
+    },
+    drawer: {
+        width: 'auto',
+        height: '40vh'
+    },
+    titleText: {
+        margin: '10px'
+    }
+});
 
-    const updateCollection = (event) => {
-        const newCollection = event.target.value;
-        setCollection(newCollection);
-        setBaseline(newCollection.initialBaseline);
+
+export default function Dashboard({Request, Sparsity, Map}) {
+
+    const classes = useStyles();
+
+
+    const [open, setOpen] = useState(false);
+    const [currentTab, setCurrentTab] = useState(0);
+
+
+    const handleDrawerClose = () => {
+        setOpen(false);
     }
 
-    if(sparsityMetadata.length > 0) {
-        return (
-            <FormControl>
-                <InputLabel>Dataset</InputLabel>
-                <Select
-                    MenuProps={{
-                        style: {zIndex: 5001}
-                    }}
-                    value={collection}
-                    label="Dataset"
-                    onChange={updateCollection}
+
+    return (
+        <>
+            <IconButton 
+                className={classes.openButton} 
+                onClick={() => setOpen(!open)}
+            >
+                <MenuIcon/>
+            </IconButton>
+            <Drawer
+                className={classes.root}
+                variant='persistent'
+                anchor='bottom'
+                open={open}
+                onClose={handleDrawerClose}
+            >
+                <Box
+                    className={classes.drawer}
+                    role='presentation'
                 >
-                    {
-                        sparsityMetadata.map((dataset, index) => {
-                            return (
-                                <MenuItem key={index} value={dataset}>{dataset.label}</MenuItem>
-                            );
-                        })
-                    }
-                </Select>
-            </FormControl>
-        );
-    }
+                    <TabSystem
+                        currentTab={currentTab}
+                        setCurrentTab={setCurrentTab}
+                    />
+                    <Divider/>
+                    <Grid container spacing={2}>
+                        <CurrentTab
+                            currentTab={currentTab}
+                            Request={Request}
+                            Sparsity={Sparsity}
+                            Map={Map}
+                        />
+                    </Grid>
+                </Box>
+            </Drawer>
+        </>
+    );
 
-    else return null;
-    
 }
