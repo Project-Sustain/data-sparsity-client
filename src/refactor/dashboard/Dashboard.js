@@ -107,7 +107,7 @@ export default function Dashboard({Request, Sparsity, Map}) {
                         handleDrawerClose={handleDrawerClose}
                     />
                     <Divider/>
-                    <Grid 
+                    <Grid
                         container 
                         spacing={2}
                         justifyContent='center'
