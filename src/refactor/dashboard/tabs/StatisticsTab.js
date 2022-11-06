@@ -32,44 +32,21 @@ END OF TERMS AND CONDITIONS
 */
 
 
-import { useState, useEffect } from "react";
-import { FormControl, FormControlLabel, Checkbox, Grid } from "@mui/material";
-import DashboardComponent from "../utilityComponents/DashboardComponent";
+import SparsityExplaination from "../statistics/SparsityExplaination";
+import StatisticsTable from "../statistics/StatisticsTable";
 
 
-export default function MapLegendControl({viewMapLegend, updateViewMapLegend, requestStatus}) {
-
-    const [disableCheckbox, setDisableCheckbox] = useState(true);
-
-
-    useEffect(() => {
-        if(requestStatus !== 'VALID') {
-            setDisableCheckbox(true);
-        }
-        else {
-            setDisableCheckbox(false);
-        }
-    }, [requestStatus]);
+export default function SparsityTab({stats}) {
 
 
     return (
-        <Grid item xs={2}>
-            <DashboardComponent>
-                <FormControl>
-                    <FormControlLabel 
-                        control={
-                            <Checkbox
-                                checked={viewMapLegend}
-                                onChange={updateViewMapLegend}
-                                disabled={disableCheckbox}
-                            />
-                        }
-                        label='Map Legend'
-                    />
-                </FormControl>
-            </DashboardComponent>
-        </Grid>
-    );
+        <>
+            <SparsityExplaination />
+            <StatisticsTable
+                stats={stats}
+            />
+        </>
+    )
 
 
 }

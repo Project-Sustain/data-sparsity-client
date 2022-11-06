@@ -32,44 +32,56 @@ END OF TERMS AND CONDITIONS
 */
 
 
-import { useState, useEffect } from "react";
-import { FormControl, FormControlLabel, Checkbox, Grid } from "@mui/material";
-import DashboardComponent from "../utilityComponents/DashboardComponent";
+import { Grid, Table, TableBody, TableCell, TableContainer, TableHead, TableRow } from "@mui/material";
+import DashboardComponent from "../../utilityComponents/DashboardComponent";
 
 
-export default function MapLegendControl({viewMapLegend, updateViewMapLegend, requestStatus}) {
-
-    const [disableCheckbox, setDisableCheckbox] = useState(true);
-
-
-    useEffect(() => {
-        if(requestStatus !== 'VALID') {
-            setDisableCheckbox(true);
-        }
-        else {
-            setDisableCheckbox(false);
-        }
-    }, [requestStatus]);
+export default function StatisticsTable({stats}) {
 
 
     return (
-        <Grid item xs={2}>
+        <Grid item xs={8}>
             <DashboardComponent>
-                <FormControl>
-                    <FormControlLabel 
-                        control={
-                            <Checkbox
-                                checked={viewMapLegend}
-                                onChange={updateViewMapLegend}
-                                disabled={disableCheckbox}
-                            />
-                        }
-                        label='Map Legend'
-                    />
-                </FormControl>
+                <TableContainer>
+                    <Table>
+                        <TableHead>
+                            <TableRow>
+                                <TableCell></TableCell>
+                                <TableCell><strong>Min</strong></TableCell>
+                                <TableCell><strong>Max</strong></TableCell>
+                                <TableCell><strong>Mean</strong></TableCell>
+                                <TableCell><strong>Standard Deviation</strong></TableCell>
+                            </TableRow>
+                        </TableHead>
+                        <TableBody>
+                            <TableRow>
+                                <TableCell>Time Between Observations</TableCell>
+                                <TableCell>{stats.minTimeBetweenObservations}</TableCell>
+                                <TableCell>{stats.maxTimeBetweenObservations}</TableCell>
+                                <TableCell>{stats.meanTimeBetweenObservations}</TableCell>
+                                <TableCell>{stats.stdDevTimeBetweenObservations}</TableCell>
+                            </TableRow>
+                            <TableRow>
+                                <TableCell>Number of Observations per Site</TableCell>
+                                <TableCell>{stats.minNumberOfObservations}</TableCell>
+                                <TableCell>{stats.maxNumberOfObservations}</TableCell>
+                                <TableCell>{stats.meanNumberOfObservations}</TableCell>
+                                <TableCell>{stats.stdDevNumberOfObservations}</TableCell>
+                            </TableRow>
+                            <TableRow>
+                                <TableCell>Sparstiy Scores</TableCell>
+                                <TableCell>{stats.minSparsity}</TableCell>
+                                <TableCell>{stats.maxSparsity}</TableCell>
+                                <TableCell>{stats.meanSparsity}</TableCell>
+                                <TableCell>{stats.stdDevSparsity}</TableCell>
+                            </TableRow>
+                        </TableBody>
+                    </Table>
+                </TableContainer>
             </DashboardComponent>
         </Grid>
-    );
+    )
 
 
 }
+

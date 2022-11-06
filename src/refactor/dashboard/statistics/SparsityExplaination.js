@@ -32,44 +32,26 @@ END OF TERMS AND CONDITIONS
 */
 
 
-import { useState, useEffect } from "react";
-import { FormControl, FormControlLabel, Checkbox, Grid } from "@mui/material";
-import DashboardComponent from "../utilityComponents/DashboardComponent";
+import { Typography, Grid } from "@mui/material";
+import DashboardComponent from "../../utilityComponents/DashboardComponent";
 
 
-export default function MapLegendControl({viewMapLegend, updateViewMapLegend, requestStatus}) {
-
-    const [disableCheckbox, setDisableCheckbox] = useState(true);
-
-
-    useEffect(() => {
-        if(requestStatus !== 'VALID') {
-            setDisableCheckbox(true);
-        }
-        else {
-            setDisableCheckbox(false);
-        }
-    }, [requestStatus]);
+export default function SparsityExplaination({}) {
 
 
     return (
-        <Grid item xs={2}>
+        <Grid item xs={3}>
             <DashboardComponent>
-                <FormControl>
-                    <FormControlLabel 
-                        control={
-                            <Checkbox
-                                checked={viewMapLegend}
-                                onChange={updateViewMapLegend}
-                                disabled={disableCheckbox}
-                            />
-                        }
-                        label='Map Legend'
-                    />
-                </FormControl>
+                <Typography variant='h5'><strong>Sparsity Score</strong></Typography>
+                <Typography>
+                    Sparsity Score represents the average amount of time between observations
+                    at a given observation site. The number is normalized based off of the mean and
+                    standard deviation of both frequency of measure and total number of observations
+                    at every site in the query.
+                </Typography>
             </DashboardComponent>
         </Grid>
-    );
+    )
 
 
 }

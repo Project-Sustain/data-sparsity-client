@@ -32,7 +32,8 @@ END OF TERMS AND CONDITIONS
 */
 
 
-import RequestTab from "./tabs/RequestTab";
+import RequestTab from './tabs/RequestTab';
+import StatisticsTab from './tabs/StatisticsTab';
 
 
 export default function CurrentTab({currentTab, Request, Sparsity, Map}) {
@@ -40,6 +41,8 @@ export default function CurrentTab({currentTab, Request, Sparsity, Map}) {
     switch (currentTab) {
         case 0:
             return <RequestTab Request={Request} Sparsity={Sparsity} Map={Map} />;
+        case 1:
+            return <StatisticsTab stats={Sparsity.state.sparsityStats} />
         default:
             return null;
     }
