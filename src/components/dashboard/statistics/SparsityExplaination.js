@@ -36,7 +36,7 @@ import { Typography, Grid } from "@mui/material";
 import DashboardComponent from "../../utilityComponents/DashboardComponent";
 
 
-export default function SparsityExplaination({}) {
+export default function SparsityExplaination() {
 
 
     return (
