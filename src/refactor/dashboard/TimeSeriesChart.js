@@ -44,7 +44,7 @@ import DashboardComponent from '../utilityComponents/DashboardComponent';
 const useStyles = makeStyles({
     chart: {
         width: "100%",
-        height: 400
+        height: 300
     },
     divider: {
         margin: '20px'
@@ -103,8 +103,7 @@ export default function TimeSeriesChart({sparsityData}) {
     return (
         <Grid item xs={11}>
             <DashboardComponent>
-                <Typography variant='h5' align='center'>Number of Observations by Time</Typography>
-                <ResponsiveContainer width="100%" height={400}>
+                <ResponsiveContainer width="100%" height={350}>
                     <LineChart
                         data={data}
                         margin={{
@@ -142,6 +141,6 @@ export default function TimeSeriesChart({sparsityData}) {
             </DashboardComponent>
         </Grid>
     );
-    
+
 
 }
