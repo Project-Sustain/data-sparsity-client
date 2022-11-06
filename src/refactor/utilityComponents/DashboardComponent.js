@@ -13,19 +13,19 @@ export default function DashboardComponent(props) {
 
 
     return (
-        <Stack
-            direction='column'
-            spacing={1.5}
-            justifyContent='center'
-            alignItems='center'
+        <Paper 
+            className={classes.root}
+            elevation={3}
         >
-            <Paper 
-                className={classes.root}
-                elevation={3}
+            <Stack
+                direction='column'
+                spacing={1.5}
+                justifyContent='center'
+                alignItems='center'
             >
                 {props.children}
-            </Paper>
-        </Stack>
+            </Stack>
+        </Paper>
     );
 
 }

@@ -42,8 +42,8 @@ import SpatialSelector from './components/SpatialSelector';
 
 
 const useStyles = makeStyles({
-    root: {
-        
+    loading: {
+        width: '100%'
     }
 });
 
@@ -57,7 +57,7 @@ export default function RequestForm({ Request, sparsityDataLength, currentShapeN
         if(Request.state.requestStatus === 'PENDING') {
             return (
                 <LinearProgress
-                    color='tertiary'
+                    className={classes.loading}
                 />
             );
         }
