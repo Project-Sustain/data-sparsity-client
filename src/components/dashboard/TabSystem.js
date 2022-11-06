@@ -44,7 +44,7 @@ const useStyles = makeStyles({
 });
 
 
-export default function TabSystem({currentTab, setCurrentTab, handleDrawerClose}) {
+export default function TabSystem({currentTab, setCurrentTab, handleDrawerClose, disableTab}) {
 
     const classes = useStyles();
 
@@ -58,6 +58,11 @@ export default function TabSystem({currentTab, setCurrentTab, handleDrawerClose}
         else return 'outlined';
     };
 
+    const disableButton = (index) => {
+        if(index > 0) return disableTab;
+        else return false;
+    }
+
 
     return (
         <ButtonGroup className={classes.root}>
@@ -68,6 +73,7 @@ export default function TabSystem({currentTab, setCurrentTab, handleDrawerClose}
                             key={index} 
                             onClick={() => setCurrentTab(index)}
                             variant={getVariant(index)}
+                            disabled={disableButton(index)}
                         >
                             {title}
                         </Button>

@@ -47,16 +47,9 @@ import MapLegend from './components/map/MapLegend';
 
 export default function App() {
 
-
     const Sparsity = UseSiteSparsity();
     const Request = UseRequest(Sparsity.functions);
     const Map = UseDeckMap(Sparsity.state, Request);
-
-    /**
-     * Sunday 11/6
-     * Add dashboard components
-     * Try putting them all into a drawer that pops up from the bottom
-     */
 
 
     return (

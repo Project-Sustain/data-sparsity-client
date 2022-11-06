@@ -32,7 +32,7 @@ END OF TERMS AND CONDITIONS
 */
 
 
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { Box, Drawer, Divider, IconButton, Grid, Stack } from "@mui/material";
 import { makeStyles } from "@material-ui/core";
 import MenuIcon from '@mui/icons-material/Menu';
@@ -64,6 +64,12 @@ export default function Dashboard({Request, Sparsity, Map}) {
 
     const [open, setOpen] = useState(true);
     const [currentTab, setCurrentTab] = useState(0);
+    const [disableTab, setDisableTab] = useState(true);
+
+
+    useEffect(() => {
+        setDisableTab(Request.state.requestStatus !== 'VALID');
+    }, [Request.state.requestStatus]);
 
 
     const handleDrawerClose = () => {
@@ -95,6 +101,7 @@ export default function Dashboard({Request, Sparsity, Map}) {
                             currentTab={currentTab}
                             setCurrentTab={setCurrentTab}
                             handleDrawerClose={handleDrawerClose}
+                            disableTab={disableTab}
                         />
                     </Stack>
                     <Divider/>
