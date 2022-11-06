@@ -34,9 +34,9 @@ END OF TERMS AND CONDITIONS
 
 import RequestTab from './tabs/RequestTab';
 import StatisticsTab from './tabs/StatisticsTab';
-import CustomBarChart from './CustomBarChart';
-import PieControl from './pieChart/PieControl';
-import TimeSeriesChart from './TimeSeriesChart';
+import CustomBarChart from './tabs/CustomBarChart';
+import PieChartTab from './tabs/PieChartTab';
+import TimeSeriesChart from './tabs/TimeSeriesChart';
 
 
 export default function CurrentTab({currentTab, Request, Sparsity, Map}) {
@@ -47,7 +47,7 @@ export default function CurrentTab({currentTab, Request, Sparsity, Map}) {
         case 1:
             return <StatisticsTab stats={Sparsity.state.sparsityStats} />;
         case 2:
-            return <PieControl scores={Sparsity.state.scores} />;
+            return <PieChartTab scores={Sparsity.state.scores} />;
         case 3:
             return <CustomBarChart scores={Sparsity.state.scores} />;
         case 4:

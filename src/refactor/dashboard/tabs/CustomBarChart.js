@@ -32,81 +32,64 @@ END OF TERMS AND CONDITIONS
 */
 
 
-import { useState, useEffect, memo } from 'react';
-import { Grid, Button } from '@mui/material';
-import { makeStyles } from "@material-ui/core";
+import { BarChart, Bar, XAxis, YAxis, Tooltip, Legend, ResponsiveContainer } from 'recharts';
+import { Grid, Typography } from "@mui/material";
+import { useEffect, useState } from 'react';
 import { colors } from '../../../library/colors';
-import chroma from 'chroma-js';
-import PieTable from './PieTable';
-import CustomPieChart from './CustomPieChart';
 import DashboardComponent from '../../utilityComponents/DashboardComponent';
 
-const useStyles = makeStyles({
-    root: {
-        margin: "10px",
-        padding: "10px",
-        width: '50vw',
-        zIndex: 5000,
-        opacity: '0.9'
-    },
-    low: {
-        color: colors.primary
-    },
-    high: {
-        color: colors.tertiary
-    },
-    button: {
-        width: "100%",
-        marginTop: "20px"
-    },
-});
 
-export default memo(function ScorePieChart({scores}) {
-    const classes = useStyles();
-    const [pieData, setPieData] = useState([]);
-    const [colorScale, setColorScale] = useState([]);
-    const [selectedIndex, setSelectedIndex] = useState(-1);
-    const [scoreSet, setScoreSet] = useState([]);
+export default function CustomBarChart({scores}) {
+
+    const [data, setData] = useState({});
+
 
     useEffect(() => {
-        const initialScoreSet = [...new Set(scores)];
-        setScoreSet(initialScoreSet);
-        const initialColorScale = chroma.scale([colors.tertiary, colors.primary]).colors(initialScoreSet.length);
-        setColorScale(initialColorScale);
-        const data = initialScoreSet.map((score, index) => {
-            const numberWithThisScore = scores.filter(entry => {return entry === score}).length;
-            const percent = ((numberWithThisScore / scores.length) * 100).toFixed(2);
-            const color = index === selectedIndex ? colors.highlight : initialColorScale[index];
-            return {
-                "score": score,
-                "sites": numberWithThisScore,
-                "fill": color,
-                "percent": percent
-            }
-        });
-        setPieData(data);
-    }, [scores, selectedIndex]);
+            let chartData = [];
+            if(scores.length > 0) {
+                try {
+                    const numBuckets = 7;
+                    const min = scores[scores.length-1];
+                    const max = scores[0];
+                    const range = max - min;
+                    const rangePerBucket = range / numBuckets;
 
-    if(pieData.length > 0) {
-        return (
-            <>
-                <PieTable
-                    setSelectedIndex={setSelectedIndex}
-                    selectedIndex={selectedIndex}
-                    pieData={pieData}
-                    colorScale={colorScale}
-                    scoreSet={scoreSet}
-                />
+                    chartData = [...Array(numBuckets).keys()].map(index => {
+                        const bucketMin = (min+(rangePerBucket*index)).toFixed(3);
+                        const bucketMax = (min+(rangePerBucket*(index+1))).toFixed(3);
+                        return {
+                            name: `${bucketMin} - ${bucketMax}`, 
+                            numberOfSites: scores.filter(score => {
+                                const lessThanMax = index === 4 ? score <= bucketMax : score < bucketMax;
+                                return score >= bucketMin && lessThanMax;
+                            }).length};
+                    });
 
-                <CustomPieChart
-                    pieData={pieData}
-                    setSelectedIndex={setSelectedIndex}
-                />
-            </>
-        );
-    }
+                } catch (exception) {
+                    console.log({exception}); // FIXME Set a flag to display a message...
+                }
 
-    else return null;
+            setData(chartData);
+        }
+    }, [scores]);
 
 
-});
+    return (
+        <Grid item xs={11}>
+            <DashboardComponent>
+                <Typography variant='h5' align='center'>Number of Sites Within Sparsity Range</Typography>
+                <ResponsiveContainer width='100%' height={350}>
+                    <BarChart data={data}>
+                        <XAxis dataKey="name" />
+                        <YAxis />
+                        <Tooltip />
+                        <Legend />
+                        <Bar dataKey="numberOfSites" fill={colors.secondary} barSize={30} />
+                    </BarChart>
+                </ResponsiveContainer>
+            </DashboardComponent>
+        </Grid>
+    );
+
+    
+}
