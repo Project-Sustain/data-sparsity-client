@@ -32,28 +32,27 @@ END OF TERMS AND CONDITIONS
 */
 
 
-import { makeStyles } from "@material-ui/core";
-import RequestTab from "./tabs/RequestTab";
+import MapLegendControl from "../../map/MapLegendControl";
+import RequestForm from "../request/RequestForm";
 
 
-const useStyles = makeStyles({
-    root: {
-
-    }
-});
+export default function RequestTab({Request, Sparsity, Map}) {
 
 
-export default function CurrentTab({currentTab, Request, Sparsity, Map}) {
-
-    const classes = useStyles();
-
-
-    switch (currentTab) {
-        case 0:
-            return <RequestTab Request={Request} Sparsity={Sparsity} Map={Map} />;
-        default:
-            return null;
-    }
+    return (
+        <>
+            <RequestForm 
+                Request={Request} 
+                sparsityDataLength={Sparsity.state.sparsityData.length} 
+                currentShapeName={Map.state.currentShapeName}
+            />
+            <MapLegendControl
+                viewMapLegend={Map.state.viewMapLegend}
+                updateViewMapLegend={Map.functions.updateViewMapLegend}
+                requestStatus={Request.state.requestStatus}
+            />
+        </>
+    );
 
 
 }
