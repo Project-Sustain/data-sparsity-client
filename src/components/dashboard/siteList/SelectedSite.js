@@ -32,51 +32,55 @@ END OF TERMS AND CONDITIONS
 */
 
 
+import { memo } from 'react';
+import { makeStyles } from '@material-ui/core';
+import { Typography, Grid, ButtonGroup, Button, Paper } from '@mui/material';
+import { paperRoot } from '../../../library/styles';
+import { Divider } from '@mui/material';
 import { Stack } from '@mui/material';
 
-// Hooks
-import { UseSiteSparsity } from './hooks/UseSiteSparsity';
-import { UseRequest } from './hooks/UseRequest';
-import { UseDeckMap } from './hooks/UseDeckMap';
 
-// Components
-import DeckMap from './components/map/DeckMap';
-import DataDashboard from './components/dashboard/Dashboard';
-import MapLegend from './components/map/MapLegend';
+const useStyles = makeStyles({
+    root: paperRoot,
+    section: {
+        margin: '10px'
+    }
+});
 
 
-export default function App() {
-
-    const Sparsity = UseSiteSparsity();
-    const Request = UseRequest(Sparsity.functions);
-    const Map = UseDeckMap(Sparsity.state, Request);
+export default memo(function SelectedSite({updateHighlightedSite, deselectSite, site, updateMapViewState, index, collectionProperties, disable}) {
+    
+    const classes = useStyles();
 
 
+    const selectSite = () => {
+        updateMapViewState(site.coordinates)
+        updateHighlightedSite(index);
+    }
+    
     return (
-        <>
-            <DeckMap
-                Map={Map}
-            />
-            <Stack
-                direction="row"
-                justifyContent="space-between"
-                alignItems="flex-start"
-                spacing={2}
-            >
-                <DataDashboard
-                    Request={Request}
-                    Sparsity={Sparsity}
-                    Map={Map}
-                />
-                <MapLegend
-                    min={Sparsity.state.scores[0]}
-                    max={Sparsity.state.scores[Sparsity.state.scores.length-1]}
-                    requestStatus={Request.state.requestStatus}
-                    visible={Map.state.viewMapLegend}
-                />
-            </Stack>
-        </>
+        <Grid item xs={4}>
+            <Paper elevation={3} className={classes.root}>
+                <div className={classes.section}>
+                    <Typography><strong>Sparsity Score:</strong> {site.sparsityScore}</Typography>
+                    <Typography><strong>Mean Time Between Observations:</strong> {site.siteMean}</Typography>
+                    <Typography><strong>Total Observations:</strong> {site.numberOfMeasurements}</Typography>
+                </div>
+                <Divider />
+                <div className={classes.section}>
+                    {
+                        site.sitePropertyInfo.map((property, index) => {
+                            return <Typography key={index}><strong>{collectionProperties[index]}</strong>: {property}</Typography>
+                        })
+                    }
+                </div>
+                <Stack direction='column' alignItems='center'>
+                    <ButtonGroup className={classes.section}>
+                        <Button variant='outlined' onClick={selectSite}>Select</Button>
+                        <Button disabled={disable} variant='outlined' onClick={deselectSite}>Deselect</Button>
+                    </ButtonGroup>
+                </Stack>
+            </Paper>
+        </Grid>
     );
-
-
-}
+});

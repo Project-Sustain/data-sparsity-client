@@ -32,51 +32,53 @@ END OF TERMS AND CONDITIONS
 */
 
 
-import { Stack } from '@mui/material';
-
-// Hooks
-import { UseSiteSparsity } from './hooks/UseSiteSparsity';
-import { UseRequest } from './hooks/UseRequest';
-import { UseDeckMap } from './hooks/UseDeckMap';
-
-// Components
-import DeckMap from './components/map/DeckMap';
-import DataDashboard from './components/dashboard/Dashboard';
-import MapLegend from './components/map/MapLegend';
+import { React } from 'react'
+import { makeStyles } from '@material-ui/core';
+import { Typography, Grid } from '@mui/material';
+import { DataGrid } from '@mui/x-data-grid';
+import DashboardComponent from '../../utilityComponents/DashboardComponent';
 
 
-export default function App() {
+const useStyles = makeStyles({
+  root: {
+    width: 500,
+    height: 350
+  }
+});
 
-    const Sparsity = UseSiteSparsity();
-    const Request = UseRequest(Sparsity.functions);
-    const Map = UseDeckMap(Sparsity.state, Request);
+
+export default function SparsityTable({setSelectedIndex, sparsityData}) {
+
+  const classes = useStyles();
 
 
-    return (
-        <>
-            <DeckMap
-                Map={Map}
-            />
-            <Stack
-                direction="row"
-                justifyContent="space-between"
-                alignItems="flex-start"
-                spacing={2}
-            >
-                <DataDashboard
-                    Request={Request}
-                    Sparsity={Sparsity}
-                    Map={Map}
-                />
-                <MapLegend
-                    min={Sparsity.state.scores[0]}
-                    max={Sparsity.state.scores[Sparsity.state.scores.length-1]}
-                    requestStatus={Request.state.requestStatus}
-                    visible={Map.state.viewMapLegend}
-                />
-            </Stack>
-        </>
-    );
+  const columns = [
+    {field: 'id', headerName: '', width: 50},
+    {field: 'monitorId', headerName: 'Monitor ID', width: 300},
+    {field: 'sparsityScore', headerName: 'Sparsity Score', width: 125}
+  ]
+
+  const rows = sparsityData.map((site, index) => {
+    return {id: index, monitorId: site.monitorId, sparsityScore: site.sparsityScore};
+  });
+
+
+  return (
+    <Grid item xs={4}>
+      <DashboardComponent>
+        <Typography align='center' variant='h5'>Sparsity Score Table</Typography>
+        <div className={classes.root}>
+          <DataGrid
+            rows={rows}
+            columns={columns}
+            pageSize={100}
+            rowsPerPageOptions={[100]}
+            onCellClick={params => {setSelectedIndex(params.id)}}
+          />
+        </div>
+      </DashboardComponent>
+    </Grid>
+  );
 
 
 }

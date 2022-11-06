@@ -32,51 +32,66 @@ END OF TERMS AND CONDITIONS
 */
 
 
-import { Stack } from '@mui/material';
-
-// Hooks
-import { UseSiteSparsity } from './hooks/UseSiteSparsity';
-import { UseRequest } from './hooks/UseRequest';
-import { UseDeckMap } from './hooks/UseDeckMap';
-
-// Components
-import DeckMap from './components/map/DeckMap';
-import DataDashboard from './components/dashboard/Dashboard';
-import MapLegend from './components/map/MapLegend';
+import { useState, useEffect, memo } from 'react';
+import { colors } from '../../../library/colors';
+import { Typography, Grid } from '@mui/material';
+import chroma from 'chroma-js';
+import PieTable from '../pieChart/PieTable';
+import CustomPieChart from '../pieChart/CustomPieChart';
+import DashboardComponent from '../../utilityComponents/DashboardComponent';
+import PieChartIcon from '@mui/icons-material/PieChart';
 
 
-export default function App() {
+export default memo(function PieChartTab({scores, selectedIndex, setSelectedIndex}) {
+    const [pieData, setPieData] = useState([]);
+    const [colorScale, setColorScale] = useState([]);
+    const [scoreSet, setScoreSet] = useState([]);
 
-    const Sparsity = UseSiteSparsity();
-    const Request = UseRequest(Sparsity.functions);
-    const Map = UseDeckMap(Sparsity.state, Request);
+    useEffect(() => {
+        const initialScoreSet = [...new Set(scores)];
+        setScoreSet(initialScoreSet);
+        const initialColorScale = chroma.scale([colors.tertiary, colors.primary]).colors(initialScoreSet.length);
+        setColorScale(initialColorScale);
+        const data = initialScoreSet.map((score, index) => {
+            const numberWithThisScore = scores.filter(entry => {return entry === score}).length;
+            const percent = ((numberWithThisScore / scores.length) * 100).toFixed(2);
+            const color = index === selectedIndex ? colors.highlight : initialColorScale[index];
+            return {
+                "score": score,
+                "sites": numberWithThisScore,
+                "fill": color,
+                "percent": percent
+            }
+        });
+        setPieData(data);
+    }, [scores, selectedIndex]);
 
-
-    return (
-        <>
-            <DeckMap
-                Map={Map}
-            />
-            <Stack
-                direction="row"
-                justifyContent="space-between"
-                alignItems="flex-start"
-                spacing={2}
-            >
-                <DataDashboard
-                    Request={Request}
-                    Sparsity={Sparsity}
-                    Map={Map}
+    if(pieData.length > 0 && pieData.length < 100) {
+        return (
+            <>
+                <PieTable
+                    setSelectedIndex={setSelectedIndex}
+                    selectedIndex={selectedIndex}
+                    pieData={pieData}
+                    colorScale={colorScale}
+                    scoreSet={scoreSet}
                 />
-                <MapLegend
-                    min={Sparsity.state.scores[0]}
-                    max={Sparsity.state.scores[Sparsity.state.scores.length-1]}
-                    requestStatus={Request.state.requestStatus}
-                    visible={Map.state.viewMapLegend}
+
+                <CustomPieChart
+                    pieData={pieData}
+                    setSelectedIndex={setSelectedIndex}
                 />
-            </Stack>
-        </>
+            </>
+        );
+    }
+
+    else return (
+        <Grid item xs={4}>
+            <DashboardComponent>
+                <Typography variant='h4' align='center'><PieChartIcon/>Too many slices to render pie</Typography>
+            </DashboardComponent>
+        </Grid>
     );
 
 
-}
+});

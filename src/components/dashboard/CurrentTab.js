@@ -32,51 +32,45 @@ END OF TERMS AND CONDITIONS
 */
 
 
-import { Stack } from '@mui/material';
-
-// Hooks
-import { UseSiteSparsity } from './hooks/UseSiteSparsity';
-import { UseRequest } from './hooks/UseRequest';
-import { UseDeckMap } from './hooks/UseDeckMap';
-
-// Components
-import DeckMap from './components/map/DeckMap';
-import DataDashboard from './components/dashboard/Dashboard';
-import MapLegend from './components/map/MapLegend';
+import { useEffect, useState } from "react";
+import RequestTab from './tabs/RequestTab';
+import StatisticsTab from './tabs/StatisticsTab';
+import CustomBarChart from './tabs/CustomBarChart';
+import PieChartTab from './tabs/PieChartTab';
+import TimeSeriesChart from './tabs/TimeSeriesChart';
+import SiteDataTab from './tabs/SiteDataTab';
 
 
-export default function App() {
+export default function CurrentTab({currentTab, Request, Sparsity, Map}) {
 
-    const Sparsity = UseSiteSparsity();
-    const Request = UseRequest(Sparsity.functions);
-    const Map = UseDeckMap(Sparsity.state, Request);
+    const [siteIndex, setSiteIndex] = useState(0)
+    const [pieIndex, setPieIndex] = useState(-1);
+    const [numTimeSeriesBuckets, setNumTimeSeriesBuckets] = useState(100);
 
 
-    return (
-        <>
-            <DeckMap
-                Map={Map}
-            />
-            <Stack
-                direction="row"
-                justifyContent="space-between"
-                alignItems="flex-start"
-                spacing={2}
-            >
-                <DataDashboard
-                    Request={Request}
-                    Sparsity={Sparsity}
-                    Map={Map}
-                />
-                <MapLegend
-                    min={Sparsity.state.scores[0]}
-                    max={Sparsity.state.scores[Sparsity.state.scores.length-1]}
-                    requestStatus={Request.state.requestStatus}
-                    visible={Map.state.viewMapLegend}
-                />
-            </Stack>
-        </>
-    );
+    useEffect(() => {
+        setSiteIndex(0);
+        setPieIndex(-1);
+        setNumTimeSeriesBuckets(100);
+    }, [Request.state.requestStatus]);
+
+
+    switch (currentTab) {
+        case 0:
+            return <RequestTab Request={Request} Sparsity={Sparsity} Map={Map} />;
+        case 1:
+            return <StatisticsTab stats={Sparsity.state.sparsityStats} />;
+        case 2:
+            return <PieChartTab scores={Sparsity.state.scores} selectedIndex={pieIndex} setSelectedIndex={setPieIndex} />;
+        case 3:
+            return <CustomBarChart scores={Sparsity.state.scores} />;
+        case 4:
+            return <TimeSeriesChart sparsityData={Sparsity.state.sparsityData} numBuckets={numTimeSeriesBuckets} setNumBuckets={setNumTimeSeriesBuckets} />;
+        case 5:
+            return <SiteDataTab Request={Request} Sparsity={Sparsity} Map={Map} selectedIndex={siteIndex} setSelectedIndex={setSiteIndex} />;
+        default:
+            return null;
+    }
 
 
 }

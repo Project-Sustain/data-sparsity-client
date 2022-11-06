@@ -32,51 +32,42 @@ END OF TERMS AND CONDITIONS
 */
 
 
-import { Stack } from '@mui/material';
-
-// Hooks
-import { UseSiteSparsity } from './hooks/UseSiteSparsity';
-import { UseRequest } from './hooks/UseRequest';
-import { UseDeckMap } from './hooks/UseDeckMap';
-
-// Components
-import DeckMap from './components/map/DeckMap';
-import DataDashboard from './components/dashboard/Dashboard';
-import MapLegend from './components/map/MapLegend';
+import { FormControl, InputLabel, Select, MenuItem } from '@mui/material';
+import { sparsityMetadata } from '../../../../library/metadata';
 
 
-export default function App() {
+export default function CollectionSelector({ collection, setCollection, setBaseline }) {
 
-    const Sparsity = UseSiteSparsity();
-    const Request = UseRequest(Sparsity.functions);
-    const Map = UseDeckMap(Sparsity.state, Request);
+    const updateCollection = (event) => {
+        const newCollection = event.target.value;
+        setCollection(newCollection);
+        setBaseline(newCollection.initialBaseline);
+    }
 
+    if(sparsityMetadata.length > 0) {
+        return (
+            <FormControl>
+                <InputLabel>Dataset</InputLabel>
+                <Select
+                    MenuProps={{
+                        style: {zIndex: 5001}
+                    }}
+                    value={collection}
+                    label="Dataset"
+                    onChange={updateCollection}
+                >
+                    {
+                        sparsityMetadata.map((dataset, index) => {
+                            return (
+                                <MenuItem key={index} value={dataset}>{dataset.label}</MenuItem>
+                            );
+                        })
+                    }
+                </Select>
+            </FormControl>
+        );
+    }
 
-    return (
-        <>
-            <DeckMap
-                Map={Map}
-            />
-            <Stack
-                direction="row"
-                justifyContent="space-between"
-                alignItems="flex-start"
-                spacing={2}
-            >
-                <DataDashboard
-                    Request={Request}
-                    Sparsity={Sparsity}
-                    Map={Map}
-                />
-                <MapLegend
-                    min={Sparsity.state.scores[0]}
-                    max={Sparsity.state.scores[Sparsity.state.scores.length-1]}
-                    requestStatus={Request.state.requestStatus}
-                    visible={Map.state.viewMapLegend}
-                />
-            </Stack>
-        </>
-    );
-
-
+    else return null;
+    
 }

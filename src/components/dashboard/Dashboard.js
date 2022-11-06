@@ -32,51 +32,95 @@ END OF TERMS AND CONDITIONS
 */
 
 
-import { Stack } from '@mui/material';
-
-// Hooks
-import { UseSiteSparsity } from './hooks/UseSiteSparsity';
-import { UseRequest } from './hooks/UseRequest';
-import { UseDeckMap } from './hooks/UseDeckMap';
-
-// Components
-import DeckMap from './components/map/DeckMap';
-import DataDashboard from './components/dashboard/Dashboard';
-import MapLegend from './components/map/MapLegend';
+import { useEffect, useState } from "react";
+import { Box, Drawer, Divider, IconButton, Grid, Stack } from "@mui/material";
+import { makeStyles } from "@material-ui/core";
+import MenuIcon from '@mui/icons-material/Menu';
+import TabSystem from "./TabSystem";
+import CurrentTab from "./CurrentTab";
 
 
-export default function App() {
+const useStyles = makeStyles({
+    root: {
+        zIndex: 5000,
+        opacity: 0.9,
+        overflow: 'auto'
+    },
+    openButton: {
+        position: 'fixed',
+        top: 5,
+        left: 5
+    },
+    drawer: {
+        width: 'auto'
+    }
+});
 
-    const Sparsity = UseSiteSparsity();
-    const Request = UseRequest(Sparsity.functions);
-    const Map = UseDeckMap(Sparsity.state, Request);
+
+export default function Dashboard({Request, Sparsity, Map}) {
+
+    const classes = useStyles();
+
+
+    const [open, setOpen] = useState(true);
+    const [currentTab, setCurrentTab] = useState(0);
+    const [disableTab, setDisableTab] = useState(true);
+
+
+    useEffect(() => {
+        setDisableTab(Request.state.requestStatus !== 'VALID');
+    }, [Request.state.requestStatus]);
+
+
+    const handleDrawerClose = () => {
+        setOpen(false);
+    }
 
 
     return (
         <>
-            <DeckMap
-                Map={Map}
-            />
-            <Stack
-                direction="row"
-                justifyContent="space-between"
-                alignItems="flex-start"
-                spacing={2}
+            <IconButton 
+                className={classes.openButton} 
+                onClick={() => setOpen(!open)}
             >
-                <DataDashboard
-                    Request={Request}
-                    Sparsity={Sparsity}
-                    Map={Map}
-                />
-                <MapLegend
-                    min={Sparsity.state.scores[0]}
-                    max={Sparsity.state.scores[Sparsity.state.scores.length-1]}
-                    requestStatus={Request.state.requestStatus}
-                    visible={Map.state.viewMapLegend}
-                />
-            </Stack>
+                <MenuIcon/>
+            </IconButton>
+            <Drawer
+                className={classes.root}
+                variant='persistent'
+                anchor='bottom'
+                open={open}
+                onClose={handleDrawerClose}
+            >
+                <Box
+                    className={classes.drawer}
+                    role='presentation'
+                >
+                    <Stack direction='column' alignItems='center' justifyContent='center'>
+                        <TabSystem
+                            currentTab={currentTab}
+                            setCurrentTab={setCurrentTab}
+                            handleDrawerClose={handleDrawerClose}
+                            disableTab={disableTab}
+                        />
+                    </Stack>
+                    <Divider/>
+                    <Grid
+                        container 
+                        spacing={2}
+                        justifyContent='center'
+                        alignItems='center'
+                    >
+                        <CurrentTab
+                            currentTab={currentTab}
+                            Request={Request}
+                            Sparsity={Sparsity}
+                            Map={Map}
+                        />
+                    </Grid>
+                </Box>
+            </Drawer>
         </>
     );
-
 
 }

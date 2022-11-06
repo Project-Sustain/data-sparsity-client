@@ -32,51 +32,38 @@ END OF TERMS AND CONDITIONS
 */
 
 
-import { Stack } from '@mui/material';
-
-// Hooks
-import { UseSiteSparsity } from './hooks/UseSiteSparsity';
-import { UseRequest } from './hooks/UseRequest';
-import { UseDeckMap } from './hooks/UseDeckMap';
-
-// Components
-import DeckMap from './components/map/DeckMap';
-import DataDashboard from './components/dashboard/Dashboard';
-import MapLegend from './components/map/MapLegend';
+import SparsityTable from "../siteList/SparsityTable";
+import SelectedSite from "../siteList/SelectedSite";
+import SitePieChart from "../siteList/SitePieChart";
 
 
-export default function App() {
+export default function SiteDataTab({Request, Sparsity, Map, selectedIndex, setSelectedIndex}) {
 
-    const Sparsity = UseSiteSparsity();
-    const Request = UseRequest(Sparsity.functions);
-    const Map = UseDeckMap(Sparsity.state, Request);
-
-
+    
     return (
         <>
-            <DeckMap
-                Map={Map}
+            <SparsityTable 
+                setSelectedIndex={setSelectedIndex}
+                sparsityData={Sparsity.state.sparsityData}
             />
-            <Stack
-                direction="row"
-                justifyContent="space-between"
-                alignItems="flex-start"
-                spacing={2}
-            >
-                <DataDashboard
-                    Request={Request}
-                    Sparsity={Sparsity}
-                    Map={Map}
-                />
-                <MapLegend
-                    min={Sparsity.state.scores[0]}
-                    max={Sparsity.state.scores[Sparsity.state.scores.length-1]}
-                    requestStatus={Request.state.requestStatus}
-                    visible={Map.state.viewMapLegend}
-                />
-            </Stack>
+            <SelectedSite 
+                updateMapViewState={Map.functions.updateMapViewState}
+                
+                updateHighlightedSite={Sparsity.functions.updateHighlightedSite}
+                deselectSite={Sparsity.functions.deselectSite}
+                site={Sparsity.state.sparsityData[selectedIndex]} 
+                disable={Object.keys(Sparsity.state.lastHighlightedSite).length === 0}
+
+                collectionProperties={Request.state.collection.sitePropertyFields}
+
+                index={selectedIndex}
+            />
+            <SitePieChart
+                site={Sparsity.state.sparsityData[selectedIndex]} 
+                scores={Sparsity.state.scores}
+            />
         </>
     );
 
-
+    
 }

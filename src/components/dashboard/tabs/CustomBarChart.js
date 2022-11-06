@@ -32,51 +32,64 @@ END OF TERMS AND CONDITIONS
 */
 
 
-import { Stack } from '@mui/material';
-
-// Hooks
-import { UseSiteSparsity } from './hooks/UseSiteSparsity';
-import { UseRequest } from './hooks/UseRequest';
-import { UseDeckMap } from './hooks/UseDeckMap';
-
-// Components
-import DeckMap from './components/map/DeckMap';
-import DataDashboard from './components/dashboard/Dashboard';
-import MapLegend from './components/map/MapLegend';
+import { BarChart, Bar, XAxis, YAxis, Tooltip, Legend, ResponsiveContainer } from 'recharts';
+import { Grid, Typography } from "@mui/material";
+import { useEffect, useState } from 'react';
+import { colors } from '../../../library/colors';
+import DashboardComponent from '../../utilityComponents/DashboardComponent';
 
 
-export default function App() {
+export default function CustomBarChart({scores}) {
 
-    const Sparsity = UseSiteSparsity();
-    const Request = UseRequest(Sparsity.functions);
-    const Map = UseDeckMap(Sparsity.state, Request);
+    const [data, setData] = useState({});
+
+
+    useEffect(() => {
+            let chartData = [];
+            if(scores.length > 0) {
+                try {
+                    const numBuckets = 7;
+                    const min = scores[scores.length-1];
+                    const max = scores[0];
+                    const range = max - min;
+                    const rangePerBucket = range / numBuckets;
+
+                    chartData = [...Array(numBuckets).keys()].map(index => {
+                        const bucketMin = (min+(rangePerBucket*index)).toFixed(3);
+                        const bucketMax = (min+(rangePerBucket*(index+1))).toFixed(3);
+                        return {
+                            name: `${bucketMin} - ${bucketMax}`, 
+                            numberOfSites: scores.filter(score => {
+                                const lessThanMax = index === 4 ? score <= bucketMax : score < bucketMax;
+                                return score >= bucketMin && lessThanMax;
+                            }).length};
+                    });
+
+                } catch (exception) {
+                    console.log({exception}); // FIXME Set a flag to display a message...
+                }
+
+            setData(chartData);
+        }
+    }, [scores]);
 
 
     return (
-        <>
-            <DeckMap
-                Map={Map}
-            />
-            <Stack
-                direction="row"
-                justifyContent="space-between"
-                alignItems="flex-start"
-                spacing={2}
-            >
-                <DataDashboard
-                    Request={Request}
-                    Sparsity={Sparsity}
-                    Map={Map}
-                />
-                <MapLegend
-                    min={Sparsity.state.scores[0]}
-                    max={Sparsity.state.scores[Sparsity.state.scores.length-1]}
-                    requestStatus={Request.state.requestStatus}
-                    visible={Map.state.viewMapLegend}
-                />
-            </Stack>
-        </>
+        <Grid item xs={11}>
+            <DashboardComponent>
+                <Typography variant='h5' align='center'>Number of Sites Within Sparsity Range</Typography>
+                <ResponsiveContainer width='100%' height={350}>
+                    <BarChart data={data}>
+                        <XAxis dataKey="name" />
+                        <YAxis />
+                        <Tooltip />
+                        <Legend />
+                        <Bar dataKey="numberOfSites" fill={colors.secondary} barSize={30} />
+                    </BarChart>
+                </ResponsiveContainer>
+            </DashboardComponent>
+        </Grid>
     );
 
-
+    
 }

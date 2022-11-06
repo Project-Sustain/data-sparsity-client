@@ -32,51 +32,60 @@ END OF TERMS AND CONDITIONS
 */
 
 
-import { Stack } from '@mui/material';
-
-// Hooks
-import { UseSiteSparsity } from './hooks/UseSiteSparsity';
-import { UseRequest } from './hooks/UseRequest';
-import { UseDeckMap } from './hooks/UseDeckMap';
-
-// Components
-import DeckMap from './components/map/DeckMap';
-import DataDashboard from './components/dashboard/Dashboard';
-import MapLegend from './components/map/MapLegend';
+import { useState, useEffect, memo } from 'react';
+import { ResponsiveContainer, PieChart, Pie, Legend } from 'recharts';
+import { Grid, Typography } from '@mui/material';
+import { colors } from '../../../library/colors';
+import DashboardComponent from '../../utilityComponents/DashboardComponent';
 
 
-export default function App() {
+export default memo(function SitePieChart({site, scores}) {
+    
+    const [pieData, setPieData] = useState([]);
 
-    const Sparsity = UseSiteSparsity();
-    const Request = UseRequest(Sparsity.functions);
-    const Map = UseDeckMap(Sparsity.state, Request);
+
+    useEffect(() => {
+        if(site){
+
+            const myScore = site.sparsityScore;
+            const numberOfSameScores = scores.filter(score => {return score === myScore}).length;
+            const numberOfDifferentScores = scores.length - numberOfSameScores;
+            setPieData([
+                {
+                    "name": `Sites with sparsity score = ${site.sparsityScore}`,
+                    "value": numberOfSameScores,
+                    "fill": colors.tertiary
+                },
+                {
+                    "name": "Sites with other sparisty scores",
+                    "value": numberOfDifferentScores,
+                    "fill": colors.primary
+                }
+            ]);
+
+        }
+    }, [site, scores]);
 
 
     return (
-        <>
-            <DeckMap
-                Map={Map}
-            />
-            <Stack
-                direction="row"
-                justifyContent="space-between"
-                alignItems="flex-start"
-                spacing={2}
-            >
-                <DataDashboard
-                    Request={Request}
-                    Sparsity={Sparsity}
-                    Map={Map}
-                />
-                <MapLegend
-                    min={Sparsity.state.scores[0]}
-                    max={Sparsity.state.scores[Sparsity.state.scores.length-1]}
-                    requestStatus={Request.state.requestStatus}
-                    visible={Map.state.viewMapLegend}
-                />
-            </Stack>
-        </>
+        <Grid item xs={3}>
+            <DashboardComponent>
+                <Typography align='center' variant='h5'>Sparsity Score Comparison</Typography>
+                <ResponsiveContainer width='100%' height={250}>
+                    <PieChart>
+                        <Pie
+                            data={pieData}
+                            dataKey="value"
+                            nameKey="name"
+                            cx="50%"
+                            cy="50%"
+                            outerRadius={75}
+                            label
+                        />
+                        <Legend />
+                    </PieChart>
+                </ResponsiveContainer>
+            </DashboardComponent>
+        </Grid>
     );
-
-
-}
+});

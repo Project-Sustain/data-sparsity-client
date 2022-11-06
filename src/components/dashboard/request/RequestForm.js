@@ -32,50 +32,86 @@ END OF TERMS AND CONDITIONS
 */
 
 
-import { Stack } from '@mui/material';
-
-// Hooks
-import { UseSiteSparsity } from './hooks/UseSiteSparsity';
-import { UseRequest } from './hooks/UseRequest';
-import { UseDeckMap } from './hooks/UseDeckMap';
-
-// Components
-import DeckMap from './components/map/DeckMap';
-import DataDashboard from './components/dashboard/Dashboard';
-import MapLegend from './components/map/MapLegend';
+import { Grid, Stack, Button, LinearProgress, ButtonGroup } from '@mui/material';
+import { makeStyles } from '@material-ui/core';
+import DashboardComponent from '../../utilityComponents/DashboardComponent';
+import CollectionSelector from './components/CollectionSelector';
+import TemporalSlider from './components/TemporalSlider';
+import BaselineSelector from './components/BaselineSelector';
+import SpatialSelector from './components/SpatialSelector';
 
 
-export default function App() {
+const useStyles = makeStyles({
+    loading: {
+        width: '100%'
+    }
+});
 
-    const Sparsity = UseSiteSparsity();
-    const Request = UseRequest(Sparsity.functions);
-    const Map = UseDeckMap(Sparsity.state, Request);
+
+export default function RequestForm({ Request, sparsityDataLength, currentShapeName }) {
+
+    const classes = useStyles();
+
+
+    const renderButtonOrLoading = () => {
+        if(Request.state.requestStatus === 'PENDING') {
+            return (
+                <LinearProgress
+                    className={classes.loading}
+                />
+            );
+        }
+        else {
+            return (
+                <ButtonGroup>
+                    <Button onClick={Request.functions.sendSparsityScoreRequest}>
+                        Submit Request: {currentShapeName}
+                    </Button>
+                    <Button
+                        disabled={sparsityDataLength < 1}
+                        onClick={Request.functions.sendUpdateBaselineRequest}
+                    >
+                        Update Baseline
+                    </Button>
+                </ButtonGroup>
+            );
+        }
+    }
 
 
     return (
-        <>
-            <DeckMap
-                Map={Map}
-            />
-            <Stack
-                direction="row"
-                justifyContent="space-between"
-                alignItems="flex-start"
-                spacing={2}
-            >
-                <DataDashboard
-                    Request={Request}
-                    Sparsity={Sparsity}
-                    Map={Map}
+        <Grid item>
+            <DashboardComponent>
+                <Stack
+                    direction='row'
+                    spacing={1}
+                    justifyContent='center'
+                    alignItems='center'
+                >
+                    <CollectionSelector
+                        collection={Request.state.collection}
+                        setCollection={Request.functions.setCollection}
+                        setBaseline={Request.functions.setBaseline}
+                    />
+                    <BaselineSelector
+                        sendUpdateBaselineRequest={Request.functions.sendUpdateBaselineRequest}
+                        baseline={Request.state.baseline}
+                        setBaseline={Request.functions.setBaseline}
+                    />
+                    <SpatialSelector
+                        stateOrCounty={Request.state.stateOrCounty}
+                        setStateOrCounty={Request.functions.setStateOrCounty}
+                    />
+                </Stack>
+                <TemporalSlider
+                    temporalRange={Request.state.temporalRange}
+                    setTemporalRange={Request.functions.setTemporalRange}
+                    min={Request.state.startTime}
+                    max={Request.state.endTime}
                 />
-                <MapLegend
-                    min={Sparsity.state.scores[0]}
-                    max={Sparsity.state.scores[Sparsity.state.scores.length-1]}
-                    requestStatus={Request.state.requestStatus}
-                    visible={Map.state.viewMapLegend}
-                />
-            </Stack>
-        </>
+                {renderButtonOrLoading()}
+            </DashboardComponent>
+        </Grid>
     );
 
 

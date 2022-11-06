@@ -32,50 +32,56 @@ END OF TERMS AND CONDITIONS
 */
 
 
-import { Stack } from '@mui/material';
-
-// Hooks
-import { UseSiteSparsity } from './hooks/UseSiteSparsity';
-import { UseRequest } from './hooks/UseRequest';
-import { UseDeckMap } from './hooks/UseDeckMap';
-
-// Components
-import DeckMap from './components/map/DeckMap';
-import DataDashboard from './components/dashboard/Dashboard';
-import MapLegend from './components/map/MapLegend';
+import { ButtonGroup, Button } from "@mui/material";
+import { makeStyles } from "@material-ui/core";
+import KeyboardArrowDownIcon from '@mui/icons-material/KeyboardArrowDown';
 
 
-export default function App() {
+const useStyles = makeStyles({
+    root: {
+        margin: '10px'
+    }
+});
 
-    const Sparsity = UseSiteSparsity();
-    const Request = UseRequest(Sparsity.functions);
-    const Map = UseDeckMap(Sparsity.state, Request);
+
+export default function TabSystem({currentTab, setCurrentTab, handleDrawerClose, disableTab}) {
+
+    const classes = useStyles();
+
+    const tabs = [
+        'Request Form', 'Statistics', 'Pie Chart', 'Bar Chart', 'Time Series', 'Site Data'
+    ];
+
+
+    const getVariant = (index) => {
+        if(index === currentTab) return 'contained';
+        else return 'outlined';
+    };
+
+    const disableButton = (index) => {
+        if(index > 0) return disableTab;
+        else return false;
+    }
 
 
     return (
-        <>
-            <DeckMap
-                Map={Map}
-            />
-            <Stack
-                direction="row"
-                justifyContent="space-between"
-                alignItems="flex-start"
-                spacing={2}
-            >
-                <DataDashboard
-                    Request={Request}
-                    Sparsity={Sparsity}
-                    Map={Map}
-                />
-                <MapLegend
-                    min={Sparsity.state.scores[0]}
-                    max={Sparsity.state.scores[Sparsity.state.scores.length-1]}
-                    requestStatus={Request.state.requestStatus}
-                    visible={Map.state.viewMapLegend}
-                />
-            </Stack>
-        </>
+        <ButtonGroup className={classes.root}>
+            {
+                tabs.map((title, index) => {
+                    return (
+                        <Button 
+                            key={index} 
+                            onClick={() => setCurrentTab(index)}
+                            variant={getVariant(index)}
+                            disabled={disableButton(index)}
+                        >
+                            {title}
+                        </Button>
+                    );
+                })
+            }
+            <Button onClick={handleDrawerClose}><KeyboardArrowDownIcon/></Button>
+        </ButtonGroup>
     );
 
 

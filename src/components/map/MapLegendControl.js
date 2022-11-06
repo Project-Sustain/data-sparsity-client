@@ -32,50 +32,43 @@ END OF TERMS AND CONDITIONS
 */
 
 
-import { Stack } from '@mui/material';
-
-// Hooks
-import { UseSiteSparsity } from './hooks/UseSiteSparsity';
-import { UseRequest } from './hooks/UseRequest';
-import { UseDeckMap } from './hooks/UseDeckMap';
-
-// Components
-import DeckMap from './components/map/DeckMap';
-import DataDashboard from './components/dashboard/Dashboard';
-import MapLegend from './components/map/MapLegend';
+import { useState, useEffect } from "react";
+import { FormControl, FormControlLabel, Checkbox, Grid } from "@mui/material";
+import DashboardComponent from "../utilityComponents/DashboardComponent";
 
 
-export default function App() {
+export default function MapLegendControl({viewMapLegend, updateViewMapLegend, requestStatus}) {
 
-    const Sparsity = UseSiteSparsity();
-    const Request = UseRequest(Sparsity.functions);
-    const Map = UseDeckMap(Sparsity.state, Request);
+    const [disableCheckbox, setDisableCheckbox] = useState(true);
+
+
+    useEffect(() => {
+        if(requestStatus !== 'VALID') {
+            setDisableCheckbox(true);
+        }
+        else {
+            setDisableCheckbox(false);
+        }
+    }, [requestStatus]);
 
 
     return (
-        <>
-            <DeckMap
-                Map={Map}
-            />
-            <Stack
-                direction="row"
-                justifyContent="space-between"
-                alignItems="flex-start"
-                spacing={2}
-            >
-                <DataDashboard
-                    Request={Request}
-                    Sparsity={Sparsity}
-                    Map={Map}
-                />
-                <MapLegend
-                    min={Sparsity.state.scores[0]}
-                    max={Sparsity.state.scores[Sparsity.state.scores.length-1]}
-                    requestStatus={Request.state.requestStatus}
-                    visible={Map.state.viewMapLegend}
-                />
-            </Stack>
-        </>
+        <Grid item>
+            <DashboardComponent>
+                <FormControl>
+                    <FormControlLabel 
+                        control={
+                            <Checkbox
+                                checked={viewMapLegend}
+                                onChange={updateViewMapLegend}
+                                disabled={disableCheckbox}
+                            />
+                        }
+                        label='Map Legend'
+                    />
+                </FormControl>
+            </DashboardComponent>
+        </Grid>
     );
 
 

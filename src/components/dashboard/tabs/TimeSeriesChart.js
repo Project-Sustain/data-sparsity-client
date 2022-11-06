@@ -32,50 +32,115 @@ END OF TERMS AND CONDITIONS
 */
 
 
-import { Stack } from '@mui/material';
+import { useEffect, useState } from 'react';
+import { makeStyles } from "@material-ui/core";
+import { Grid, Slider, Divider } from "@mui/material";
+import { LineChart, Line, XAxis, YAxis, CartesianGrid, Tooltip, Legend, ResponsiveContainer } from 'recharts';
+import { sum } from 'simple-statistics';
+import { colors } from '../../../library/colors';
+import moment from 'moment';
+import DashboardComponent from '../../utilityComponents/DashboardComponent';
 
-// Hooks
-import { UseSiteSparsity } from './hooks/UseSiteSparsity';
-import { UseRequest } from './hooks/UseRequest';
-import { UseDeckMap } from './hooks/UseDeckMap';
+const useStyles = makeStyles({
+    divider: {
+        width: '100%',
+        margin: '20px'
+    }
+});
 
-// Components
-import DeckMap from './components/map/DeckMap';
-import DataDashboard from './components/dashboard/Dashboard';
-import MapLegend from './components/map/MapLegend';
+export default function TimeSeriesChart({sparsityData, numBuckets, setNumBuckets}) {
+
+    const classes = useStyles();
+
+    const [data, setData] = useState([]);
+    const [siteDataMap, setSiteDataMap] = useState([]);
 
 
-export default function App() {
+    /**
+     * This is very compute intensive. Consider doing this on the server.
+     */
+    useEffect(() => {
+        if(sparsityData.length > 0) {
+            const timeLists = sparsityData.map((siteData) => {
+                return siteData.epochTimes.map((time) => {return parseInt(time)});
+            });
+            const times = [].concat.apply([], timeLists);
+            const countDuplicates = {};
+            times.forEach(element => {
+                countDuplicates[element] = (countDuplicates[element] || 0) + 1;
+            })
+            const chartData = Object.entries(countDuplicates).map(([key, value]) => {
+                return {'value': value, 'time': parseInt(key)};
+            });
+            chartData.sort((a, b) => {return a.time - b.time});
+            setSiteDataMap(chartData);
+        }
+    }, [sparsityData]);
 
-    const Sparsity = UseSiteSparsity();
-    const Request = UseRequest(Sparsity.functions);
-    const Map = UseDeckMap(Sparsity.state, Request);
+    useEffect(() => {
+        if(siteDataMap.length > 0) {
+            const items_per_bucket = siteDataMap.length / numBuckets;
+            let bucketData = [];
+            for(let i = 0; i < numBuckets; i++) {
+                try {
+                    bucketData.push(convertBucket(siteDataMap.slice(i*items_per_bucket, (i+1)*items_per_bucket)));
+                } catch(err){
+                    // console.log("Error trying to convert buckets");
+                }
+            }
+            setData(bucketData);
+
+            function convertBucket(bucket) {
+                const startTime = moment.unix(bucket[0].time/1000).format('MM/YYYY');
+                const endTime = moment.unix(bucket[bucket.length-1].time/1000).format('MM/YYYY');
+                const values = bucket.map(entry => {return entry.value});
+                const totalValue = sum(values);
+                return {'name': `${startTime} - ${endTime}`, 'Number of Observations': totalValue};
+            }
+        }
+    }, [sparsityData, numBuckets, siteDataMap]);
 
 
     return (
-        <>
-            <DeckMap
-                Map={Map}
-            />
-            <Stack
-                direction="row"
-                justifyContent="space-between"
-                alignItems="flex-start"
-                spacing={2}
-            >
-                <DataDashboard
-                    Request={Request}
-                    Sparsity={Sparsity}
-                    Map={Map}
+        <Grid item xs={11}>
+            <DashboardComponent>
+                <ResponsiveContainer width="100%" height={350}>
+                    <LineChart
+                        data={data}
+                        margin={{
+                            top: 5,
+                            right: 30,
+                            left: 20,
+                            bottom: 5,
+                        }}
+                    >
+                        <CartesianGrid strokeDasharray="3 3" />
+                        <XAxis
+                            dataKey="name"
+                            // tickFormatter = {(unixTime) => moment(unixTime).format('HH:mm Do')}
+                        />
+                        <YAxis />
+                        <Tooltip />
+                        <Legend />
+                        <Line 
+                            type="monotone" 
+                            dataKey="Number of Observations" 
+                            stroke={colors.tertiary}
+                            activeDot={{ r: 8 }}
+                        />
+                    </LineChart>
+                </ResponsiveContainer>
+                <Divider className={classes.divider} textAlign="left">Granularity Control</Divider>
+                <Slider
+                    value={numBuckets ?? 10}
+                    min={5}
+                    max={200}
+                    color='tertiary'
+                    step={1}
+                    onChange={(event, newValue) => setNumBuckets(newValue)}
                 />
-                <MapLegend
-                    min={Sparsity.state.scores[0]}
-                    max={Sparsity.state.scores[Sparsity.state.scores.length-1]}
-                    requestStatus={Request.state.requestStatus}
-                    visible={Map.state.viewMapLegend}
-                />
-            </Stack>
-        </>
+            </DashboardComponent>
+        </Grid>
     );
 
 

@@ -32,51 +32,36 @@ END OF TERMS AND CONDITIONS
 */
 
 
-import { Stack } from '@mui/material';
-
-// Hooks
-import { UseSiteSparsity } from './hooks/UseSiteSparsity';
-import { UseRequest } from './hooks/UseRequest';
-import { UseDeckMap } from './hooks/UseDeckMap';
-
-// Components
-import DeckMap from './components/map/DeckMap';
-import DataDashboard from './components/dashboard/Dashboard';
-import MapLegend from './components/map/MapLegend';
+import { FormControl, InputLabel, Select, MenuItem } from '@mui/material';
 
 
-export default function App() {
+export default function BaselineSelector({ baseline, setBaseline }) {
+    
 
-    const Sparsity = UseSiteSparsity();
-    const Request = UseRequest(Sparsity.functions);
-    const Map = UseDeckMap(Sparsity.state, Request);
+    const updateBaseline = (event) => {
+        setBaseline(Number(event.target.value));
+    }
 
 
     return (
-        <>
-            <DeckMap
-                Map={Map}
-            />
-            <Stack
-                direction="row"
-                justifyContent="space-between"
-                alignItems="flex-start"
-                spacing={2}
+        <FormControl>
+            <InputLabel>Baseline</InputLabel>
+            <Select
+                MenuProps={{
+                    style: {zIndex: 5001}
+                }}
+                value={baseline}
+                label="Baseline"
+                onChange={updateBaseline}
             >
-                <DataDashboard
-                    Request={Request}
-                    Sparsity={Sparsity}
-                    Map={Map}
-                />
-                <MapLegend
-                    min={Sparsity.state.scores[0]}
-                    max={Sparsity.state.scores[Sparsity.state.scores.length-1]}
-                    requestStatus={Request.state.requestStatus}
-                    visible={Map.state.viewMapLegend}
-                />
-            </Stack>
-        </>
+                <MenuItem value='60000'>Minute</MenuItem>
+                <MenuItem value='3600000'>Hour</MenuItem>
+                <MenuItem value='86400000'>Day</MenuItem>
+                <MenuItem value='604800000'>Week</MenuItem>
+                <MenuItem value='2629800000'>Month</MenuItem>
+            </Select>
+        </FormControl>
     );
-
-
+    
+    
 }

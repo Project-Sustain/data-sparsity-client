@@ -32,51 +32,76 @@ END OF TERMS AND CONDITIONS
 */
 
 
-import { Stack } from '@mui/material';
-
-// Hooks
-import { UseSiteSparsity } from './hooks/UseSiteSparsity';
-import { UseRequest } from './hooks/UseRequest';
-import { UseDeckMap } from './hooks/UseDeckMap';
-
-// Components
-import DeckMap from './components/map/DeckMap';
-import DataDashboard from './components/dashboard/Dashboard';
-import MapLegend from './components/map/MapLegend';
+import { TableContainer, Table, TableBody, TableHead, TableRow, TableCell, Typography, Stack } from '@mui/material';
+import { makeStyles } from "@material-ui/core";
+import { colors } from '../../library/colors';
+import chroma from 'chroma-js';
+import DashboardComponent from '../utilityComponents/DashboardComponent';
 
 
-export default function App() {
-
-    const Sparsity = UseSiteSparsity();
-    const Request = UseRequest(Sparsity.functions);
-    const Map = UseDeckMap(Sparsity.state, Request);
-
-
-    return (
-        <>
-            <DeckMap
-                Map={Map}
-            />
-            <Stack
-                direction="row"
-                justifyContent="space-between"
-                alignItems="flex-start"
-                spacing={2}
-            >
-                <DataDashboard
-                    Request={Request}
-                    Sparsity={Sparsity}
-                    Map={Map}
-                />
-                <MapLegend
-                    min={Sparsity.state.scores[0]}
-                    max={Sparsity.state.scores[Sparsity.state.scores.length-1]}
-                    requestStatus={Request.state.requestStatus}
-                    visible={Map.state.viewMapLegend}
-                />
-            </Stack>
-        </>
-    );
+const useStyles = makeStyles({
+    divider: {
+        width: '100%'
+    },
+})
 
 
+export default function MapLegend({visible, min, max, requestStatus}) {
+
+    const classes = useStyles();
+    const numberOfBins = 7;
+    const range = max - min;
+    const step = range / (numberOfBins-1);
+    const colorGradient = chroma.scale([colors.tertiary, colors.primary]).colors(numberOfBins);
+    const scoreGradient = [...Array(numberOfBins).keys()].map(index => {return (min + (step * index)).toFixed(2)});
+
+
+    const renderTable = () => {
+        if(requestStatus === 'VALID') {
+            return (
+                <TableContainer>
+                    <Table className={classes.table} size="small">
+                        <TableHead>
+                            <TableRow>
+                                <TableCell><strong>Legend</strong></TableCell>
+                            </TableRow>
+                        </TableHead>
+                        <TableBody>
+                            {
+                                scoreGradient.map((score, index) => {
+                                    return (
+                                        <TableRow key={index}>
+                                            <TableCell sx={{backgroundColor: colorGradient[index]}} key={index}>{score}</TableCell>
+                                        </TableRow>
+                                    );
+                                })
+                            }
+                        </TableBody>
+                    </Table>
+                </TableContainer>
+            );
+        }
+
+        else return <Typography className={classes.noDataMessage}>No Data Yet</Typography>;
+    };
+
+
+    if(visible) {
+        return (
+            <div>
+                <DashboardComponent>
+                    <Stack
+                        direction='column'
+                        spacing={1}
+                        justifyContent='center'
+                        alignItems='center'
+                    >
+                        {renderTable()}
+                    </Stack>
+                </DashboardComponent>
+            </div>
+        );
+    }
+
+    else return null;
 }

@@ -32,49 +32,29 @@ END OF TERMS AND CONDITIONS
 */
 
 
-import { Stack } from '@mui/material';
-
-// Hooks
-import { UseSiteSparsity } from './hooks/UseSiteSparsity';
-import { UseRequest } from './hooks/UseRequest';
-import { UseDeckMap } from './hooks/UseDeckMap';
-
-// Components
-import DeckMap from './components/map/DeckMap';
-import DataDashboard from './components/dashboard/Dashboard';
-import MapLegend from './components/map/MapLegend';
+import MapLegendControl from "../../map/MapLegendControl";
+import RequestForm from "../request/RequestForm";
+import NoData from "../request/components/NoData";
 
 
-export default function App() {
-
-    const Sparsity = UseSiteSparsity();
-    const Request = UseRequest(Sparsity.functions);
-    const Map = UseDeckMap(Sparsity.state, Request);
+export default function RequestTab({Request, Sparsity, Map}) {
 
 
     return (
         <>
-            <DeckMap
-                Map={Map}
+            <RequestForm 
+                Request={Request} 
+                sparsityDataLength={Sparsity.state.sparsityData.length} 
+                currentShapeName={Map.state.currentShapeName}
             />
-            <Stack
-                direction="row"
-                justifyContent="space-between"
-                alignItems="flex-start"
-                spacing={2}
-            >
-                <DataDashboard
-                    Request={Request}
-                    Sparsity={Sparsity}
-                    Map={Map}
-                />
-                <MapLegend
-                    min={Sparsity.state.scores[0]}
-                    max={Sparsity.state.scores[Sparsity.state.scores.length-1]}
-                    requestStatus={Request.state.requestStatus}
-                    visible={Map.state.viewMapLegend}
-                />
-            </Stack>
+            <NoData
+                requestStatus={Request.state.requestStatus}
+            />
+            <MapLegendControl
+                viewMapLegend={Map.state.viewMapLegend}
+                updateViewMapLegend={Map.functions.updateViewMapLegend}
+                requestStatus={Request.state.requestStatus}
+            />
         </>
     );
 

@@ -32,50 +32,66 @@ END OF TERMS AND CONDITIONS
 */
 
 
-import { Stack } from '@mui/material';
+import { makeStyles } from "@material-ui/core";
+import { Paper, Table, TableBody, TableHead, TableRow, TableCell, TableContainer, Grid } from '@mui/material';
+import { colors } from "../../../library/colors";
+import DashboardComponent from "../../utilityComponents/DashboardComponent";
 
-// Hooks
-import { UseSiteSparsity } from './hooks/UseSiteSparsity';
-import { UseRequest } from './hooks/UseRequest';
-import { UseDeckMap } from './hooks/UseDeckMap';
+const useStyles = makeStyles({
+    root: {
+        overflow: 'auto',
+        maxHeight: 350
+    },
+    cell: {
+        cursor: 'pointer'
+    }
+});
 
-// Components
-import DeckMap from './components/map/DeckMap';
-import DataDashboard from './components/dashboard/Dashboard';
-import MapLegend from './components/map/MapLegend';
+export default function PieTable({setSelectedIndex, selectedIndex, pieData, colorScale, scoreSet}) {
+
+    const classes = useStyles();
 
 
-export default function App() {
+    const getColor = (index) => {
+        return index === selectedIndex ? colors.highlight : colorScale[index];
+    }
 
-    const Sparsity = UseSiteSparsity();
-    const Request = UseRequest(Sparsity.functions);
-    const Map = UseDeckMap(Sparsity.state, Request);
+    const getFirstHeadText = () => {
+        return selectedIndex === -1 ? '' : 'Clear';
+    }
 
 
     return (
-        <>
-            <DeckMap
-                Map={Map}
-            />
-            <Stack
-                direction="row"
-                justifyContent="space-between"
-                alignItems="flex-start"
-                spacing={2}
-            >
-                <DataDashboard
-                    Request={Request}
-                    Sparsity={Sparsity}
-                    Map={Map}
-                />
-                <MapLegend
-                    min={Sparsity.state.scores[0]}
-                    max={Sparsity.state.scores[Sparsity.state.scores.length-1]}
-                    requestStatus={Request.state.requestStatus}
-                    visible={Map.state.viewMapLegend}
-                />
-            </Stack>
-        </>
+        <Grid item xs={5}>
+            <DashboardComponent>
+                <TableContainer className={classes.root} component={Paper}>
+                    <Table stickyHeader>
+                        <TableHead>
+                            <TableRow onClick={() => setSelectedIndex(-1)}>
+                                <TableCell className={classes.cell}>{getFirstHeadText()}</TableCell>
+                                <TableCell>Sparsity Score</TableCell>
+                                <TableCell>Number of Sites</TableCell>
+                                <TableCell>% of Pie</TableCell>
+                            </TableRow>
+                        </TableHead>
+                        <TableBody>
+                            {
+                                pieData.map((entry, index) => {
+                                    return (
+                                        <TableRow key={index} onClick={() => setSelectedIndex(index)}>
+                                            <TableCell className={classes.cell} sx={{backgroundColor: getColor(index)}}></TableCell>
+                                            <TableCell className={classes.cell}>{entry.score}</TableCell>
+                                            <TableCell className={classes.cell}>{entry.sites}</TableCell>
+                                            <TableCell className={classes.cell}>{entry.percent}%</TableCell>
+                                        </TableRow>
+                                    );
+                                })
+                            }
+                        </TableBody>
+                    </Table>
+                </TableContainer>
+            </DashboardComponent>
+        </Grid>
     );
 
 

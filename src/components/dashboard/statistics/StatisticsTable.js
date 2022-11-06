@@ -32,51 +32,56 @@ END OF TERMS AND CONDITIONS
 */
 
 
-import { Stack } from '@mui/material';
-
-// Hooks
-import { UseSiteSparsity } from './hooks/UseSiteSparsity';
-import { UseRequest } from './hooks/UseRequest';
-import { UseDeckMap } from './hooks/UseDeckMap';
-
-// Components
-import DeckMap from './components/map/DeckMap';
-import DataDashboard from './components/dashboard/Dashboard';
-import MapLegend from './components/map/MapLegend';
+import { Grid, Table, TableBody, TableCell, TableContainer, TableHead, TableRow } from "@mui/material";
+import DashboardComponent from "../../utilityComponents/DashboardComponent";
 
 
-export default function App() {
-
-    const Sparsity = UseSiteSparsity();
-    const Request = UseRequest(Sparsity.functions);
-    const Map = UseDeckMap(Sparsity.state, Request);
+export default function StatisticsTable({stats}) {
 
 
     return (
-        <>
-            <DeckMap
-                Map={Map}
-            />
-            <Stack
-                direction="row"
-                justifyContent="space-between"
-                alignItems="flex-start"
-                spacing={2}
-            >
-                <DataDashboard
-                    Request={Request}
-                    Sparsity={Sparsity}
-                    Map={Map}
-                />
-                <MapLegend
-                    min={Sparsity.state.scores[0]}
-                    max={Sparsity.state.scores[Sparsity.state.scores.length-1]}
-                    requestStatus={Request.state.requestStatus}
-                    visible={Map.state.viewMapLegend}
-                />
-            </Stack>
-        </>
-    );
+        <Grid item xs={8}>
+            <DashboardComponent>
+                <TableContainer>
+                    <Table>
+                        <TableHead>
+                            <TableRow>
+                                <TableCell></TableCell>
+                                <TableCell><strong>Min</strong></TableCell>
+                                <TableCell><strong>Max</strong></TableCell>
+                                <TableCell><strong>Mean</strong></TableCell>
+                                <TableCell><strong>Standard Deviation</strong></TableCell>
+                            </TableRow>
+                        </TableHead>
+                        <TableBody>
+                            <TableRow>
+                                <TableCell>Time Between Observations</TableCell>
+                                <TableCell>{stats.minTimeBetweenObservations}</TableCell>
+                                <TableCell>{stats.maxTimeBetweenObservations}</TableCell>
+                                <TableCell>{stats.meanTimeBetweenObservations}</TableCell>
+                                <TableCell>{stats.stdDevTimeBetweenObservations}</TableCell>
+                            </TableRow>
+                            <TableRow>
+                                <TableCell>Number of Observations per Site</TableCell>
+                                <TableCell>{stats.minNumberOfObservations}</TableCell>
+                                <TableCell>{stats.maxNumberOfObservations}</TableCell>
+                                <TableCell>{stats.meanNumberOfObservations}</TableCell>
+                                <TableCell>{stats.stdDevNumberOfObservations}</TableCell>
+                            </TableRow>
+                            <TableRow>
+                                <TableCell>Sparstiy Scores</TableCell>
+                                <TableCell>{stats.minSparsity}</TableCell>
+                                <TableCell>{stats.maxSparsity}</TableCell>
+                                <TableCell>{stats.meanSparsity}</TableCell>
+                                <TableCell>{stats.stdDevSparsity}</TableCell>
+                            </TableRow>
+                        </TableBody>
+                    </Table>
+                </TableContainer>
+            </DashboardComponent>
+        </Grid>
+    )
 
 
 }
+
