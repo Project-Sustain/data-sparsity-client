@@ -32,7 +32,7 @@ END OF TERMS AND CONDITIONS
 */
 
 
-import { Container, Stack, Button, LinearProgress, ButtonGroup } from '@mui/material';
+import { Grid, Stack, Button, LinearProgress, ButtonGroup } from '@mui/material';
 import { makeStyles } from '@material-ui/core';
 import DashboardComponent from '../../utilityComponents/DashboardComponent';
 import CollectionSelector from './components/CollectionSelector';
@@ -42,8 +42,8 @@ import SpatialSelector from './components/SpatialSelector';
 
 
 const useStyles = makeStyles({
-    divider: {
-        width: '25%'
+    root: {
+        
     }
 });
 
@@ -80,45 +80,38 @@ export default function RequestForm({ Request, sparsityDataLength, currentShapeN
 
 
     return (
-        <Container maxWidth='sm'>
+        <Grid item>
             <DashboardComponent>
                 <Stack
-                    direction='column'
-                    spacing={1.5}
+                    direction='row'
+                    spacing={1}
                     justifyContent='center'
                     alignItems='center'
                 >
-                    <Stack
-                        direction='row'
-                        spacing={1}
-                        justifyContent='center'
-                        alignItems='center'
-                    >
-                        <CollectionSelector
-                            collection={Request.state.collection}
-                            setCollection={Request.functions.setCollection}
-                            setBaseline={Request.functions.setBaseline}
-                        />
-                        <BaselineSelector
-                            sendUpdateBaselineRequest={Request.functions.sendUpdateBaselineRequest}
-                            baseline={Request.state.baseline}
-                            setBaseline={Request.functions.setBaseline}
-                        />
-                        <SpatialSelector
-                            stateOrCounty={Request.state.stateOrCounty}
-                            setStateOrCounty={Request.functions.setStateOrCounty}
-                        />
-                    </Stack>
-                    <TemporalSlider
-                        temporalRange={Request.state.temporalRange}
-                        setTemporalRange={Request.functions.setTemporalRange}
-                        min={Request.state.startTime}
-                        max={Request.state.endTime}
+                    <CollectionSelector
+                        collection={Request.state.collection}
+                        setCollection={Request.functions.setCollection}
+                        setBaseline={Request.functions.setBaseline}
                     />
-                    {renderButtonOrLoading()}
+                    <BaselineSelector
+                        sendUpdateBaselineRequest={Request.functions.sendUpdateBaselineRequest}
+                        baseline={Request.state.baseline}
+                        setBaseline={Request.functions.setBaseline}
+                    />
+                    <SpatialSelector
+                        stateOrCounty={Request.state.stateOrCounty}
+                        setStateOrCounty={Request.functions.setStateOrCounty}
+                    />
                 </Stack>
+                <TemporalSlider
+                    temporalRange={Request.state.temporalRange}
+                    setTemporalRange={Request.functions.setTemporalRange}
+                    min={Request.state.startTime}
+                    max={Request.state.endTime}
+                />
+                {renderButtonOrLoading()}
             </DashboardComponent>
-        </Container>
+        </Grid>
     );
 
 

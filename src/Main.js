@@ -75,15 +75,11 @@ export default function App() {
                     Sparsity={Sparsity}
                     Map={Map}
                 />
-                {/* <RequestForm
-                    Request={Request}
-                    sparsityDataLength={Sparsity.state.sparsityData.length}
-                    currentShapeName={Map.state.currentShapeName}
-                /> */}
                 <MapLegend
                     min={Sparsity.state.scores[0]}
                     max={Sparsity.state.scores[Sparsity.state.scores.length-1]}
                     requestStatus={Request.state.requestStatus}
+                    visible={Map.state.viewMapLegend}
                 />
             </Stack>
         </>

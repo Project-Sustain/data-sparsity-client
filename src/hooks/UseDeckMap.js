@@ -6,6 +6,7 @@ import chroma from 'chroma-js';
 
 export function UseDeckMap(SparsityState, Request) {
 
+    
     // Constants
     const countyColors = chroma.scale([colors.countyLight, colors.countyDark]).colors(15);
     const stateColors = chroma.scale([colors.state, colors.state]).colors(15);
@@ -28,6 +29,8 @@ export function UseDeckMap(SparsityState, Request) {
         pitch: 30,
         bearing: 0
     });
+
+    const [viewMapLegend, setViewMapLegend] = useState(false);
 
 
     // useEffects
@@ -71,6 +74,12 @@ export function UseDeckMap(SparsityState, Request) {
         const params = { 'collection': 'state_geo','state': '' }
         sendShapefileRequest(setters, params, setStateLayer, stateColors, 'statelayer', handleStateClick);
     }, []);
+
+    // useEffect(() => {
+    //     if(Request.state.requestStatus !== 'VALID') {
+    //         setViewMapLegend(false);
+    //     }
+    // }, [Request.state.requestStatus]);
 
 
     // Functions
@@ -124,11 +133,12 @@ export function UseDeckMap(SparsityState, Request) {
 
 
     // Return Vals
-    const state = { iconLayer, countyLayer, stateLayer, mapViewState, currentShapeName };
+    const state = { iconLayer, countyLayer, stateLayer, mapViewState, currentShapeName, viewMapLegend };
 
     const functions = {
         setMapViewState: (viewState) => setMapViewState(viewState),
-        getTooltip: (object) => getTooltip(object)
+        getTooltip: (object) => getTooltip(object),
+        updateViewMapLegend: () => setViewMapLegend(!viewMapLegend)
     };
 
 

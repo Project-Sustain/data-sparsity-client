@@ -32,42 +32,44 @@ END OF TERMS AND CONDITIONS
 */
 
 
-import { makeStyles } from "@material-ui/core";
-import MapLegendControl from "../map/MapLegendControl";
-import RequestForm from "./request/RequestForm";
+import { useState, useEffect } from "react";
+import { FormControl, FormControlLabel, Checkbox, Grid } from "@mui/material";
+import DashboardComponent from "../utilityComponents/DashboardComponent";
 
 
-const useStyles = makeStyles({
-    root: {
+export default function MapLegendControl({viewMapLegend, updateViewMapLegend, requestStatus}) {
 
-    }
-});
+    const [disableCheckbox, setDisableCheckbox] = useState(true);
 
 
-export default function CurrentTab({currentTab, Request, Sparsity, Map}) {
+    useEffect(() => {
+        if(requestStatus !== 'VALID') {
+            setDisableCheckbox(true);
+        }
+        else {
+            setDisableCheckbox(false);
+        }
+    }, [requestStatus]);
 
-    const classes = useStyles();
 
-
-    switch (currentTab) {
-        case 0:
-            return (
-                <>
-                    <RequestForm 
-                        Request={Request} 
-                        sparsityDataLength={Sparsity.state.sparsityData.length} 
-                        currentShapeName={Map.state.currentShapeName}
+    return (
+        <Grid item>
+            <DashboardComponent>
+                <FormControl>
+                    <FormControlLabel 
+                        control={
+                            <Checkbox
+                                checked={viewMapLegend}
+                                onChange={updateViewMapLegend}
+                                disabled={disableCheckbox}
+                            />
+                        }
+                        label='Map Legend'
                     />
-                    <MapLegendControl
-                        viewMapLegend={Map.state.viewMapLegend}
-                        updateViewMapLegend={Map.functions.updateViewMapLegend}
-                        requestStatus={Request.state.requestStatus}
-                    />
-                </>
-            );
-        default:
-            return null;
-    }
+                </FormControl>
+            </DashboardComponent>
+        </Grid>
+    );
 
 
 }

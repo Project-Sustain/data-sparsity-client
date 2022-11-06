@@ -104,9 +104,15 @@ export default function Dashboard({Request, Sparsity, Map}) {
                     <TabSystem
                         currentTab={currentTab}
                         setCurrentTab={setCurrentTab}
+                        handleDrawerClose={handleDrawerClose}
                     />
                     <Divider/>
-                    <Grid container spacing={2}>
+                    <Grid 
+                        container 
+                        spacing={2}
+                        justifyContent='center'
+                        alignItems='center'
+                    >
                         <CurrentTab
                             currentTab={currentTab}
                             Request={Request}

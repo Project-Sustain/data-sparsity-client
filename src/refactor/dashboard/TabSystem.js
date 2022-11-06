@@ -1,7 +1,7 @@
 import { ButtonGroup, Button } from "@mui/material";
 
 
-export default function TabSystem({currentTab, setCurrentTab}) {
+export default function TabSystem({currentTab, setCurrentTab, handleDrawerClose}) {
 
 
     const tabs = [
@@ -30,6 +30,7 @@ export default function TabSystem({currentTab, setCurrentTab}) {
                     );
                 })
             }
+            <Button onClick={handleDrawerClose}>Close</Button>
         </ButtonGroup>
     );
 

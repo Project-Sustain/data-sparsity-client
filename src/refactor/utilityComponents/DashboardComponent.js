@@ -1,6 +1,6 @@
 import { makeStyles } from '@material-ui/core';
 import { paperRoot } from '../../library/styles';
-import { Paper } from '@mui/material';
+import { Paper, Stack } from '@mui/material';
 
 
 const useStyles = makeStyles({
@@ -13,12 +13,19 @@ export default function DashboardComponent(props) {
 
 
     return (
-        <Paper 
-            className={classes.root}
-            elevation={3}
+        <Stack
+            direction='column'
+            spacing={1.5}
+            justifyContent='center'
+            alignItems='center'
         >
-            {props.children}
-        </Paper>
+            <Paper 
+                className={classes.root}
+                elevation={3}
+            >
+                {props.children}
+            </Paper>
+        </Stack>
     );
 
 }
