@@ -32,44 +32,25 @@ END OF TERMS AND CONDITIONS
 */
 
 
-import { useState, useEffect } from "react";
-import { FormControl, FormControlLabel, Checkbox, Grid } from "@mui/material";
-import DashboardComponent from "../utilityComponents/DashboardComponent";
+import { Alert, Grid } from "@mui/material";
+import DashboardComponent from "../../../utilityComponents/DashboardComponent";
+import ReportGmailerrorredIcon from '@mui/icons-material/ReportGmailerrorred';
 
 
-export default function MapLegendControl({viewMapLegend, updateViewMapLegend, requestStatus}) {
-
-    const [disableCheckbox, setDisableCheckbox] = useState(true);
+export default function NoData({requestStatus}) {
 
 
-    useEffect(() => {
-        if(requestStatus !== 'VALID') {
-            setDisableCheckbox(true);
-        }
-        else {
-            setDisableCheckbox(false);
-        }
-    }, [requestStatus]);
+    if(requestStatus === 'INVALID') {
+        return (
+            <Grid item>
+                <DashboardComponent>
+                    <Alert severity='error'>No Data Matching Request</Alert>
+                </DashboardComponent>
+            </Grid>
+        );
+    }
 
-
-    return (
-        <Grid item>
-            <DashboardComponent>
-                <FormControl>
-                    <FormControlLabel 
-                        control={
-                            <Checkbox
-                                checked={viewMapLegend}
-                                onChange={updateViewMapLegend}
-                                disabled={disableCheckbox}
-                            />
-                        }
-                        label='Map Legend'
-                    />
-                </FormControl>
-            </DashboardComponent>
-        </Grid>
-    );
+    else return null;
 
 
 }

@@ -80,7 +80,7 @@ export default function RequestForm({ Request, sparsityDataLength, currentShapeN
 
 
     return (
-        <Grid item xs={6}>
+        <Grid item>
             <DashboardComponent>
                 <Stack
                     direction='row'

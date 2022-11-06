@@ -34,6 +34,7 @@ END OF TERMS AND CONDITIONS
 
 import MapLegendControl from "../../map/MapLegendControl";
 import RequestForm from "../request/RequestForm";
+import NoData from "../request/components/NoData";
 
 
 export default function RequestTab({Request, Sparsity, Map}) {
@@ -45,6 +46,9 @@ export default function RequestTab({Request, Sparsity, Map}) {
                 Request={Request} 
                 sparsityDataLength={Sparsity.state.sparsityData.length} 
                 currentShapeName={Map.state.currentShapeName}
+            />
+            <NoData
+                requestStatus={Request.state.requestStatus}
             />
             <MapLegendControl
                 viewMapLegend={Map.state.viewMapLegend}
