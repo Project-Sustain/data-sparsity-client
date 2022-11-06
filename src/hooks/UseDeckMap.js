@@ -114,7 +114,7 @@ export function UseDeckMap(SparsityState, Request) {
     const updateMapViewState = (coordinates) => {
         const newViewState = {
             longitude: coordinates[0],
-            latitude: coordinates[1],
+            latitude: coordinates[1] - 0.0008,
             zoom: 17,
             pitch: 30,
             bearing: 0

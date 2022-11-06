@@ -40,9 +40,9 @@ import { UseRequest } from './hooks/UseRequest';
 import { UseDeckMap } from './hooks/UseDeckMap';
 
 // Components
-import DeckMap from './refactor/map/DeckMap';
-import DataDashboard from './refactor/dashboard/Dashboard';
-import MapLegend from './refactor/map/MapLegend';
+import DeckMap from './components/map/DeckMap';
+import DataDashboard from './components/dashboard/Dashboard';
+import MapLegend from './components/map/MapLegend';
 
 
 export default function App() {

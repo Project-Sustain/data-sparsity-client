@@ -57,7 +57,7 @@ export default function TimeSeriesChart({sparsityData, numBuckets, setNumBuckets
 
 
     /**
-     * This is very compute intensive. Consider doing this on the server
+     * This is very compute intensive. Consider doing this on the server.
      */
     useEffect(() => {
         if(sparsityData.length > 0) {
