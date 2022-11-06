@@ -34,6 +34,7 @@ END OF TERMS AND CONDITIONS
 
 import { ButtonGroup, Button } from "@mui/material";
 import { makeStyles } from "@material-ui/core";
+import KeyboardArrowDownIcon from '@mui/icons-material/KeyboardArrowDown';
 
 
 const useStyles = makeStyles({
@@ -73,7 +74,7 @@ export default function TabSystem({currentTab, setCurrentTab, handleDrawerClose}
                     );
                 })
             }
-            <Button onClick={handleDrawerClose}>Close</Button>
+            <Button onClick={handleDrawerClose}><KeyboardArrowDownIcon/></Button>
         </ButtonGroup>
     );
 

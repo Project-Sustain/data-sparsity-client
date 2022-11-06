@@ -33,11 +33,10 @@ END OF TERMS AND CONDITIONS
 
 
 import { useState } from "react";
-import { Box, Drawer, Divider, IconButton } from "@mui/material";
+import { Box, Drawer, Divider, IconButton, Grid, Stack } from "@mui/material";
 import { makeStyles } from "@material-ui/core";
 import MenuIcon from '@mui/icons-material/Menu';
 import TabSystem from "./TabSystem";
-import { Grid } from "@mui/material";
 import CurrentTab from "./CurrentTab";
 
 
@@ -52,18 +51,8 @@ const useStyles = makeStyles({
         top: 5,
         left: 5
     },
-    closeButton: {
-        display: 'flex',
-        alignItems: 'center',
-        justifyContent: 'flex-end',
-        marginRight: '10px'
-    },
     drawer: {
-        width: 'auto',
-        height: '40vh'
-    },
-    titleText: {
-        margin: '10px'
+        width: 'auto'
     }
 });
 
@@ -101,11 +90,13 @@ export default function Dashboard({Request, Sparsity, Map}) {
                     className={classes.drawer}
                     role='presentation'
                 >
-                    <TabSystem
-                        currentTab={currentTab}
-                        setCurrentTab={setCurrentTab}
-                        handleDrawerClose={handleDrawerClose}
-                    />
+                    <Stack direction='column' alignItems='center' justifyContent='center'>
+                        <TabSystem
+                            currentTab={currentTab}
+                            setCurrentTab={setCurrentTab}
+                            handleDrawerClose={handleDrawerClose}
+                        />
+                    </Stack>
                     <Divider/>
                     <Grid
                         container 

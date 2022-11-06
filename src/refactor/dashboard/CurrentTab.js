@@ -32,21 +32,10 @@ END OF TERMS AND CONDITIONS
 */
 
 
-import { makeStyles } from "@material-ui/core";
 import RequestTab from "./tabs/RequestTab";
 
 
-const useStyles = makeStyles({
-    root: {
-
-    }
-});
-
-
 export default function CurrentTab({currentTab, Request, Sparsity, Map}) {
-
-    const classes = useStyles();
-
 
     switch (currentTab) {
         case 0:
