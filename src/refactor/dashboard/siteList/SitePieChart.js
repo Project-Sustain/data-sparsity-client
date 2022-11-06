@@ -32,41 +32,60 @@ END OF TERMS AND CONDITIONS
 */
 
 
-import { useState } from "react";
-import SparsityTable from "../siteList/SparsityTable";
-import SelectedSite from "../siteList/SelectedSite";
-import SitePieChart from "../siteList/SitePieChart";
+import { useState, useEffect, memo } from 'react';
+import { ResponsiveContainer, PieChart, Pie, Legend } from 'recharts';
+import { Grid, Typography } from '@mui/material';
+import { colors } from '../../../library/colors';
+import DashboardComponent from '../../utilityComponents/DashboardComponent';
 
 
-export default function SiteDataTab({Request, Sparsity, Map}) {
-
-    const [selectedSite, setSelectedSite] = useState(0)
-
+export default memo(function SitePieChart({site, scores}) {
     
+    const [pieData, setPieData] = useState([]);
+
+
+    useEffect(() => {
+        if(site){
+
+            const myScore = site.sparsityScore;
+            const numberOfSameScores = scores.filter(score => {return score === myScore}).length;
+            const numberOfDifferentScores = scores.length - numberOfSameScores;
+            setPieData([
+                {
+                    "name": `Sites with sparsity score = ${site.sparsityScore}`,
+                    "value": numberOfSameScores,
+                    "fill": colors.tertiary
+                },
+                {
+                    "name": "Sites with other sparisty scores",
+                    "value": numberOfDifferentScores,
+                    "fill": colors.primary
+                }
+            ]);
+
+        }
+    }, [site, scores]);
+
+
     return (
-        <>
-            <SparsityTable 
-                setSelectedSite={setSelectedSite}
-                sparsityData={Sparsity.state.sparsityData}
-            />
-            <SelectedSite 
-                updateMapViewState={Map.functions.updateMapViewState}
-                
-                updateHighlightedSite={Sparsity.functions.updateHighlightedSite}
-                deselectSite={Sparsity.functions.deselectSite}
-                site={Sparsity.state.sparsityData[selectedSite]} 
-                disable={Object.keys(Sparsity.state.lastHighlightedSite).length === 0}
-
-                collectionProperties={Request.state.collection.sitePropertyFields}
-
-                index={selectedSite}
-            />
-            <SitePieChart
-                site={Sparsity.state.sparsityData[selectedSite]} 
-                scores={Sparsity.state.scores}
-            />
-        </>
+        <Grid item xs={3}>
+            <DashboardComponent>
+                <Typography align='center' variant='h5'>Sparsity Score Comparison</Typography>
+                <ResponsiveContainer width='100%' height={250}>
+                    <PieChart>
+                        <Pie
+                            data={pieData}
+                            dataKey="value"
+                            nameKey="name"
+                            cx="50%"
+                            cy="50%"
+                            outerRadius={75}
+                            label
+                        />
+                        <Legend />
+                    </PieChart>
+                </ResponsiveContainer>
+            </DashboardComponent>
+        </Grid>
     );
-
-    
-}
+});

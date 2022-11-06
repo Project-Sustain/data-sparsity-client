@@ -32,39 +32,13 @@ END OF TERMS AND CONDITIONS
 */
 
 
-import { useState, useEffect, memo } from 'react';
-import { ResponsiveContainer, PieChart, Pie, Legend } from 'recharts';
+import { memo } from 'react';
 import { Typography, Grid, ButtonGroup, Button } from '@mui/material';
-import { colors } from '../../../library/colors';
 import DashboardComponent from '../../utilityComponents/DashboardComponent';
 
 
-export default memo(function SelectedSite({updateHighlightedSite, deselectSite, site, scores, updateMapViewState, index, collectionProperties, disable}) {
+export default memo(function SelectedSite({updateHighlightedSite, deselectSite, site, updateMapViewState, index, collectionProperties, disable}) {
     
-    const [pieData, setPieData] = useState([]);
-
-
-    useEffect(() => {
-        if(site){
-
-            const myScore = site.sparsityScore;
-            const numberOfSameScores = scores.filter(score => {return score === myScore}).length;
-            const numberOfDifferentScores = scores.length - numberOfSameScores;
-            setPieData([
-                {
-                    "name": site.sparsityScore,
-                    "value": numberOfSameScores,
-                    "fill": colors.tertiary
-                },
-                {
-                    "name": "Other",
-                    "value": numberOfDifferentScores,
-                    "fill": colors.primary
-                }
-            ]);
-
-        }
-    }, [site, scores]);
 
     const selectSite = () => {
         updateMapViewState(site.coordinates)
@@ -72,7 +46,7 @@ export default memo(function SelectedSite({updateHighlightedSite, deselectSite, 
     }
     
     return (
-        <Grid item xs={5}>
+        <Grid item xs={4}>
             <DashboardComponent>
                 <Typography><strong>Mean Time Between Observations:</strong> {site.siteMean}</Typography>
                 <Typography><strong>Sparsity Score:</strong> {site.sparsityScore}</Typography>
@@ -86,20 +60,6 @@ export default memo(function SelectedSite({updateHighlightedSite, deselectSite, 
                     <Button variant='outlined' onClick={selectSite}>Select</Button>
                     <Button disabled={disable} variant='outlined' onClick={deselectSite}>Deselect</Button>
                 </ButtonGroup>
-                <ResponsiveContainer width='100%' height={250}>
-                    <PieChart>
-                        <Pie
-                            data={pieData}
-                            dataKey="value"
-                            nameKey="name"
-                            cx="50%"
-                            cy="50%"
-                            outerRadius={75}
-                            label
-                        />
-                        <Legend />
-                    </PieChart>
-                </ResponsiveContainer>
             </DashboardComponent>
         </Grid>
     );
