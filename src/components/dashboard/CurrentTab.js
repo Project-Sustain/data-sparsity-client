@@ -65,7 +65,7 @@ export default function CurrentTab({currentTab, Request, Sparsity, Map}) {
         case 3:
             return <CustomBarChart scores={Sparsity.state.scores} />;
         case 4:
-            return <TimeSeriesChart sparsityData={Sparsity.state.sparsityData} numBuckets={numTimeSeriesBuckets} setNumBuckets={setNumTimeSeriesBuckets} />;
+            return <TimeSeriesChart Request={Request} sparsityData={Sparsity.state.sparsityData} numBuckets={numTimeSeriesBuckets} setNumBuckets={setNumTimeSeriesBuckets} />;
         case 5:
             return <SiteDataTab Request={Request} Sparsity={Sparsity} Map={Map} selectedIndex={siteIndex} setSelectedIndex={setSiteIndex} />;
         default:

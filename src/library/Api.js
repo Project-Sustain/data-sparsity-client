@@ -2,7 +2,7 @@ import chroma from 'chroma-js';
 import { colors } from './colors';
 
 const flaskIp = '127.0.0.1';
-const flaskPort = '5002';
+const flaskPort = '5001';
 
 export class Api {
 
@@ -17,6 +17,60 @@ export class Api {
             body: JSON.stringify(params)
         }
         return body;
+    }
+
+    static sendStreamRequest = async(collectionName, spatialIdentifier, startTime, endTime, siteIdName, siteCollection, setSiteDataMap, setStatus) => {
+        setStatus("PENDING");
+
+        const params = {
+            'collectionName': collectionName,
+            'spatialIdentifier': spatialIdentifier,
+            'startTime': startTime,
+            'endTime': endTime,
+            'siteIdName': siteIdName,
+            'siteCollection': siteCollection
+        }
+
+        const body = Api.getRequestBody(params);
+
+        let reader;
+
+        await fetch(Api.url + 'timeSeries', body).then(response => {
+            reader = response.body.getReader();
+        });
+
+        let streamedResults = [];
+        let incompleteResponse = "";
+        while (true) {
+            const { done, value } = await reader.read();
+            if (done) {
+                if(streamedResults.length > 0) {
+                    setSiteDataMap(streamedResults);
+                    setStatus("VALID");
+                }
+                else {
+                    setStatus("INVALID");
+                }
+                break;
+            }
+
+            let response = new TextDecoder().decode(value);
+            response = incompleteResponse + response;
+
+            while(response.indexOf('\n') !== -1) {
+                const parsedResponse = response.substring(0, response.indexOf('\n'));
+                const obj = JSON.parse(parsedResponse);
+                response = response.substring(response.indexOf('\n') + 1, response.length);
+                streamedResults.push(obj);
+            }
+            if(response.indexOf('\n') === -1 && response.length !== 0){
+                incompleteResponse = response;
+            }
+            else{
+                incompleteResponse = "";
+            }
+        }
+
     }
 
     static sendBaselineRequest = async(baseline, setStatus, setSparsityData, incrementNumberOfResponses) => {
