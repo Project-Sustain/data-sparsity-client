@@ -92,8 +92,8 @@ export default function TimeSeriesChart({Request, sparsityData, numBuckets, setN
             setData(bucketData);
 
             function convertBucket(bucket) {
-                const startTime = moment.unix(Number(bucket[0].time)/1000).format('MM/YYYY');
-                const endTime = moment.unix(Number(bucket[bucket.length-1]).time/1000).format('MM/YYYY');
+                const startTime = moment.unix(bucket[0].time/1000).format('MM/YYYY');
+                const endTime = moment.unix(bucket[bucket.length-1].time/1000).format('MM/YYYY');
                 const values = bucket.map(entry => {return Number(entry.value)});
                 const totalValue = sum(values);
                 return {'name': `${startTime} - ${endTime}`, 'Number of Observations': totalValue};
