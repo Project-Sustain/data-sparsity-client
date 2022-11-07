@@ -19,27 +19,20 @@ export class Api {
         return body;
     }
 
-    static sendStreamRequest = async(collectionName, spatialIdentifier, startTime, endTime, siteIdName, siteCollection, setSiteDataMap, setStatus) => {
-        setStatus("PENDING");
+    static sendStreamRequest = async(endpoint, params, setSiteDataMap, setStatus, numberToUpdate) => {
 
-        const params = {
-            'collectionName': collectionName,
-            'spatialIdentifier': spatialIdentifier,
-            'startTime': startTime,
-            'endTime': endTime,
-            'siteIdName': siteIdName,
-            'siteCollection': siteCollection
-        }
+        setStatus("PENDING");
 
         const body = Api.getRequestBody(params);
 
         let reader;
 
-        await fetch(Api.url + 'timeSeries', body).then(response => {
+        await fetch(Api.url + endpoint, body).then(response => {
             reader = response.body.getReader();
         });
 
         let streamedResults = [];
+        let stateHasNotBeenSet = true;
         let incompleteResponse = "";
         while (true) {
             const { done, value } = await reader.read();
@@ -56,12 +49,21 @@ export class Api {
 
             let response = new TextDecoder().decode(value);
             response = incompleteResponse + response;
-
+            
             while(response.indexOf('\n') !== -1) {
                 const parsedResponse = response.substring(0, response.indexOf('\n'));
                 const obj = JSON.parse(parsedResponse);
                 response = response.substring(response.indexOf('\n') + 1, response.length);
                 streamedResults.push(obj);
+
+                // FIXME Currently this causes the page to update once, never again...
+                if(streamedResults.length % numberToUpdate === 0) {
+                    setSiteDataMap(streamedResults);
+                    if(stateHasNotBeenSet) {
+                        setStatus("VALID");
+                        stateHasNotBeenSet = false;
+                    }
+                }
             }
             if(response.indexOf('\n') === -1 && response.length !== 0){
                 incompleteResponse = response;

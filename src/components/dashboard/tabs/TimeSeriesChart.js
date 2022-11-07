@@ -62,19 +62,21 @@ export default function TimeSeriesChart({Request, sparsityData, numBuckets, setN
     const [siteDataMap, setSiteDataMap] = useState([]);
     const [status, setStatus] = useState('PENDING');
 
+    console.log({siteDataMap})
+
 
     useEffect(() => {
         if(sparsityData.length > 0) {
-            Api.sendStreamRequest(
-                Request.state.collection.collection, 
-                Request.state.spatialScope, 
-                Request.state.startTime, 
-                Request.state.endTime, 
-                Request.state.collection.siteIdName, 
-                Request.state.collection.siteCollection,
-                setSiteDataMap,
-                setStatus
-            );
+            const params = {
+                'collectionName': Request.state.collection.collection,
+                'spatialIdentifier': Request.state.spatialScope,
+                'startTime': Request.state.startTime,
+                'endTime': Request.state.endTime,
+                'siteIdName': Request.state.collection.siteIdName,
+                'siteCollection': Request.state.collection.siteCollection
+            }
+
+            Api.sendStreamRequest('timeSeries', params, setSiteDataMap, setStatus, 1000);
         }
     }, [sparsityData]);
 
