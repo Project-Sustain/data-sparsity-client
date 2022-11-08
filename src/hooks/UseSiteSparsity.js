@@ -35,6 +35,7 @@ END OF TERMS AND CONDITIONS
 import { useState, useEffect } from "react";
 import { colors } from "../library/colors";
 import chroma from 'chroma-js';
+import bounds from 'binary-searching';
 
 export function UseSiteSparsity() {
 
@@ -100,6 +101,18 @@ export function UseSiteSparsity() {
 
     const incrementNumberOfResponses = () => {
         setNumberOfResponses(numberOfResponses+1);
+    }
+
+    const filterSparsityData = (low, high) => {
+        // Naive algorithm...it's already sorted!
+        // const filteredSparsityData = allSparsityData.filter(site => site.sparsityScore >= low && site.sparsityScore <= high);
+        
+        /**
+         * Look at the `scores` to get the start/stop indices. Use a binary search.
+         */
+        const filteredData = allSparsityData.slice(bounds.ge(scores, low), bounds.lt(scores, high));
+
+        setSparsityData(filteredData);
     }
 
     const resetFilter = () => {
