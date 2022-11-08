@@ -2,7 +2,7 @@ import chroma from 'chroma-js';
 import { colors } from './colors';
 
 const flaskIp = '127.0.0.1';
-const flaskPort = '5002';
+const flaskPort = '5001';
 
 export class Api {
 
