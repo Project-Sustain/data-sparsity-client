@@ -41,7 +41,7 @@ import DashboardComponent from '../../utilityComponents/DashboardComponent';
 
 const useStyles = makeStyles({
   root: {
-    width: 500,
+    width: 450,
     height: 350
   }
 });
@@ -54,7 +54,7 @@ export default function SparsityTable({setSelectedIndex, sparsityData}) {
 
   const columns = [
     {field: 'id', headerName: '', width: 50},
-    {field: 'monitorId', headerName: 'Monitor ID', width: 300},
+    {field: 'monitorId', headerName: 'Monitor ID', width: 250},
     {field: 'sparsityScore', headerName: 'Sparsity Score', width: 125}
   ]
 
