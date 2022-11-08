@@ -124,14 +124,14 @@ export function UseRequest(SparsityFunctions) {
 
     const onFailure = () => {
         SparsityFunctions.setSparsityStats({});
-        SparsityFunctions.setSparsityData([]);
+        SparsityFunctions.setAllSparsityData([]);
         setRequestStatus('INVALID');
     }
 
     const streamSiteData = async() => {
         const results = await Api.sendSiteDataRequest({'baseline': baseline});
         if(results.length > 0) {
-            SparsityFunctions.setSparsityData(results);
+            SparsityFunctions.setAllSparsityData(results);
             SparsityFunctions.incrementNumberOfResponses();
             return true;
         }

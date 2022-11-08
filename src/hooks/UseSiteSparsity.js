@@ -40,6 +40,7 @@ export function UseSiteSparsity() {
 
 
     // State
+    const [allSparsityData, setAllSparsityData] = useState([]);
     const [sparsityData, setSparsityData] = useState([]);
     const [sparsityStats, setSparsityStats] = useState({});
     const [scores, setScores] = useState([]);
@@ -65,6 +66,15 @@ export function UseSiteSparsity() {
         const tempGradient = chroma.scale([colors.tertiary, colors.primary]).colors(numberOfUniqueScores);
         setColorGradient(tempGradient);
     }, [scores]);
+
+    /**
+     * allSparsityData is set when a new request returns
+     * The idea is that we change sparsityData on the client to filter by score, can reset to
+     * allSparsityData
+     */
+    useEffect(() => {
+        setSparsityData(allSparsityData);
+    }, [allSparsityData]);
 
 
     // Functions
@@ -92,17 +102,23 @@ export function UseSiteSparsity() {
         setNumberOfResponses(numberOfResponses+1);
     }
 
+    const resetFilter = () => {
+        setSparsityData(allSparsityData);
+    }
+
 
     // Return Vals
     const state = { sparsityData, sparsityStats, scores, colorGradient, selectedScore, lastHighlightedSite };
 
     const functions = {
-        setSparsityData: (data) => setSparsityData(data), 
+        setAllSparsityData: (data) => setAllSparsityData(data),
+        setSparsityData: (data) => setSparsityData(data),
         setSparsityStats: (data) => setSparsityStats(data), 
         setSelectedScore: (score) => setSelectedScore(score), 
         updateHighlightedSite: (index) => updateHighlightedSite(index), 
         deselectSite: () => deselectSite(), 
-        incrementNumberOfResponses: () => incrementNumberOfResponses()
+        incrementNumberOfResponses: () => incrementNumberOfResponses(),
+        resetFilter: () => resetFilter()
     };
 
 
