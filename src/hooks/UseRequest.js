@@ -90,6 +90,7 @@ export function UseRequest(SparsityFunctions) {
             updateStats(stats);
             const success = await streamSiteData();
             if(success) {
+                SparsityFunctions.incrementNumberOfResponses();
                 setRequestStatus('VALID');
             }
             else {
@@ -111,6 +112,7 @@ export function UseRequest(SparsityFunctions) {
             const stats = await Api.sendJsonRequest("sparsityStats", {});
             if(stats) {
                 updateStats(stats);
+                SparsityFunctions.incrementNumberOfResponses();
                 setRequestStatus('VALID');
             }
             else {

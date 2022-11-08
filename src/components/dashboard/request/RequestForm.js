@@ -48,7 +48,7 @@ const useStyles = makeStyles({
 });
 
 
-export default function RequestForm({ Request, sparsityDataLength, currentShapeName }) {
+export default function RequestForm({ Request, SparsityFunctions, sparsityDataLength, currentShapeName }) {
 
     const classes = useStyles();
 
@@ -72,6 +72,11 @@ export default function RequestForm({ Request, sparsityDataLength, currentShapeN
                         onClick={Request.functions.sendUpdateBaselineRequest}
                     >
                         Update Baseline
+                    </Button>
+                    <Button 
+                        onClick={() => SparsityFunctions.filterSparsityData(-8.0, 10.0)}
+                    >
+                        Filter Test
                     </Button>
                 </ButtonGroup>
             );

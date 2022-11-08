@@ -36,6 +36,7 @@ import { useState, useEffect } from "react";
 import { colors } from "../library/colors";
 import chroma from 'chroma-js';
 import bounds from 'binary-searching';
+import { binary_search } from "../library/binary_search";
 
 export function UseSiteSparsity() {
 
@@ -57,9 +58,9 @@ export function UseSiteSparsity() {
     }, [numberOfResponses]);
 
     useEffect(() => {
-        let tempScores = sparsityData.map((siteData) => { return Number(siteData.sparsityScore) });
+        let tempScores = allSparsityData.map((siteData) => { return Number(siteData.sparsityScore) });
         tempScores.sort(function(a, b) {return b - a});
-        setScores(tempScores);
+        setScores(tempScores)
     }, [numberOfResponses]);
 
     useEffect(() => {
@@ -104,14 +105,10 @@ export function UseSiteSparsity() {
     }
 
     const filterSparsityData = (low, high) => {
-        // Naive algorithm...it's already sorted!
-        // const filteredSparsityData = allSparsityData.filter(site => site.sparsityScore >= low && site.sparsityScore <= high);
-        
-        /**
-         * Look at the `scores` to get the start/stop indices. Use a binary search.
-         */
-        const filteredData = allSparsityData.slice(bounds.ge(scores, low), bounds.lt(scores, high));
-
+        const low_index = binary_search(scores, low, 0, scores.length-1);
+        const high_index = binary_search(scores, high, 0, scores.length-1);
+        const filteredData = [...allSparsityData].slice(high_index, low_index);
+        console.log({filteredData})
         setSparsityData(filteredData);
     }
 
@@ -131,6 +128,7 @@ export function UseSiteSparsity() {
         updateHighlightedSite: (index) => updateHighlightedSite(index), 
         deselectSite: () => deselectSite(), 
         incrementNumberOfResponses: () => incrementNumberOfResponses(),
+        filterSparsityData: (low, high) => filterSparsityData(low, high),
         resetFilter: () => resetFilter()
     };
 
