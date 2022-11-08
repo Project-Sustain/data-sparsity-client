@@ -74,7 +74,7 @@ export default function RequestForm({ Request, SparsityFunctions, sparsityDataLe
                         Update Baseline
                     </Button>
                     <Button 
-                        onClick={() => SparsityFunctions.filterSparsityData(-8.0, 10.0)}
+                        onClick={() => SparsityFunctions.filterSparsityData(0.0, 11.0)}
                     >
                         Filter Test
                     </Button>

@@ -52,6 +52,9 @@ export function UseSiteSparsity() {
     const [numberOfResponses, setNumberOfResponses] = useState(0); // This informs useEffects when a new sparsity response has arrived
 
 
+    console.log(`Length of sparsityData: ${sparsityData.length}`);
+
+
     // useEffects
     useEffect(() => {
         setLastHighlightedSite({});
@@ -108,7 +111,6 @@ export function UseSiteSparsity() {
         const low_index = binary_search(scores, low, 0, scores.length-1);
         const high_index = binary_search(scores, high, 0, scores.length-1);
         const filteredData = [...allSparsityData].slice(high_index, low_index);
-        console.log({filteredData})
         setSparsityData(filteredData);
     }
 
