@@ -19,40 +19,25 @@ export class Api {
         return body;
     }
 
-    static sendBaselineRequest = async(baseline, setStatus, setSparsityData, incrementNumberOfResponses) => {
-
-        setStatus("PENDING");
-        setSparsityData([]);
-
-        const params = {
-            'baseline': baseline
-        };
+    static sendStreamRequest = async(endpoint, params) => {
 
         const body = Api.getRequestBody(params);
-
         let reader;
-
-        await fetch(Api.url + 'updateBaseline', body).then(response => {
+        await fetch(Api.url + endpoint, body).then(response => {
             reader = response.body.getReader();
         });
 
-        let stateHasNotBeenSet = true;
         let streamedResults = [];
-        let incompleteResponse = "";
+        let incompleteResponse = '';
+
         while (true) {
+
             const { done, value } = await reader.read();
+
             if (done) {
-                if(streamedResults.length > 0) {
-                    const formattedResults = formatResults(streamedResults);
-                    setSparsityData(formattedResults);
-                    setStatus("VALID");
-                    incrementNumberOfResponses();
-                }
-                else {
-                    setStatus("INVALID");
-                }
-                break;
+                return streamedResults;
             }
+
             let response = new TextDecoder().decode(value);
             response = incompleteResponse + response;
 
@@ -61,22 +46,25 @@ export class Api {
                 const obj = JSON.parse(parsedResponse);
                 response = response.substring(response.indexOf('\n') + 1, response.length);
                 streamedResults.push(obj);
-                if(streamedResults.length % 100 === 0) {
-                    const formattedResults = formatResults(streamedResults);
-                    setSparsityData(formattedResults);
-                    if(stateHasNotBeenSet) {
-                        setStatus("VALID");
-                        stateHasNotBeenSet = false;
-                    }
-                }
             }
+
             if(response.indexOf('\n') === -1 && response.length !== 0){
                 incompleteResponse = response;
             }
+
             else{
-                incompleteResponse = "";
+                incompleteResponse = '';
             }
+
         }
+
+    }
+
+    static sendSiteDataRequest = async(params) => {
+
+        const streamedResults = await Api.sendStreamRequest('streamSiteData', params);
+        const formattedResults = formatResults(streamedResults);
+        return formattedResults;
         
         function formatResults(streamedResults) {
             // FIXME All sites with same score should have same color. Number of colors should be number of UNIQUE scores

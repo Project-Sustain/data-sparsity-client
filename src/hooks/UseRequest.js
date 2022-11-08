@@ -85,37 +85,76 @@ export function UseRequest(SparsityFunctions) {
     // Functions
     const sendSparsityScoreRequest = async() => {
         setRequestStatus('PENDING');
-        const response = await Api.sendJsonRequest("sparsityScores", requestParams);
-        if(response) {
-            SparsityFunctions.setSparsityStats({
-                'minTimeBetweenObservations': response.diffStats[0],
-                'maxTimeBetweenObservations': response.diffStats[1],
-                'meanTimeBetweenObservations': response.diffStats[2],
-                'stdDevTimeBetweenObservations': response.diffStats[3],
-
-                'minNumberOfObservations': response.obsStats[0],
-                'maxNumberOfObservations': response.obsStats[1],
-                'meanNumberOfObservations': response.obsStats[2],
-                'stdDevNumberOfObservations': response.obsStats[3],
-
-                'minSparsity': response.sparsityStats[0],
-                'maxSparsity': response.sparsityStats[1],
-                'meanSparsity': response.sparsityStats[2] ? response.sparsityStats[2] : 0.0,
-                'stdDevSparsity': response.sparsityStats[3]
-            });
-
-            Api.sendBaselineRequest(baseline, setRequestStatus, SparsityFunctions.setSparsityData, SparsityFunctions.incrementNumberOfResponses);
+        const stats = await Api.sendJsonRequest("calculateSparsityScores", requestParams);
+        if(stats) {
+            updateStats(stats);
+            const success = await streamSiteData();
+            if(success) {
+                setRequestStatus('VALID');
+            }
+            else {
+                onFailure();
+            }
         }
         
         else {
-            SparsityFunctions.setSparsityStats({});
-            console.log("ERROR in response");
+            onFailure();
         }
 
     }
 
     const sendUpdateBaselineRequest = async() => {
-        Api.sendBaselineRequest(baseline, setRequestStatus, SparsityFunctions.setSparsityData, SparsityFunctions.incrementNumberOfResponses, spatialScope, requestStatus);
+        setRequestStatus('PENDING');
+        const success = await streamSiteData();
+
+        if(success) {
+            const stats = await Api.sendJsonRequest("sparsityStats", {});
+            if(stats) {
+                updateStats(stats);
+                setRequestStatus('VALID');
+            }
+            else {
+                onFailure();
+            }
+        }
+        else {
+            onFailure();
+        }
+    }
+
+    const onFailure = () => {
+        SparsityFunctions.setSparsityStats({});
+        SparsityFunctions.setSparsityData([]);
+        setRequestStatus('INVALID');
+    }
+
+    const streamSiteData = async() => {
+        const results = await Api.sendSiteDataRequest({'baseline': baseline});
+        if(results.length > 0) {
+            SparsityFunctions.setSparsityData(results);
+            SparsityFunctions.incrementNumberOfResponses();
+            return true;
+        }
+        return false;
+    }
+
+    const updateStats = (response) => {
+        SparsityFunctions.setSparsityStats({
+            'minTimeBetweenObservations': response.diffStats[0],
+            'maxTimeBetweenObservations': response.diffStats[1],
+            'meanTimeBetweenObservations': response.diffStats[2],
+            'stdDevTimeBetweenObservations': response.diffStats[3],
+
+            'minNumberOfObservations': response.obsStats[0],
+            'maxNumberOfObservations': response.obsStats[1],
+            'meanNumberOfObservations': response.obsStats[2],
+            'stdDevNumberOfObservations': response.obsStats[3],
+
+            'minSparsity': response.sparsityStats[0],
+            'maxSparsity': response.sparsityStats[1],
+            'meanSparsity': response.sparsityStats[2] ? response.sparsityStats[2] : 0.0,
+            'stdDevSparsity': response.sparsityStats[3]
+        });
     }
 
 

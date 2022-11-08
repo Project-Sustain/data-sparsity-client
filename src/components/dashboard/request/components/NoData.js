@@ -46,6 +46,9 @@ export default function NoData({requestStatus}) {
         if(requestStatus === 'INVALID') {
             setOpen(true);
         }
+        else {
+            setOpen(false);
+        }
     }, [requestStatus]);
 
 
