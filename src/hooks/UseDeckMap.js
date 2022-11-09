@@ -38,7 +38,7 @@ import { Api } from '../library/Api';
 import { colors } from '../library/colors';
 import chroma from 'chroma-js';
 
-export function UseDeckMap(SparsityState, Request) {
+export const UseDeckMap = (SparsityState, Request) => {
 
     
     // Constants

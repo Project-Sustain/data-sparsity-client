@@ -32,7 +32,6 @@ END OF TERMS AND CONDITIONS
 */
 
 
-import { useEffect, useState } from "react";
 import RequestTab from './tabs/RequestTab';
 import StatisticsTab from './tabs/StatisticsTab';
 import CustomBarChart from './tabs/CustomBarChart';
@@ -40,21 +39,10 @@ import PieChartTab from './tabs/PieChartTab';
 import TimeSeriesChart from './tabs/TimeSeriesChart';
 import SiteDataTab from './tabs/SiteDataTab';
 import Filter from "./tabs/Filter";
+import { Dashboard } from '@mui/icons-material';
 
 
-export default function CurrentTab({currentTab, Request, Sparsity, Map}) {
-
-
-    const [siteIndex, setSiteIndex] = useState(0)
-    const [pieIndex, setPieIndex] = useState(-1);
-    const [numTimeSeriesBuckets, setNumTimeSeriesBuckets] = useState(100);
-
-
-    useEffect(() => {
-        setSiteIndex(0);
-        setPieIndex(-1);
-        setNumTimeSeriesBuckets(100);
-    }, [Request.state.requestStatus]);
+export default function CurrentTab({currentTab, Request, Sparsity, Map, DashboardData}) {
 
 
     switch (currentTab) {
@@ -63,19 +51,29 @@ export default function CurrentTab({currentTab, Request, Sparsity, Map}) {
         case 1:
             return <StatisticsTab stats={Sparsity.state.sparsityStats} />;
         case 2:
-            return <PieChartTab scores={Sparsity.state.scores} selectedIndex={pieIndex} setSelectedIndex={setPieIndex} />;
+            return <PieChartTab colorGradient={Sparsity.state.colorGradient} DashboardData={DashboardData} />;
         case 3:
-            return <CustomBarChart scores={Sparsity.state.scores} />;
+            return <CustomBarChart data={DashboardData.state.barData} />;
         case 4:
-            return <TimeSeriesChart sparsityData={Sparsity.state.sparsityData} numBuckets={numTimeSeriesBuckets} setNumBuckets={setNumTimeSeriesBuckets} />;
+            return <TimeSeriesChart 
+                        data={DashboardData.state.tsData}
+                        setNumBuckets={DashboardData.functions.setNumTsBuckets}
+                        numBuckets={DashboardData.state.numTsBuckets}
+                    />;
         case 5:
-            return <SiteDataTab Request={Request} Sparsity={Sparsity} Map={Map} selectedIndex={siteIndex} setSelectedIndex={setSiteIndex} />;
+            return <SiteDataTab 
+                        Request={Request}
+                        Sparsity={Sparsity}
+                        Map={Map} DashboardData={DashboardData}
+                    />;
         case 6:
             return <Filter 
-                        scores={Sparsity.state.scores} 
-                        filterSparsityData={Sparsity.functions.filterSparsityData} 
                         resetFilter={Sparsity.functions.resetFilter} 
-                    />
+                        filterSparsityData={Sparsity.functions.filterSparsityData} 
+                        filterObject={DashboardData.state.filterObject} 
+                        filterRange={DashboardData.state.filterRange} 
+                        setFilterRange={DashboardData.functions.setFilterRange}
+                    />;
         default:
             return null;
     }

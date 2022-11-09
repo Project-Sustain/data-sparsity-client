@@ -37,7 +37,7 @@ import { colors } from "../library/colors";
 import chroma from 'chroma-js';
 import { binary_search } from "../library/binary_search";
 
-export function UseSiteSparsity() {
+export const UseSiteSparsity = () => {
 
 
     // State

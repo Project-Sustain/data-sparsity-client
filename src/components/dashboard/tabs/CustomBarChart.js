@@ -34,44 +34,11 @@ END OF TERMS AND CONDITIONS
 
 import { BarChart, Bar, XAxis, YAxis, Tooltip, Legend, ResponsiveContainer } from 'recharts';
 import { Grid, Typography } from "@mui/material";
-import { useEffect, useState } from 'react';
 import { colors } from '../../../library/colors';
 import DashboardComponent from '../../utilityComponents/DashboardComponent';
 
 
-export default function CustomBarChart({scores}) {
-
-    const [data, setData] = useState({});
-
-
-    useEffect(() => {
-            let chartData = [];
-            if(scores.length > 0) {
-                try {
-                    const numBuckets = 7;
-                    const min = scores[scores.length-1];
-                    const max = scores[0];
-                    const range = max - min;
-                    const rangePerBucket = range / numBuckets;
-
-                    chartData = [...Array(numBuckets).keys()].map(index => {
-                        const bucketMin = (min+(rangePerBucket*index)).toFixed(3);
-                        const bucketMax = (min+(rangePerBucket*(index+1))).toFixed(3);
-                        return {
-                            name: `${bucketMin} - ${bucketMax}`, 
-                            numberOfSites: scores.filter(score => {
-                                const lessThanMax = index === 4 ? score <= bucketMax : score < bucketMax;
-                                return score >= bucketMin && lessThanMax;
-                            }).length};
-                    });
-
-                } catch (exception) {
-                    console.log({exception}); // FIXME Set a flag to display a message...
-                }
-
-            setData(chartData);
-        }
-    }, [scores]);
+export default function CustomBarChart({data}) {
 
 
     return (

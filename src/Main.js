@@ -41,7 +41,7 @@ import { UseDeckMap } from './hooks/UseDeckMap';
 
 // Components
 import DeckMap from './components/map/DeckMap';
-import DataDashboard from './components/dashboard/Dashboard';
+import Dashboard from './components/dashboard/Dashboard';
 import MapLegend from './components/map/MapLegend';
 
 
@@ -63,7 +63,7 @@ export default function App() {
                 alignItems="flex-start"
                 spacing={2}
             >
-                <DataDashboard
+                <Dashboard
                     Request={Request}
                     Sparsity={Sparsity}
                     Map={Map}

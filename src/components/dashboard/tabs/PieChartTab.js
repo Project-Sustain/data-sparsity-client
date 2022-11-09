@@ -32,65 +32,29 @@ END OF TERMS AND CONDITIONS
 */
 
 
-import { useState, useEffect, memo } from 'react';
-import { colors } from '../../../library/colors';
-import { Typography, Grid } from '@mui/material';
-import chroma from 'chroma-js';
+import { memo } from 'react';
 import PieTable from '../pieChart/PieTable';
 import CustomPieChart from '../pieChart/CustomPieChart';
-import DashboardComponent from '../../utilityComponents/DashboardComponent';
-import PieChartIcon from '@mui/icons-material/PieChart';
 
 
-export default memo(function PieChartTab({scores, selectedIndex, setSelectedIndex}) {
-    const [pieData, setPieData] = useState([]);
-    const [colorScale, setColorScale] = useState([]);
-    const [scoreSet, setScoreSet] = useState([]);
+export default memo(function PieChartTab({DashboardData, colorGradient}) {
 
-    useEffect(() => {
-        const initialScoreSet = [...new Set(scores)];
-        setScoreSet(initialScoreSet);
-        const initialColorScale = chroma.scale([colors.tertiary, colors.primary]).colors(initialScoreSet.length);
-        setColorScale(initialColorScale);
-        const data = initialScoreSet.map((score, index) => {
-            const numberWithThisScore = scores.filter(entry => {return entry === score}).length;
-            const percent = ((numberWithThisScore / scores.length) * 100).toFixed(2);
-            const color = index === selectedIndex ? colors.highlight : initialColorScale[index];
-            return {
-                "score": score,
-                "sites": numberWithThisScore,
-                "fill": color,
-                "percent": percent
-            }
-        });
-        setPieData(data);
-    }, [scores, selectedIndex]);
 
-    if(pieData.length > 0 && pieData.length < 100) {
-        return (
-            <>
-                <PieTable
-                    setSelectedIndex={setSelectedIndex}
-                    selectedIndex={selectedIndex}
-                    pieData={pieData}
-                    colorScale={colorScale}
-                    scoreSet={scoreSet}
-                />
+    return (
+        <>
+            <PieTable
+                setSelectedIndex={DashboardData.functions.setPieIndex}
+                selectedIndex={DashboardData.state.pieIndex}
+                pieData={DashboardData.state.pieData}
+                colorScale={colorGradient}
+                scoreSet={DashboardData.state.scoreSet}
+            />
 
-                <CustomPieChart
-                    pieData={pieData}
-                    setSelectedIndex={setSelectedIndex}
-                />
-            </>
-        );
-    }
-
-    else return (
-        <Grid item xs={4}>
-            <DashboardComponent>
-                <Typography variant='h4' align='center'><PieChartIcon/>Too many slices to render pie</Typography>
-            </DashboardComponent>
-        </Grid>
+            <CustomPieChart
+                pieData={DashboardData.state.pieData}
+                setSelectedIndex={DashboardData.functions.setPieIndex}
+            />
+        </>
     );
 
 

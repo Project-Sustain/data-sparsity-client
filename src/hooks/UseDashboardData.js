@@ -32,66 +32,214 @@ END OF TERMS AND CONDITIONS
 */
 
 
-import { makeStyles } from "@material-ui/core";
-import { Grid, Slider, Divider } from "@mui/material";
-import { LineChart, Line, XAxis, YAxis, CartesianGrid, Tooltip, Legend, ResponsiveContainer } from 'recharts';
-import { colors } from '../../../library/colors';
-import DashboardComponent from '../../utilityComponents/DashboardComponent';
+import { useState, useEffect } from 'react';
+import { colors } from '../library/colors';
+import { sum, interquartileRange, medianSorted } from 'simple-statistics';
+import moment from 'moment';
 
-const useStyles = makeStyles({
-    divider: {
-        width: '100%',
-        margin: '20px'
+
+export const UseDashboardData = (SparsityState, RequestState) => {
+
+
+    // State
+    const [scoreSet, setScoreSet] = useState([]);
+
+    const [pieData, setPieData] = useState([]);
+    const [pieIndex, setPieIndex] = useState(-1);
+
+    const [barData, setBarData] = useState([]);
+
+    const [numTsBuckets, setNumTsBuckets] = useState(100);
+    const [tsData, setTsData] = useState([]);
+    const [siteDataMap, setSiteDataMap] = useState([]);
+
+    const [sitePieData, setSitePieData] = useState([]);
+    const [selectedSite, setSelectedSite] = useState({});
+    const [selectedSiteIndex, setSelectedSiteIndex] = useState(0);
+
+    const [filterObject, setFilterObject] = useState({'min':0,'max':0,'step':1,'bottom':[],'iqr':[],'top':[]});
+    const [filterRange, setFilterRange] = useState([]);
+
+
+    // useEffects
+    useEffect(() => {
+        const tempScoreSet = [...new Set(SparsityState.scores)].sort((a, b) => a - b);
+        setScoreSet(tempScoreSet);
+    }, [SparsityState.scores]);
+
+    useEffect(() => {
+        setPieIndex(-1);
+    }, [RequestState.requestStatus]);
+
+    useEffect(() => {
+        if(SparsityState.sparsityData.length > 0) {
+            setSelectedSite(SparsityState.sparsityData[0]);
+        }
+        else setSelectedSite({});
+    }, [SparsityState.sparsityData]);
+
+
+    // Pie Chart
+    useEffect(() => {
+        const data = scoreSet.map((score, index) => {
+            const numberWithThisScore = SparsityState.scores.filter(entry => {return entry === score}).length;
+            const percent = ((numberWithThisScore / SparsityState.scores.length) * 100).toFixed(2);
+            const color = index === pieIndex ? colors.highlight : SparsityState.colorGradient[index];
+            return {
+                "score": score,
+                "sites": numberWithThisScore,
+                "fill": color,
+                "percent": percent
+            }
+        });
+        setPieData(data);
+    }, [scoreSet, pieIndex, SparsityState.scores, SparsityState.colorGradient]);
+
+
+    // Bar Chart
+    useEffect(() => {
+            let chartData = [];
+            if(SparsityState.scores.length > 0) {
+                try {
+                    const numBuckets = 7;
+                    const min = SparsityState.scores[SparsityState.scores.length-1];
+                    const max = SparsityState.scores[0];
+                    const range = max - min;
+                    const rangePerBucket = range / numBuckets;
+
+                    chartData = [...Array(numBuckets).keys()].map(index => {
+                        const bucketMin = (min+(rangePerBucket*index)).toFixed(2);
+                        const bucketMax = (min+(rangePerBucket*(index+1))).toFixed(2);
+                        return {
+                            name: `${bucketMin} - ${bucketMax}`, 
+                            numberOfSites: SparsityState.scores.filter(score => {
+                                const lessThanMax = index === 4 ? score <= bucketMax : score < bucketMax;
+                                return score >= bucketMin && lessThanMax;
+                            }).length};
+                    });
+
+                } catch (exception) {
+                    console.log({exception}); // FIXME Set a flag to display a message...
+                }
+
+            setBarData(chartData);
+        }
+    }, [SparsityState.scores]);
+
+
+    // Time Series
+    useEffect(() => {
+        if(SparsityState.allSparsityData.length > 0) {
+            const timeLists = SparsityState.allSparsityData.map((siteData) => {
+                return siteData.epochTimes.map((time) => {return parseInt(time)});
+            });
+            const times = [].concat.apply([], timeLists);
+            const countDuplicates = {};
+            times.forEach(element => {
+                countDuplicates[element] = (countDuplicates[element] || 0) + 1;
+            })
+            const chartData = Object.entries(countDuplicates).map(([key, value]) => {
+                return {'value': value, 'time': parseInt(key)};
+            });
+            chartData.sort((a, b) => {return a.time - b.time});
+            setSiteDataMap(chartData);
+        }
+    }, [SparsityState.allSparsityData]);
+
+    useEffect(() => {
+        if(siteDataMap.length > 0) {
+            const items_per_bucket = siteDataMap.length / numTsBuckets;
+            let bucketData = [];
+            for(let i = 0; i < numTsBuckets; i++) {
+                try {
+                    bucketData.push(convertBucket(siteDataMap.slice(i*items_per_bucket, (i+1)*items_per_bucket)));
+                } catch(err){
+                    // console.log("Error trying to convert buckets");
+                }
+            }
+            setTsData(bucketData);
+
+            function convertBucket(bucket) {
+                const startTime = moment.unix(bucket[0].time/1000).format('MM/YYYY');
+                const endTime = moment.unix(bucket[bucket.length-1].time/1000).format('MM/YYYY');
+                const values = bucket.map(entry => {return entry.value});
+                const totalValue = sum(values);
+                return {'name': `${startTime} - ${endTime}`, 'Number of Observations': totalValue};
+            }
+        }
+    }, [numTsBuckets, siteDataMap]);
+
+
+    // Selected Site
+    useEffect(() => {
+        if(Object.keys(selectedSite) > 0){
+
+            const myScore = selectedSite.sparsityScore;
+            const numberOfSameScores = SparsityState.scores.filter(score => {return score === myScore}).length;
+            const numberOfDifferentScores = SparsityState.scores.length - numberOfSameScores;
+            setSitePieData([
+                {
+                    "name": `Sites with sparsity score = ${selectedSite.sparsityScore}`,
+                    "value": numberOfSameScores,
+                    "fill": colors.tertiary
+                },
+                {
+                    "name": "Sites with other sparisty scores",
+                    "value": numberOfDifferentScores,
+                    "fill": colors.primary
+                }
+            ]);
+
+        }
+    }, [selectedSite, SparsityState.scores]);
+
+
+    // Filter
+    useEffect(() => {
+        if(scoreSet.length > 0) {
+
+            const min = scoreSet[0];
+            const max = scoreSet[scoreSet.length-1];
+            const step = (max - min) / 500;
+
+            const median = medianSorted(scoreSet);
+            const iqrVal = interquartileRange(scoreSet);
+            const q1 = median - (iqrVal/2);
+            const q3 = median + (iqrVal/2);
+
+            const percent = 0.1
+            const index = Math.floor(scoreSet.length * percent);
+
+            const bottom = [min, scoreSet[index]];
+            const iqr = [q1, q3];
+            const top = [scoreSet[scoreSet.length - index], max];
+
+            setFilterRange([min, max]);
+            setFilterObject({'min':min,'max':max,'step':step,'bottom':bottom,'iqr':iqr,'top':top});
+
+        }
+    }, [scoreSet]);
+
+
+    // Functions
+    const updateSelectedSite = (index) => {
+        setSelectedSiteIndex(index);
+        setSelectedSite(SparsityState.sparsityData[index]);
     }
-});
 
-export default function TimeSeriesChart({data, setNumBuckets, numBuckets}) {
+    // Return Vals
+    const state = {scoreSet, pieData, pieIndex, barData, tsData, numTsBuckets, sitePieData, selectedSite, selectedSiteIndex, filterRange, filterObject};
+
+    const functions = {
+        setPieIndex: (index) => setPieIndex(index),
+        setNumTsBuckets: (num) => setNumTsBuckets(num),
+        updateSelectedSite: (index) => updateSelectedSite(index),
+        setFilterRange: (range) => setFilterRange(range)
+    }
 
 
-    const classes = useStyles();
-
-
-    return (
-        <Grid item xs={11}>
-            <DashboardComponent>
-                <ResponsiveContainer width="100%" height={350}>
-                    <LineChart
-                        data={data}
-                        margin={{
-                            top: 5,
-                            right: 30,
-                            left: 20,
-                            bottom: 5,
-                        }}
-                    >
-                        <CartesianGrid strokeDasharray="3 3" />
-                        <XAxis
-                            dataKey="name"
-                            // tickFormatter = {(unixTime) => moment(unixTime).format('HH:mm Do')}
-                        />
-                        <YAxis />
-                        <Tooltip />
-                        <Legend />
-                        <Line 
-                            type="monotone" 
-                            dataKey="Number of Observations" 
-                            stroke={colors.tertiary}
-                            activeDot={{ r: 8 }}
-                        />
-                    </LineChart>
-                </ResponsiveContainer>
-                <Divider className={classes.divider} textAlign="left">Granularity Control</Divider>
-                <Slider
-                    value={numBuckets ?? 10}
-                    min={5}
-                    max={200}
-                    color='tertiary'
-                    step={1}
-                    onChange={(event, newValue) => setNumBuckets(newValue)}
-                />
-            </DashboardComponent>
-        </Grid>
-    );
-
+    // Return
+    return {state, functions};
 
 }
+
