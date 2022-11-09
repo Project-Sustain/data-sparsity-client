@@ -32,16 +32,16 @@ END OF TERMS AND CONDITIONS
 */
 
 
-import { useState, useEffect } from "react";
+import { useState } from "react";
 import { makeStyles } from "@material-ui/core";
-import { Slider, Grid, Button, Typography, ButtonGroup } from '@mui/material';
+import { Slider, Grid, Button, Typography, ButtonGroup, FormControl, FormLabel } from '@mui/material';
 import DashboardComponent from "../../utilityComponents/DashboardComponent";
 import { interquartileRange, medianSorted } from 'simple-statistics';
 
 
 const useStyles = makeStyles({
     root: {
-        width: '100%'
+        width: '95%'
     }
 });
 
@@ -79,27 +79,27 @@ export default function Filter({scores, filterSparsityData, resetFilter}) {
 
 
     return (
-        <>
-            <Grid item xs={10}>
-                <DashboardComponent>
-                    <Typography>Filtering Scores: {range[0].toFixed(3)} - {range[1].toFixed(3)}</Typography>
+        <Grid item xs={10}>
+            <DashboardComponent>
+                <FormControl className={classes.root}>
+                    <FormLabel id='slider' align='center'>Filtering Scores: {range[0].toFixed(3)} - {range[1].toFixed(3)}</FormLabel>
                     <Slider
-                        className={classes.root}
+                        aria-labelledby='slider'
                         value={range}
                         min={min}
                         max={max}
                         onChange={handleChange}
                         step={step}
                     />
-                    <ButtonGroup>
-                        <Button variant='outlined' onClick={() => handleChange(null, bottom10)}>Bottom 10%</Button>
-                        <Button variant='outlined' onClick={() => handleChange(null, [q1, q3])}>IQR</Button>
-                        <Button variant='outlined' onClick={() => handleChange(null, top10)}>Top 10%</Button>
-                        <Button variant='outlined' color='tertiary' onClick={handleReset}>Reset Filter</Button>
-                    </ButtonGroup>
-                </DashboardComponent>
-            </Grid>
-        </>
+                </FormControl>
+                <ButtonGroup>
+                    <Button variant='outlined' onClick={() => handleChange(null, bottom10)}>Bottom 10%</Button>
+                    <Button variant='outlined' onClick={() => handleChange(null, [q1, q3])}>IQR</Button>
+                    <Button variant='outlined' onClick={() => handleChange(null, top10)}>Top 10%</Button>
+                    <Button variant='outlined' color='tertiary' onClick={handleReset}>Reset Filter</Button>
+                </ButtonGroup>
+            </DashboardComponent>
+        </Grid>
     );
 
 

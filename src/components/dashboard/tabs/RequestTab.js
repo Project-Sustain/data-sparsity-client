@@ -44,7 +44,6 @@ export default function RequestTab({Request, Sparsity, Map}) {
         <>
             <RequestForm 
                 Request={Request}
-                SparsityFunctions={Sparsity.functions}
                 sparsityDataLength={Sparsity.state.sparsityData.length} 
                 currentShapeName={Map.state.currentShapeName}
             />
