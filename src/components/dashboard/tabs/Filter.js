@@ -46,7 +46,7 @@ const useStyles = makeStyles({
 });
 
 
-export default function Filter({scores, filterSparsityData, resetSparsityData}) {
+export default function Filter({scores, filterSparsityData, resetFilter}) {
 
     const classes = useStyles();
     const formattedScores = Array.from(new Set(scores)).sort((a, b) => a - b);
@@ -72,6 +72,11 @@ export default function Filter({scores, filterSparsityData, resetSparsityData}) 
         filterSparsityData(newValue[0], newValue[1])
     };
 
+    const handleReset = () => {
+        setRange([min, max]);
+        resetFilter();
+    };
+
 
     return (
         <>
@@ -88,7 +93,7 @@ export default function Filter({scores, filterSparsityData, resetSparsityData}) 
                     />
                     <Button
                         variant='outlined'
-                        onClick={resetSparsityData}
+                        onClick={handleReset}
                     >
                         Reset Filter
                     </Button>
