@@ -32,11 +32,9 @@ END OF TERMS AND CONDITIONS
 */
 
 
-import { useState } from "react";
 import { makeStyles } from "@material-ui/core";
 import { Slider, Grid, Button, ButtonGroup, FormControl, FormLabel } from '@mui/material';
 import DashboardComponent from "../../utilityComponents/DashboardComponent";
-import { interquartileRange, medianSorted } from 'simple-statistics';
 
 
 const useStyles = makeStyles({
@@ -46,34 +44,18 @@ const useStyles = makeStyles({
 });
 
 
-export default function Filter({scores, filterSparsityData, resetFilter}) {
+export default function Filter({resetFilter, filterSparsityData, filterObject, filterRange, setFilterRange}) {
 
     const classes = useStyles();
-    const formattedScores = Array.from(new Set(scores)).sort((a, b) => a - b);
-    const min = formattedScores[0];
-    const max = formattedScores[formattedScores.length-1];
-    const step = (max - min) / 500;
-    const [range, setRange] = useState([min, max]);
-
-    const median = medianSorted(formattedScores);
-    const iqr = interquartileRange(formattedScores);
-    const q1 = median - (iqr/2);
-    const q3 = median + (iqr/2);
-
-    const percent = 0.1
-    const index = Math.floor(formattedScores.length * percent);
-
-    const top10 = [formattedScores[formattedScores.length - index], max];
-    const bottom10 = [min, formattedScores[index]];
 
 
     const handleChange = (event, newValue) => {
-        setRange(newValue);
+        setFilterRange(newValue);
         filterSparsityData(newValue[0], newValue[1])
     };
 
     const handleReset = () => {
-        setRange([min, max]);
+        setFilterRange([filterObject.min, filterObject.max]);
         resetFilter();
     };
 
@@ -82,20 +64,20 @@ export default function Filter({scores, filterSparsityData, resetFilter}) {
         <Grid item xs={10}>
             <DashboardComponent>
                 <FormControl className={classes.root}>
-                    <FormLabel id='slider' align='center'>Filtering Scores: {range[0].toFixed(3)} - {range[1].toFixed(3)}</FormLabel>
+                    <FormLabel id='slider' align='center'>Filtering Scores: {filterRange[0].toFixed(3)} - {filterRange[1].toFixed(3)}</FormLabel>
                     <Slider
                         aria-labelledby='slider'
-                        value={range}
-                        min={min}
-                        max={max}
+                        value={filterRange}
+                        min={filterObject.min}
+                        max={filterObject.max}
                         onChange={handleChange}
-                        step={step}
+                        step={filterObject.step}
                     />
                 </FormControl>
                 <ButtonGroup>
-                    <Button variant='outlined' onClick={() => handleChange(null, bottom10)}>Bottom 10%</Button>
-                    <Button variant='outlined' onClick={() => handleChange(null, [q1, q3])}>IQR</Button>
-                    <Button variant='outlined' onClick={() => handleChange(null, top10)}>Top 10%</Button>
+                    <Button variant='outlined' onClick={() => handleChange(null, filterObject.bottom)}>Bottom 10%</Button>
+                    <Button variant='outlined' onClick={() => handleChange(null, filterObject.iqr)}>IQR</Button>
+                    <Button variant='outlined' onClick={() => handleChange(null, filterObject.top)}>Top 10%</Button>
                     <Button variant='outlined' color='tertiary' onClick={handleReset}>Reset Filter</Button>
                 </ButtonGroup>
             </DashboardComponent>

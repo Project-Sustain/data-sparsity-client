@@ -34,7 +34,7 @@ END OF TERMS AND CONDITIONS
 
 import { useState, useEffect } from 'react';
 import { colors } from '../library/colors';
-import { sum } from 'simple-statistics';
+import { sum, interquartileRange, medianSorted } from 'simple-statistics';
 import moment from 'moment';
 
 
@@ -56,6 +56,9 @@ export const UseDashboardData = (SparsityState, RequestState) => {
     const [sitePieData, setSitePieData] = useState([]);
     const [selectedSite, setSelectedSite] = useState({});
     const [selectedSiteIndex, setSelectedSiteIndex] = useState(0);
+
+    const [filterObject, setFilterObject] = useState({'min':0,'max':0,'step':1,'bottom':[],'iqr':[],'top':[]});
+    const [filterRange, setFilterRange] = useState([]);
 
 
     // useEffects
@@ -191,6 +194,33 @@ export const UseDashboardData = (SparsityState, RequestState) => {
     }, [selectedSite, SparsityState.scores]);
 
 
+    // Filter
+    useEffect(() => {
+        if(scoreSet.length > 0) {
+
+            const min = scoreSet[0];
+            const max = scoreSet[scoreSet.length-1];
+            const step = (max - min) / 500;
+
+            const median = medianSorted(scoreSet);
+            const iqrVal = interquartileRange(scoreSet);
+            const q1 = median - (iqrVal/2);
+            const q3 = median + (iqrVal/2);
+
+            const percent = 0.1
+            const index = Math.floor(scoreSet.length * percent);
+
+            const bottom = [min, scoreSet[index]];
+            const iqr = [q1, q3];
+            const top = [scoreSet[scoreSet.length - index], max];
+
+            setFilterRange([min, max]);
+            setFilterObject({'min':min,'max':max,'step':step,'bottom':bottom,'iqr':iqr,'top':top});
+
+        }
+    }, [scoreSet]);
+
+
     // Functions
     const updateSelectedSite = (index) => {
         setSelectedSiteIndex(index);
@@ -198,12 +228,13 @@ export const UseDashboardData = (SparsityState, RequestState) => {
     }
 
     // Return Vals
-    const state = {scoreSet, pieData, pieIndex, barData, tsData, numTsBuckets, sitePieData, selectedSite, selectedSiteIndex};
+    const state = {scoreSet, pieData, pieIndex, barData, tsData, numTsBuckets, sitePieData, selectedSite, selectedSiteIndex, filterRange, filterObject};
 
     const functions = {
         setPieIndex: (index) => setPieIndex(index),
         setNumTsBuckets: (num) => setNumTsBuckets(num),
-        updateSelectedSite: (index) => updateSelectedSite(index)
+        updateSelectedSite: (index) => updateSelectedSite(index),
+        setFilterRange: (range) => setFilterRange(range)
     }
 
 

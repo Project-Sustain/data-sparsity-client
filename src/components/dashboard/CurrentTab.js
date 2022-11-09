@@ -39,6 +39,7 @@ import PieChartTab from './tabs/PieChartTab';
 import TimeSeriesChart from './tabs/TimeSeriesChart';
 import SiteDataTab from './tabs/SiteDataTab';
 import Filter from "./tabs/Filter";
+import { Dashboard } from '@mui/icons-material';
 
 
 export default function CurrentTab({currentTab, Request, Sparsity, Map, DashboardData}) {
@@ -54,11 +55,25 @@ export default function CurrentTab({currentTab, Request, Sparsity, Map, Dashboar
         case 3:
             return <CustomBarChart data={DashboardData.state.barData} />;
         case 4:
-            return <TimeSeriesChart data={DashboardData.state.tsData} setNumBuckets={DashboardData.functions.setNumTsBuckets} numBuckets={DashboardData.state.numTsBuckets} />;
+            return <TimeSeriesChart 
+                        data={DashboardData.state.tsData}
+                        setNumBuckets={DashboardData.functions.setNumTsBuckets}
+                        numBuckets={DashboardData.state.numTsBuckets}
+                    />;
         case 5:
-            return <SiteDataTab Request={Request} Sparsity={Sparsity} Map={Map} DashboardData={DashboardData} />;
+            return <SiteDataTab 
+                        Request={Request}
+                        Sparsity={Sparsity}
+                        Map={Map} DashboardData={DashboardData}
+                    />;
         case 6:
-            return <Filter scores={Sparsity.state.scores} filterSparsityData={Sparsity.functions.filterSparsityData} resetFilter={Sparsity.functions.resetFilter} />;
+            return <Filter 
+                        resetFilter={Sparsity.functions.resetFilter} 
+                        filterSparsityData={Sparsity.functions.filterSparsityData} 
+                        filterObject={DashboardData.state.filterObject} 
+                        filterRange={DashboardData.state.filterRange} 
+                        setFilterRange={DashboardData.functions.setFilterRange}
+                    />;
         default:
             return null;
     }
