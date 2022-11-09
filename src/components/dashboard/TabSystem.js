@@ -32,6 +32,7 @@ END OF TERMS AND CONDITIONS
 */
 
 
+import { useState, useEffect } from "react";
 import { ButtonGroup, Button } from "@mui/material";
 import { makeStyles } from "@material-ui/core";
 import KeyboardArrowDownIcon from '@mui/icons-material/KeyboardArrowDown';
@@ -44,14 +45,28 @@ const useStyles = makeStyles({
 });
 
 
-export default function TabSystem({currentTab, setCurrentTab, handleDrawerClose, disableTab}) {
+export default function TabSystem({currentTab, setCurrentTab, handleDrawerClose, disableTab, DashboardData, requestStatus}) {
 
     const classes = useStyles();
+    const [pieChartInvalid, setPieChartInvalid] = useState(false);
+
+    useEffect(() => {
+        if(requestStatus === 'VALID') {
+            setPieChartInvalid(DashboardData.state.pieData.length < 1 || DashboardData.state.pieData.length > 100)
+        }
+        else {
+            setPieChartInvalid(false);
+        }
+    }, [requestStatus, DashboardData.state.pieData]);
+
+    const getPieTabTitle = () => {
+        const status = pieChartInvalid ? ' Unavailable' : '';
+        return `Pie Chart${status}`;
+    };
 
     const tabs = [
-        'Request Form', 'Statistics', 'Pie Chart', 'Bar Chart', 'Time Series', 'Site Data', 'Data Filter'
+        'Request Form', 'Statistics', getPieTabTitle(), 'Bar Chart', 'Time Series', 'Site Data', 'Data Filter'
     ];
-
 
     const getVariant = (index) => {
         if(index === currentTab) return 'contained';
@@ -59,6 +74,9 @@ export default function TabSystem({currentTab, setCurrentTab, handleDrawerClose,
     };
 
     const disableButton = (index) => {
+        if(index === 2) {
+            if(pieChartInvalid) return true;
+        }
         if(index > 0) return disableTab;
         else return false;
     }

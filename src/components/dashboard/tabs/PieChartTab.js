@@ -32,44 +32,29 @@ END OF TERMS AND CONDITIONS
 */
 
 
-import { useState, useEffect, memo } from 'react';
-import { colors } from '../../../library/colors';
-import { Typography, Grid } from '@mui/material';
-import chroma from 'chroma-js';
+import { memo } from 'react';
 import PieTable from '../pieChart/PieTable';
 import CustomPieChart from '../pieChart/CustomPieChart';
-import DashboardComponent from '../../utilityComponents/DashboardComponent';
-import PieChartIcon from '@mui/icons-material/PieChart';
 
 
 export default memo(function PieChartTab({DashboardData, colorGradient}) {
 
 
-    if(DashboardData.state.pieData.length > 0 && DashboardData.state.pieData.length < 100) {
-        return (
-            <>
-                <PieTable
-                    setSelectedIndex={DashboardData.functions.setPieIndex}
-                    selectedIndex={DashboardData.state.pieIndex}
-                    pieData={DashboardData.state.pieData}
-                    colorScale={colorGradient}
-                    scoreSet={DashboardData.state.scoreSet}
-                />
+    return (
+        <>
+            <PieTable
+                setSelectedIndex={DashboardData.functions.setPieIndex}
+                selectedIndex={DashboardData.state.pieIndex}
+                pieData={DashboardData.state.pieData}
+                colorScale={colorGradient}
+                scoreSet={DashboardData.state.scoreSet}
+            />
 
-                <CustomPieChart
-                    pieData={DashboardData.state.pieData}
-                    setSelectedIndex={DashboardData.functions.setPieIndex}
-                />
-            </>
-        );
-    }
-
-    else return (
-        <Grid item xs={4}>
-            <DashboardComponent>
-                <Typography variant='h4' align='center'><PieChartIcon/>Too many slices to render pie</Typography>
-            </DashboardComponent>
-        </Grid>
+            <CustomPieChart
+                pieData={DashboardData.state.pieData}
+                setSelectedIndex={DashboardData.functions.setPieIndex}
+            />
+        </>
     );
 
 

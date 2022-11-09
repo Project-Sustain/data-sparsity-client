@@ -102,6 +102,8 @@ export default function Dashboard({Request, Sparsity, Map, DashboardData}) {
                             setCurrentTab={setCurrentTab}
                             handleDrawerClose={handleDrawerClose}
                             disableTab={disableTab}
+                            DashboardData={DashboardData}
+                            requestStatus={Request.state.requestStatus}
                         />
                     </Stack>
                     <Divider/>
