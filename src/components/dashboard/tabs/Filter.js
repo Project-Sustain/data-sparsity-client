@@ -32,56 +32,55 @@ END OF TERMS AND CONDITIONS
 */
 
 
-import { ButtonGroup, Button } from "@mui/material";
+import { useState } from "react";
 import { makeStyles } from "@material-ui/core";
-import KeyboardArrowDownIcon from '@mui/icons-material/KeyboardArrowDown';
+import { Slider, Grid, Button, Typography } from '@mui/material';
+import DashboardComponent from "../../utilityComponents/DashboardComponent";
 
 
 const useStyles = makeStyles({
     root: {
-        margin: '10px'
+        width: '100%'
     }
 });
 
 
-export default function TabSystem({currentTab, setCurrentTab, handleDrawerClose, disableTab}) {
+export default function Filter({scores, filterSparsityData}) {
 
     const classes = useStyles();
+    const formattedScores = Array.from(new Set(scores)).sort((a, b) => a - b);
+    const [range, setRange] = useState([formattedScores[0], formattedScores[formattedScores.length-1]]);
+    // const marks = formattedScores.map(score => {return {value: score}});
 
-    const tabs = [
-        'Request Form', 'Statistics', 'Pie Chart', 'Bar Chart', 'Time Series', 'Site Data', 'Data Filter'
-    ];
+    console.log({range})
+    console.log({formattedScores})
 
 
-    const getVariant = (index) => {
-        if(index === currentTab) return 'contained';
-        else return 'outlined';
+    const handleChange = (event, newValue) => {
+        // console.log(event.target.value)
+        console.log({newValue})
+        // setRange(newValue);
     };
-
-    const disableButton = (index) => {
-        if(index > 0) return disableTab;
-        else return false;
-    }
 
 
     return (
-        <ButtonGroup className={classes.root}>
-            {
-                tabs.map((title, index) => {
-                    return (
-                        <Button 
-                            key={index} 
-                            onClick={() => setCurrentTab(index)}
-                            variant={getVariant(index)}
-                            disabled={disableButton(index)}
-                        >
-                            {title}
-                        </Button>
-                    );
-                })
-            }
-            <Button onClick={handleDrawerClose}><KeyboardArrowDownIcon/></Button>
-        </ButtonGroup>
+        <Grid item xs={11}>
+            <DashboardComponent>
+                <Typography>Filtering Scores: {range[0]} - {range[1]}</Typography>
+                <Slider
+                    className={classes.root}
+                    value={range}
+                    onChange={handleChange}
+                    step={1}
+                />
+                <Button
+                    variant='outlined'
+                    onClick={() => filterSparsityData(range[0], range[1])}
+                >
+                    Filter Sparsity Data
+                </Button>
+            </DashboardComponent>
+        </Grid>
     );
 
 

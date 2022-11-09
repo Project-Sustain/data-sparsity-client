@@ -52,9 +52,6 @@ export function UseSiteSparsity() {
     const [numberOfResponses, setNumberOfResponses] = useState(0); // This informs useEffects when a new sparsity response has arrived
 
 
-    console.log(`Length of sparsityData: ${sparsityData.length}`);
-
-
     // useEffects
     useEffect(() => {
         setLastHighlightedSite({});
