@@ -63,7 +63,7 @@ export const UseDashboardData = (SparsityState, RequestState) => {
     useEffect(() => {
         const tempScoreSet = [...new Set(SparsityState.scores)].sort((a, b) => a - b);
         setScoreSet(tempScoreSet);
-        const tempReverseScoreSet = tempScoreSet.reverse();
+        const tempReverseScoreSet = Array.from(new Set(SparsityState.scores)).sort((a, b) => a - b);
         setReverseScoreSet(tempReverseScoreSet);
     }, [SparsityState.scores]);
 

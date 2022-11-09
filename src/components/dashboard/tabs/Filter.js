@@ -34,7 +34,7 @@ END OF TERMS AND CONDITIONS
 
 import { useState } from "react";
 import { makeStyles } from "@material-ui/core";
-import { Slider, Grid, Button, Typography, ButtonGroup, FormControl, FormLabel } from '@mui/material';
+import { Slider, Grid, Button, ButtonGroup, FormControl, FormLabel } from '@mui/material';
 import DashboardComponent from "../../utilityComponents/DashboardComponent";
 import { interquartileRange, medianSorted } from 'simple-statistics';
 
@@ -46,10 +46,10 @@ const useStyles = makeStyles({
 });
 
 
-export default function Filter({scores, filterSparsityData, resetFilter}) {
+export default function Filter({Sparsity, formattedScores}) {
 
     const classes = useStyles();
-    const formattedScores = Array.from(new Set(scores)).sort((a, b) => a - b);
+    // const formattedScores = Array.from(new Set(Sparsity.state.scores)).sort((a, b) => a - b);
     const min = formattedScores[0];
     const max = formattedScores[formattedScores.length-1];
     const step = (max - min) / 500;
@@ -69,12 +69,12 @@ export default function Filter({scores, filterSparsityData, resetFilter}) {
 
     const handleChange = (event, newValue) => {
         setRange(newValue);
-        filterSparsityData(newValue[0], newValue[1])
+        Sparsity.functions.filterSparsityData(newValue[0], newValue[1])
     };
 
     const handleReset = () => {
         setRange([min, max]);
-        resetFilter();
+        Sparsity.functions.resetFilter();
     };
 
 
