@@ -36,7 +36,7 @@ import { useState, useEffect } from "react";
 import { sparsityMetadata } from "../library/metadata";
 import { Api } from "../library/Api";
 
-export function UseRequest(SparsityFunctions) {
+export const UseRequest = (SparsityFunctions) => {
 
     
     // State
