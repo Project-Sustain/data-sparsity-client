@@ -40,17 +40,10 @@ import PieChartTab from './tabs/PieChartTab';
 import TimeSeriesChart from './tabs/TimeSeriesChart';
 import SiteDataTab from './tabs/SiteDataTab';
 import Filter from "./tabs/Filter";
+import { Dashboard } from "@mui/icons-material";
 
 
 export default function CurrentTab({currentTab, Request, Sparsity, Map, DashboardData}) {
-
-
-    const [siteIndex, setSiteIndex] = useState(0)
-
-
-    useEffect(() => {
-        setSiteIndex(0);
-    }, [Request.state.requestStatus]);
 
 
     switch (currentTab) {
@@ -65,7 +58,7 @@ export default function CurrentTab({currentTab, Request, Sparsity, Map, Dashboar
         case 4:
             return <TimeSeriesChart data={DashboardData.state.tsData} setNumBuckets={DashboardData.functions.setNumTsBuckets} numBuckets={DashboardData.state.numTsBuckets} />;
         case 5:
-            return <SiteDataTab Request={Request} Sparsity={Sparsity} Map={Map} selectedIndex={siteIndex} setSelectedIndex={setSiteIndex} />;
+            return <SiteDataTab Request={Request} Sparsity={Sparsity} Map={Map} DashboardData={DashboardData} />;
         case 6:
             return <Filter 
                         scores={Sparsity.state.scores} 

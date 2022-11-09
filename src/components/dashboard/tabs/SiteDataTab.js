@@ -37,13 +37,13 @@ import SelectedSite from "../siteList/SelectedSite";
 import SitePieChart from "../siteList/SitePieChart";
 
 
-export default function SiteDataTab({Request, Sparsity, Map, selectedIndex, setSelectedIndex}) {
+export default function SiteDataTab({Request, Sparsity, Map, DashboardData}) {
 
     
     return (
         <>
             <SparsityTable 
-                setSelectedIndex={setSelectedIndex}
+                updateSelectedSite={DashboardData.functions.updateSelectedSite}
                 sparsityData={Sparsity.state.sparsityData}
             />
             <SelectedSite 
@@ -51,15 +51,15 @@ export default function SiteDataTab({Request, Sparsity, Map, selectedIndex, setS
                 
                 updateHighlightedSite={Sparsity.functions.updateHighlightedSite}
                 deselectSite={Sparsity.functions.deselectSite}
-                site={Sparsity.state.sparsityData[selectedIndex]} 
+                site={DashboardData.state.selectedSite} 
                 disable={Object.keys(Sparsity.state.lastHighlightedSite).length === 0}
 
                 collectionProperties={Request.state.collection.sitePropertyFields}
 
-                index={selectedIndex}
+                index={DashboardData.state.selectedSiteIndex}
             />
             <SitePieChart
-                site={Sparsity.state.sparsityData[selectedIndex]} 
+                site={DashboardData.state.selectedSite}  
                 scores={Sparsity.state.scores}
             />
         </>

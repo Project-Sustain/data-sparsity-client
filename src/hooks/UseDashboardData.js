@@ -54,6 +54,10 @@ export const UseDashboardData = (SparsityState, RequestState) => {
     const [tsData, setTsData] = useState([]);
     const [siteDataMap, setSiteDataMap] = useState([]);
 
+    const [sitePieData, setSitePieData] = useState([]);
+    const [selectedSite, setSelectedSite] = useState({});
+    const [selectedSiteIndex, setSelectedSiteIndex] = useState(0);
+
 
     // useEffects
     useEffect(() => {
@@ -62,6 +66,17 @@ export const UseDashboardData = (SparsityState, RequestState) => {
         const tempReverseScoreSet = tempScoreSet.reverse();
         setReverseScoreSet(tempReverseScoreSet);
     }, [SparsityState.scores]);
+
+    useEffect(() => {
+        setPieIndex(-1);
+    }, [RequestState.requestStatus]);
+
+    useEffect(() => {
+        if(SparsityState.sparsityData.length > 0) {
+            setSelectedSite(SparsityState.sparsityData[0]);
+        }
+        else setSelectedSite({});
+    }, [SparsityState.sparsityData]);
 
 
     // Pie Chart
@@ -79,10 +94,6 @@ export const UseDashboardData = (SparsityState, RequestState) => {
         });
         setPieData(data);
     }, [scoreSet, pieIndex, SparsityState.scores, SparsityState.colorGradient]);
-
-    useEffect(() => {
-        setPieIndex(-1);
-    }, [RequestState.requestStatus]);
 
 
     // Bar Chart
@@ -159,15 +170,43 @@ export const UseDashboardData = (SparsityState, RequestState) => {
     }, [SparsityState.sparsityData, numTsBuckets, siteDataMap]);
 
 
-    // Functions
+    // Selected Site
+    useEffect(() => {
+        if(Object.keys(selectedSite) > 0){
 
+            const myScore = selectedSite.sparsityScore;
+            const numberOfSameScores = SparsityState.scores.filter(score => {return score === myScore}).length;
+            const numberOfDifferentScores = SparsityState.scores.length - numberOfSameScores;
+            setSitePieData([
+                {
+                    "name": `Sites with sparsity score = ${selectedSite.sparsityScore}`,
+                    "value": numberOfSameScores,
+                    "fill": colors.tertiary
+                },
+                {
+                    "name": "Sites with other sparisty scores",
+                    "value": numberOfDifferentScores,
+                    "fill": colors.primary
+                }
+            ]);
+
+        }
+    }, [selectedSite, SparsityState.scores]);
+
+
+    // Functions
+    const updateSelectedSite = (index) => {
+        setSelectedSiteIndex(index);
+        setSelectedSite(SparsityState.sparsityData[index]);
+    }
 
     // Return Vals
-    const state = {scoreSet, reverseScoreSet, pieData, pieIndex, barData, tsData, numTsBuckets};
+    const state = {scoreSet, reverseScoreSet, pieData, pieIndex, barData, tsData, numTsBuckets, sitePieData, selectedSite, selectedSiteIndex};
 
     const functions = {
         setPieIndex: (index) => setPieIndex(index),
-        setNumTsBuckets: (num) => setNumTsBuckets(num)
+        setNumTsBuckets: (num) => setNumTsBuckets(num),
+        updateSelectedSite: (index) => updateSelectedSite(index)
     }
 
 
