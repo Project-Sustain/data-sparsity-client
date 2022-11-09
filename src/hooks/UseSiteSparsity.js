@@ -35,7 +35,6 @@ END OF TERMS AND CONDITIONS
 import { useState, useEffect } from "react";
 import { colors } from "../library/colors";
 import chroma from 'chroma-js';
-import bounds from 'binary-searching';
 import { binary_search } from "../library/binary_search";
 
 export function UseSiteSparsity() {
@@ -117,7 +116,7 @@ export function UseSiteSparsity() {
 
 
     // Return Vals
-    const state = { sparsityData, sparsityStats, scores, colorGradient, selectedScore, lastHighlightedSite };
+    const state = { allSparsityData, sparsityData, sparsityStats, scores, colorGradient, selectedScore, lastHighlightedSite };
 
     const functions = {
         setAllSparsityData: (data) => setAllSparsityData(data),

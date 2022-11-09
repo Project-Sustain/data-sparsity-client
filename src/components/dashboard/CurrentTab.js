@@ -44,6 +44,7 @@ import Filter from "./tabs/Filter";
 
 export default function CurrentTab({currentTab, Request, Sparsity, Map}) {
 
+
     const [siteIndex, setSiteIndex] = useState(0)
     const [pieIndex, setPieIndex] = useState(-1);
     const [numTimeSeriesBuckets, setNumTimeSeriesBuckets] = useState(100);
@@ -70,7 +71,11 @@ export default function CurrentTab({currentTab, Request, Sparsity, Map}) {
         case 5:
             return <SiteDataTab Request={Request} Sparsity={Sparsity} Map={Map} selectedIndex={siteIndex} setSelectedIndex={setSiteIndex} />;
         case 6:
-            return <Filter scores={Sparsity.state.scores} filterSparsityData={Sparsity.functions.filterSparsityData} />
+            return <Filter 
+                        scores={Sparsity.state.scores} 
+                        filterSparsityData={Sparsity.functions.filterSparsityData} 
+                        resetSparsityData={Sparsity.functions.resetSparsityData} 
+                    />
         default:
             return null;
     }

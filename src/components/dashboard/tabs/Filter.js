@@ -45,39 +45,39 @@ const useStyles = makeStyles({
 });
 
 
-export default function Filter({scores, filterSparsityData}) {
+export default function Filter({scores, filterSparsityData, resetSparsityData}) {
 
     const classes = useStyles();
     const formattedScores = Array.from(new Set(scores)).sort((a, b) => a - b);
-    const [range, setRange] = useState([formattedScores[0], formattedScores[formattedScores.length-1]]);
-    // const marks = formattedScores.map(score => {return {value: score}});
-
-    console.log({range})
-    console.log({formattedScores})
+    const min = formattedScores[0];
+    const max = formattedScores[formattedScores.length-1];
+    const step = (max - min) / 500;
+    const [range, setRange] = useState([min, max]);
 
 
     const handleChange = (event, newValue) => {
-        // console.log(event.target.value)
-        console.log({newValue})
-        // setRange(newValue);
+        setRange(newValue);
+        filterSparsityData(newValue[0], newValue[1])
     };
 
 
     return (
-        <Grid item xs={11}>
+        <Grid item xs={7}>
             <DashboardComponent>
-                <Typography>Filtering Scores: {range[0]} - {range[1]}</Typography>
+                <Typography>Filtering Scores: {range[0].toFixed(3)} - {range[1].toFixed(3)}</Typography>
                 <Slider
                     className={classes.root}
                     value={range}
+                    min={min}
+                    max={max}
                     onChange={handleChange}
-                    step={1}
+                    step={step}
                 />
                 <Button
                     variant='outlined'
-                    onClick={() => filterSparsityData(range[0], range[1])}
+                    onClick={resetSparsityData}
                 >
-                    Filter Sparsity Data
+                    Reset Filter
                 </Button>
             </DashboardComponent>
         </Grid>

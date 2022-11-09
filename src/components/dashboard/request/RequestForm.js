@@ -73,11 +73,6 @@ export default function RequestForm({ Request, SparsityFunctions, sparsityDataLe
                     >
                         Update Baseline
                     </Button>
-                    <Button 
-                        onClick={() => SparsityFunctions.filterSparsityData(0.0, 11.0)}
-                    >
-                        Filter Test
-                    </Button>
                 </ButtonGroup>
             );
         }
