@@ -46,6 +46,8 @@ export const UseDashboardData = (SparsityState, RequestState) => {
     const [pieData, setPieData] = useState([]);
     const [pieIndex, setPieIndex] = useState(-1);
 
+    const [barData, setBarData] = useState([]);
+
 
     // useEffects
     useEffect(() => {
@@ -56,6 +58,7 @@ export const UseDashboardData = (SparsityState, RequestState) => {
     }, [SparsityState.scores]);
 
 
+    // Pie Chart
     useEffect(() => {
         const data = scoreSet.map((score, index) => {
             const numberWithThisScore = SparsityState.scores.filter(entry => {return entry === score}).length;
@@ -75,12 +78,42 @@ export const UseDashboardData = (SparsityState, RequestState) => {
         setPieIndex(-1);
     }, [RequestState.requestStatus]);
 
+    // Bar Chart
+    useEffect(() => {
+            let chartData = [];
+            if(SparsityState.scores.length > 0) {
+                try {
+                    const numBuckets = 7;
+                    const min = SparsityState.scores[SparsityState.scores.length-1];
+                    const max = SparsityState.scores[0];
+                    const range = max - min;
+                    const rangePerBucket = range / numBuckets;
+
+                    chartData = [...Array(numBuckets).keys()].map(index => {
+                        const bucketMin = (min+(rangePerBucket*index)).toFixed(2);
+                        const bucketMax = (min+(rangePerBucket*(index+1))).toFixed(2);
+                        return {
+                            name: `${bucketMin} - ${bucketMax}`, 
+                            numberOfSites: SparsityState.scores.filter(score => {
+                                const lessThanMax = index === 4 ? score <= bucketMax : score < bucketMax;
+                                return score >= bucketMin && lessThanMax;
+                            }).length};
+                    });
+
+                } catch (exception) {
+                    console.log({exception}); // FIXME Set a flag to display a message...
+                }
+
+            setBarData(chartData);
+        }
+    }, [SparsityState.scores]);
+
 
     // Functions
 
 
     // Return Vals
-    const state = {scoreSet, reverseScoreSet, pieData, pieIndex};
+    const state = {scoreSet, reverseScoreSet, pieData, pieIndex, barData};
 
     const functions = {
         setPieIndex: (index) => setPieIndex(index)

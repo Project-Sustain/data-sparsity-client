@@ -63,7 +63,7 @@ export default function CurrentTab({currentTab, Request, Sparsity, Map, Dashboar
         case 2:
             return <PieChartTab colorGradient={Sparsity.state.colorGradient} DashboardData={DashboardData} />;
         case 3:
-            return <CustomBarChart scores={Sparsity.state.scores} />;
+            return <CustomBarChart data={DashboardData.state.barData} />;
         case 4:
             return <TimeSeriesChart sparsityData={Sparsity.state.sparsityData} numBuckets={numTimeSeriesBuckets} setNumBuckets={setNumTimeSeriesBuckets} />;
         case 5:
