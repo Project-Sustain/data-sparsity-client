@@ -32,56 +32,55 @@ END OF TERMS AND CONDITIONS
 */
 
 
-import { ButtonGroup, Button } from "@mui/material";
+import { useState } from "react";
 import { makeStyles } from "@material-ui/core";
-import KeyboardArrowDownIcon from '@mui/icons-material/KeyboardArrowDown';
+import { Slider, Grid, Button, Typography } from '@mui/material';
+import DashboardComponent from "../../utilityComponents/DashboardComponent";
 
 
 const useStyles = makeStyles({
     root: {
-        margin: '10px'
+        width: '100%'
     }
 });
 
 
-export default function TabSystem({currentTab, setCurrentTab, handleDrawerClose, disableTab}) {
+export default function Filter({scores, filterSparsityData, resetSparsityData}) {
 
     const classes = useStyles();
+    const formattedScores = Array.from(new Set(scores)).sort((a, b) => a - b);
+    const min = formattedScores[0];
+    const max = formattedScores[formattedScores.length-1];
+    const step = (max - min) / 500;
+    const [range, setRange] = useState([min, max]);
 
-    const tabs = [
-        'Request Form', 'Statistics', 'Pie Chart', 'Bar Chart', 'Time Series', 'Site Data', 'Data Filter'
-    ];
 
-
-    const getVariant = (index) => {
-        if(index === currentTab) return 'contained';
-        else return 'outlined';
+    const handleChange = (event, newValue) => {
+        setRange(newValue);
+        filterSparsityData(newValue[0], newValue[1])
     };
-
-    const disableButton = (index) => {
-        if(index > 0) return disableTab;
-        else return false;
-    }
 
 
     return (
-        <ButtonGroup className={classes.root}>
-            {
-                tabs.map((title, index) => {
-                    return (
-                        <Button 
-                            key={index} 
-                            onClick={() => setCurrentTab(index)}
-                            variant={getVariant(index)}
-                            disabled={disableButton(index)}
-                        >
-                            {title}
-                        </Button>
-                    );
-                })
-            }
-            <Button onClick={handleDrawerClose}><KeyboardArrowDownIcon/></Button>
-        </ButtonGroup>
+        <Grid item xs={7}>
+            <DashboardComponent>
+                <Typography>Filtering Scores: {range[0].toFixed(3)} - {range[1].toFixed(3)}</Typography>
+                <Slider
+                    className={classes.root}
+                    value={range}
+                    min={min}
+                    max={max}
+                    onChange={handleChange}
+                    step={step}
+                />
+                <Button
+                    variant='outlined'
+                    onClick={resetSparsityData}
+                >
+                    Reset Filter
+                </Button>
+            </DashboardComponent>
+        </Grid>
     );
 
 

@@ -90,6 +90,7 @@ export function UseRequest(SparsityFunctions) {
             updateStats(stats);
             const success = await streamSiteData();
             if(success) {
+                SparsityFunctions.incrementNumberOfResponses();
                 setRequestStatus('VALID');
             }
             else {
@@ -111,6 +112,7 @@ export function UseRequest(SparsityFunctions) {
             const stats = await Api.sendJsonRequest("sparsityStats", {});
             if(stats) {
                 updateStats(stats);
+                SparsityFunctions.incrementNumberOfResponses();
                 setRequestStatus('VALID');
             }
             else {
@@ -124,14 +126,14 @@ export function UseRequest(SparsityFunctions) {
 
     const onFailure = () => {
         SparsityFunctions.setSparsityStats({});
-        SparsityFunctions.setSparsityData([]);
+        SparsityFunctions.setAllSparsityData([]);
         setRequestStatus('INVALID');
     }
 
     const streamSiteData = async() => {
         const results = await Api.sendSiteDataRequest({'baseline': baseline});
         if(results.length > 0) {
-            SparsityFunctions.setSparsityData(results);
+            SparsityFunctions.setAllSparsityData(results);
             SparsityFunctions.incrementNumberOfResponses();
             return true;
         }

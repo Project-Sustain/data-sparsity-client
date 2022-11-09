@@ -35,11 +35,13 @@ END OF TERMS AND CONDITIONS
 import { useState, useEffect } from "react";
 import { colors } from "../library/colors";
 import chroma from 'chroma-js';
+import { binary_search } from "../library/binary_search";
 
 export function UseSiteSparsity() {
 
 
     // State
+    const [allSparsityData, setAllSparsityData] = useState([]);
     const [sparsityData, setSparsityData] = useState([]);
     const [sparsityStats, setSparsityStats] = useState({});
     const [scores, setScores] = useState([]);
@@ -55,9 +57,9 @@ export function UseSiteSparsity() {
     }, [numberOfResponses]);
 
     useEffect(() => {
-        let tempScores = sparsityData.map((siteData) => { return Number(siteData.sparsityScore) });
+        let tempScores = allSparsityData.map((siteData) => { return Number(siteData.sparsityScore) });
         tempScores.sort(function(a, b) {return b - a});
-        setScores(tempScores);
+        setScores(tempScores)
     }, [numberOfResponses]);
 
     useEffect(() => {
@@ -65,6 +67,15 @@ export function UseSiteSparsity() {
         const tempGradient = chroma.scale([colors.tertiary, colors.primary]).colors(numberOfUniqueScores);
         setColorGradient(tempGradient);
     }, [scores]);
+
+    /**
+     * allSparsityData is set when a new request returns
+     * The idea is that we change sparsityData on the client to filter by score, can reset to
+     * allSparsityData
+     */
+    useEffect(() => {
+        setSparsityData(allSparsityData);
+    }, [allSparsityData]);
 
 
     // Functions
@@ -92,17 +103,31 @@ export function UseSiteSparsity() {
         setNumberOfResponses(numberOfResponses+1);
     }
 
+    const filterSparsityData = (low, high) => {
+        const low_index = binary_search(scores, low, 0, scores.length-1);
+        const high_index = binary_search(scores, high, 0, scores.length-1);
+        const filteredData = [...allSparsityData].slice(high_index, low_index);
+        setSparsityData(filteredData);
+    }
+
+    const resetFilter = () => {
+        setSparsityData(allSparsityData);
+    }
+
 
     // Return Vals
-    const state = { sparsityData, sparsityStats, scores, colorGradient, selectedScore, lastHighlightedSite };
+    const state = { allSparsityData, sparsityData, sparsityStats, scores, colorGradient, selectedScore, lastHighlightedSite };
 
     const functions = {
-        setSparsityData: (data) => setSparsityData(data), 
+        setAllSparsityData: (data) => setAllSparsityData(data),
+        setSparsityData: (data) => setSparsityData(data),
         setSparsityStats: (data) => setSparsityStats(data), 
         setSelectedScore: (score) => setSelectedScore(score), 
         updateHighlightedSite: (index) => updateHighlightedSite(index), 
         deselectSite: () => deselectSite(), 
-        incrementNumberOfResponses: () => incrementNumberOfResponses()
+        incrementNumberOfResponses: () => incrementNumberOfResponses(),
+        filterSparsityData: (low, high) => filterSparsityData(low, high),
+        resetFilter: () => resetFilter()
     };
 
 

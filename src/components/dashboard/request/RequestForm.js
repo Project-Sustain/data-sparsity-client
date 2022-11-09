@@ -48,7 +48,7 @@ const useStyles = makeStyles({
 });
 
 
-export default function RequestForm({ Request, sparsityDataLength, currentShapeName }) {
+export default function RequestForm({ Request, SparsityFunctions, sparsityDataLength, currentShapeName }) {
 
     const classes = useStyles();
 

@@ -39,9 +39,11 @@ import CustomBarChart from './tabs/CustomBarChart';
 import PieChartTab from './tabs/PieChartTab';
 import TimeSeriesChart from './tabs/TimeSeriesChart';
 import SiteDataTab from './tabs/SiteDataTab';
+import Filter from "./tabs/Filter";
 
 
 export default function CurrentTab({currentTab, Request, Sparsity, Map}) {
+
 
     const [siteIndex, setSiteIndex] = useState(0)
     const [pieIndex, setPieIndex] = useState(-1);
@@ -68,6 +70,12 @@ export default function CurrentTab({currentTab, Request, Sparsity, Map}) {
             return <TimeSeriesChart sparsityData={Sparsity.state.sparsityData} numBuckets={numTimeSeriesBuckets} setNumBuckets={setNumTimeSeriesBuckets} />;
         case 5:
             return <SiteDataTab Request={Request} Sparsity={Sparsity} Map={Map} selectedIndex={siteIndex} setSelectedIndex={setSiteIndex} />;
+        case 6:
+            return <Filter 
+                        scores={Sparsity.state.scores} 
+                        filterSparsityData={Sparsity.functions.filterSparsityData} 
+                        resetSparsityData={Sparsity.functions.resetSparsityData} 
+                    />
         default:
             return null;
     }
