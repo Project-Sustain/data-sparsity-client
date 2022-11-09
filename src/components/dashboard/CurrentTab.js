@@ -74,7 +74,7 @@ export default function CurrentTab({currentTab, Request, Sparsity, Map}) {
             return <Filter 
                         scores={Sparsity.state.scores} 
                         filterSparsityData={Sparsity.functions.filterSparsityData} 
-                        resetSparsityData={Sparsity.functions.resetSparsityData} 
+                        resetFilter={Sparsity.functions.resetFilter} 
                     />
         default:
             return null;

@@ -32,10 +32,11 @@ END OF TERMS AND CONDITIONS
 */
 
 
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { makeStyles } from "@material-ui/core";
-import { Slider, Grid, Button, Typography } from '@mui/material';
+import { Slider, Grid, Button, Typography, FormLabel, FormControl, Radio, RadioGroup, FormControlLabel } from '@mui/material';
 import DashboardComponent from "../../utilityComponents/DashboardComponent";
+import { interquartileRange, medianSorted } from 'simple-statistics';
 
 
 const useStyles = makeStyles({
@@ -45,7 +46,7 @@ const useStyles = makeStyles({
 });
 
 
-export default function Filter({scores, filterSparsityData, resetSparsityData}) {
+export default function Filter({scores, filterSparsityData, resetFilter}) {
 
     const classes = useStyles();
     const formattedScores = Array.from(new Set(scores)).sort((a, b) => a - b);
@@ -54,33 +55,58 @@ export default function Filter({scores, filterSparsityData, resetSparsityData}) 
     const step = (max - min) / 500;
     const [range, setRange] = useState([min, max]);
 
+    const median = medianSorted(formattedScores);
+    const iqr = interquartileRange(formattedScores);
+    const q1 = median - (iqr/2);
+    const q3 = median + (iqr/2);
+
+    const percent = 0.1
+    const index = Math.floor(formattedScores.length * percent);
+
+    const top10 = [formattedScores[formattedScores.length - index], max];
+    const bottom10 = [min, formattedScores[index]];
+
 
     const handleChange = (event, newValue) => {
         setRange(newValue);
         filterSparsityData(newValue[0], newValue[1])
     };
 
+    const handleReset = () => {
+        setRange([min, max]);
+        resetFilter();
+    };
+
 
     return (
-        <Grid item xs={7}>
-            <DashboardComponent>
-                <Typography>Filtering Scores: {range[0].toFixed(3)} - {range[1].toFixed(3)}</Typography>
-                <Slider
-                    className={classes.root}
-                    value={range}
-                    min={min}
-                    max={max}
-                    onChange={handleChange}
-                    step={step}
-                />
-                <Button
-                    variant='outlined'
-                    onClick={resetSparsityData}
-                >
-                    Reset Filter
-                </Button>
-            </DashboardComponent>
-        </Grid>
+        <>
+            <Grid item xs={7}>
+                <DashboardComponent>
+                    <Typography>Filtering Scores: {range[0].toFixed(3)} - {range[1].toFixed(3)}</Typography>
+                    <Slider
+                        className={classes.root}
+                        value={range}
+                        min={min}
+                        max={max}
+                        onChange={handleChange}
+                        step={step}
+                    />
+                    <Button
+                        variant='outlined'
+                        onClick={handleReset}
+                    >
+                        Reset Filter
+                    </Button>
+                </DashboardComponent>
+            </Grid>
+            <Grid item xs={4}>
+                <DashboardComponent>
+                    <Button variant='outlined' onClick={() => handleChange(null, [q1, q3])}>IQR</Button>
+                    <Button variant='outlined' onClick={() => handleChange(null, top10)}>Top 10%</Button>
+                    <Button variant='outlined' onClick={() => handleChange(null, bottom10)}>Bottom 10%</Button>
+                </DashboardComponent>
+            </Grid>
+        </>
     );
 
 
