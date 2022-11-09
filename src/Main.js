@@ -38,10 +38,11 @@ import { Stack } from '@mui/material';
 import { UseSiteSparsity } from './hooks/UseSiteSparsity';
 import { UseRequest } from './hooks/UseRequest';
 import { UseDeckMap } from './hooks/UseDeckMap';
+import { UseDashboardData } from './hooks/UseDashboardData';
 
 // Components
 import DeckMap from './components/map/DeckMap';
-import DataDashboard from './components/dashboard/Dashboard';
+import Dashboard from './components/dashboard/Dashboard';
 import MapLegend from './components/map/MapLegend';
 
 
@@ -50,6 +51,7 @@ export default function App() {
     const Sparsity = UseSiteSparsity();
     const Request = UseRequest(Sparsity.functions);
     const Map = UseDeckMap(Sparsity.state, Request);
+    const DashboardData = UseDashboardData(Sparsity.state, Request.state);
 
 
     return (
@@ -63,10 +65,11 @@ export default function App() {
                 alignItems="flex-start"
                 spacing={2}
             >
-                <DataDashboard
+                <Dashboard
                     Request={Request}
                     Sparsity={Sparsity}
                     Map={Map}
+                    DashboardData={DashboardData}
                 />
                 <MapLegend
                     min={Sparsity.state.scores[0]}

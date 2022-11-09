@@ -57,7 +57,7 @@ const useStyles = makeStyles({
 });
 
 
-export default function Dashboard({Request, Sparsity, Map}) {
+export default function Dashboard({Request, Sparsity, Map, DashboardData}) {
 
     const classes = useStyles();
 
@@ -116,6 +116,7 @@ export default function Dashboard({Request, Sparsity, Map}) {
                             Request={Request}
                             Sparsity={Sparsity}
                             Map={Map}
+                            DashboardData={DashboardData}
                         />
                     </Grid>
                 </Box>

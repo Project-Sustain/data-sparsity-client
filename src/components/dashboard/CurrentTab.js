@@ -42,17 +42,15 @@ import SiteDataTab from './tabs/SiteDataTab';
 import Filter from "./tabs/Filter";
 
 
-export default function CurrentTab({currentTab, Request, Sparsity, Map}) {
+export default function CurrentTab({currentTab, Request, Sparsity, Map, DashboardData}) {
 
 
     const [siteIndex, setSiteIndex] = useState(0)
-    const [pieIndex, setPieIndex] = useState(-1);
     const [numTimeSeriesBuckets, setNumTimeSeriesBuckets] = useState(100);
 
 
     useEffect(() => {
         setSiteIndex(0);
-        setPieIndex(-1);
         setNumTimeSeriesBuckets(100);
     }, [Request.state.requestStatus]);
 
@@ -63,7 +61,7 @@ export default function CurrentTab({currentTab, Request, Sparsity, Map}) {
         case 1:
             return <StatisticsTab stats={Sparsity.state.sparsityStats} />;
         case 2:
-            return <PieChartTab scores={Sparsity.state.scores} selectedIndex={pieIndex} setSelectedIndex={setPieIndex} />;
+            return <PieChartTab colorGradient={Sparsity.state.colorGradient} DashboardData={DashboardData} />;
         case 3:
             return <CustomBarChart scores={Sparsity.state.scores} />;
         case 4:

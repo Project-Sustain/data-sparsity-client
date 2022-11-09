@@ -33,9 +33,62 @@ END OF TERMS AND CONDITIONS
 
 
 import { useState, useEffect } from 'react';
+import { colors } from '../library/colors';
 
 
-export const UseDashboardData = () => {
-    
+export const UseDashboardData = (SparsityState, RequestState) => {
+
+
+    // State
+    const [scoreSet, setScoreSet] = useState([]);
+    const [reverseScoreSet, setReverseScoreSet] = useState([]);
+
+    const [pieData, setPieData] = useState([]);
+    const [pieIndex, setPieIndex] = useState(-1);
+
+
+    // useEffects
+    useEffect(() => {
+        const tempScoreSet = [...new Set(SparsityState.scores)].sort((a, b) => a - b);
+        setScoreSet(tempScoreSet);
+        const tempReverseScoreSet = tempScoreSet.reverse();
+        setReverseScoreSet(tempReverseScoreSet);
+    }, [SparsityState.scores]);
+
+
+    useEffect(() => {
+        const data = scoreSet.map((score, index) => {
+            const numberWithThisScore = SparsityState.scores.filter(entry => {return entry === score}).length;
+            const percent = ((numberWithThisScore / SparsityState.scores.length) * 100).toFixed(2);
+            const color = index === pieIndex ? colors.highlight : SparsityState.colorGradient[index];
+            return {
+                "score": score,
+                "sites": numberWithThisScore,
+                "fill": color,
+                "percent": percent
+            }
+        });
+        setPieData(data);
+    }, [scoreSet, pieIndex, SparsityState.scores, SparsityState.colorGradient]);
+
+    useEffect(() => {
+        setPieIndex(-1);
+    }, [RequestState.requestStatus]);
+
+
+    // Functions
+
+
+    // Return Vals
+    const state = {scoreSet, reverseScoreSet, pieData, pieIndex};
+
+    const functions = {
+        setPieIndex: (index) => setPieIndex(index)
+    }
+
+
+    // Return
+    return {state, functions};
+
 }
 
