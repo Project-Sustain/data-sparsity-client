@@ -32,13 +32,10 @@ END OF TERMS AND CONDITIONS
 */
 
 
-import { useEffect, useState } from 'react';
 import { makeStyles } from "@material-ui/core";
 import { Grid, Slider, Divider } from "@mui/material";
 import { LineChart, Line, XAxis, YAxis, CartesianGrid, Tooltip, Legend, ResponsiveContainer } from 'recharts';
-import { sum } from 'simple-statistics';
 import { colors } from '../../../library/colors';
-import moment from 'moment';
 import DashboardComponent from '../../utilityComponents/DashboardComponent';
 
 const useStyles = makeStyles({
@@ -48,57 +45,10 @@ const useStyles = makeStyles({
     }
 });
 
-export default function TimeSeriesChart({sparsityData, numBuckets, setNumBuckets}) {
+export default function TimeSeriesChart({data, setNumBuckets, numBuckets}) {
+
 
     const classes = useStyles();
-
-    const [data, setData] = useState([]);
-    const [siteDataMap, setSiteDataMap] = useState([]);
-
-
-    /**
-     * This is very compute intensive. Consider doing this on the server.
-     */
-    useEffect(() => {
-        if(sparsityData.length > 0) {
-            const timeLists = sparsityData.map((siteData) => {
-                return siteData.epochTimes.map((time) => {return parseInt(time)});
-            });
-            const times = [].concat.apply([], timeLists);
-            const countDuplicates = {};
-            times.forEach(element => {
-                countDuplicates[element] = (countDuplicates[element] || 0) + 1;
-            })
-            const chartData = Object.entries(countDuplicates).map(([key, value]) => {
-                return {'value': value, 'time': parseInt(key)};
-            });
-            chartData.sort((a, b) => {return a.time - b.time});
-            setSiteDataMap(chartData);
-        }
-    }, [sparsityData]);
-
-    useEffect(() => {
-        if(siteDataMap.length > 0) {
-            const items_per_bucket = siteDataMap.length / numBuckets;
-            let bucketData = [];
-            for(let i = 0; i < numBuckets; i++) {
-                try {
-                    bucketData.push(convertBucket(siteDataMap.slice(i*items_per_bucket, (i+1)*items_per_bucket)));
-                } catch(err){
-                    // console.log("Error trying to convert buckets");
-                }
-            }
-            setData(bucketData);
-
-            function convertBucket(bucket) {
-                const startTime = moment.unix(bucket[0].time/1000).format('MM/YYYY');
-                const endTime = moment.unix(bucket[bucket.length-1].time/1000).format('MM/YYYY');
-                const values = bucket.map(entry => {return entry.value});
-                const totalValue = sum(values);
-                return {'name': `${startTime} - ${endTime}`, 'Number of Observations': totalValue};
-            }
-        }
-    }, [sparsityData, numBuckets, siteDataMap]);
 
 
     return (

@@ -34,6 +34,8 @@ END OF TERMS AND CONDITIONS
 
 import { useState, useEffect } from 'react';
 import { colors } from '../library/colors';
+import { sum } from 'simple-statistics';
+import moment from 'moment';
 
 
 export const UseDashboardData = (SparsityState, RequestState) => {
@@ -47,6 +49,10 @@ export const UseDashboardData = (SparsityState, RequestState) => {
     const [pieIndex, setPieIndex] = useState(-1);
 
     const [barData, setBarData] = useState([]);
+
+    const [numTsBuckets, setNumTsBuckets] = useState(100);
+    const [tsData, setTsData] = useState([]);
+    const [siteDataMap, setSiteDataMap] = useState([]);
 
 
     // useEffects
@@ -77,6 +83,7 @@ export const UseDashboardData = (SparsityState, RequestState) => {
     useEffect(() => {
         setPieIndex(-1);
     }, [RequestState.requestStatus]);
+
 
     // Bar Chart
     useEffect(() => {
@@ -109,14 +116,58 @@ export const UseDashboardData = (SparsityState, RequestState) => {
     }, [SparsityState.scores]);
 
 
+    // Tie Series
+    useEffect(() => {
+        if(SparsityState.sparsityData.length > 0) {
+            const timeLists = SparsityState.sparsityData.map((siteData) => {
+                return siteData.epochTimes.map((time) => {return parseInt(time)});
+            });
+            const times = [].concat.apply([], timeLists);
+            const countDuplicates = {};
+            times.forEach(element => {
+                countDuplicates[element] = (countDuplicates[element] || 0) + 1;
+            })
+            const chartData = Object.entries(countDuplicates).map(([key, value]) => {
+                return {'value': value, 'time': parseInt(key)};
+            });
+            chartData.sort((a, b) => {return a.time - b.time});
+            setSiteDataMap(chartData);
+        }
+    }, [SparsityState.sparsityData]);
+
+    useEffect(() => {
+        if(siteDataMap.length > 0) {
+            const items_per_bucket = siteDataMap.length / numTsBuckets;
+            let bucketData = [];
+            for(let i = 0; i < numTsBuckets; i++) {
+                try {
+                    bucketData.push(convertBucket(siteDataMap.slice(i*items_per_bucket, (i+1)*items_per_bucket)));
+                } catch(err){
+                    // console.log("Error trying to convert buckets");
+                }
+            }
+            setTsData(bucketData);
+
+            function convertBucket(bucket) {
+                const startTime = moment.unix(bucket[0].time/1000).format('MM/YYYY');
+                const endTime = moment.unix(bucket[bucket.length-1].time/1000).format('MM/YYYY');
+                const values = bucket.map(entry => {return entry.value});
+                const totalValue = sum(values);
+                return {'name': `${startTime} - ${endTime}`, 'Number of Observations': totalValue};
+            }
+        }
+    }, [SparsityState.sparsityData, numTsBuckets, siteDataMap]);
+
+
     // Functions
 
 
     // Return Vals
-    const state = {scoreSet, reverseScoreSet, pieData, pieIndex, barData};
+    const state = {scoreSet, reverseScoreSet, pieData, pieIndex, barData, tsData, numTsBuckets};
 
     const functions = {
-        setPieIndex: (index) => setPieIndex(index)
+        setPieIndex: (index) => setPieIndex(index),
+        setNumTsBuckets: (num) => setNumTsBuckets(num)
     }
 
 

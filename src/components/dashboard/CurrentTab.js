@@ -46,12 +46,10 @@ export default function CurrentTab({currentTab, Request, Sparsity, Map, Dashboar
 
 
     const [siteIndex, setSiteIndex] = useState(0)
-    const [numTimeSeriesBuckets, setNumTimeSeriesBuckets] = useState(100);
 
 
     useEffect(() => {
         setSiteIndex(0);
-        setNumTimeSeriesBuckets(100);
     }, [Request.state.requestStatus]);
 
 
@@ -65,7 +63,7 @@ export default function CurrentTab({currentTab, Request, Sparsity, Map, Dashboar
         case 3:
             return <CustomBarChart data={DashboardData.state.barData} />;
         case 4:
-            return <TimeSeriesChart sparsityData={Sparsity.state.sparsityData} numBuckets={numTimeSeriesBuckets} setNumBuckets={setNumTimeSeriesBuckets} />;
+            return <TimeSeriesChart data={DashboardData.state.tsData} setNumBuckets={DashboardData.functions.setNumTsBuckets} numBuckets={DashboardData.state.numTsBuckets} />;
         case 5:
             return <SiteDataTab Request={Request} Sparsity={Sparsity} Map={Map} selectedIndex={siteIndex} setSelectedIndex={setSiteIndex} />;
         case 6:
