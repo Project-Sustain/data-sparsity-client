@@ -124,10 +124,10 @@ export const UseDashboardData = (SparsityState, RequestState) => {
     }, [SparsityState.scores]);
 
 
-    // Tie Series
+    // Time Series
     useEffect(() => {
-        if(SparsityState.sparsityData.length > 0) {
-            const timeLists = SparsityState.sparsityData.map((siteData) => {
+        if(SparsityState.allSparsityData.length > 0) {
+            const timeLists = SparsityState.allSparsityData.map((siteData) => {
                 return siteData.epochTimes.map((time) => {return parseInt(time)});
             });
             const times = [].concat.apply([], timeLists);
@@ -141,7 +141,7 @@ export const UseDashboardData = (SparsityState, RequestState) => {
             chartData.sort((a, b) => {return a.time - b.time});
             setSiteDataMap(chartData);
         }
-    }, [SparsityState.sparsityData]);
+    }, [SparsityState.allSparsityData]);
 
     useEffect(() => {
         if(siteDataMap.length > 0) {
@@ -164,7 +164,7 @@ export const UseDashboardData = (SparsityState, RequestState) => {
                 return {'name': `${startTime} - ${endTime}`, 'Number of Observations': totalValue};
             }
         }
-    }, [SparsityState.sparsityData, numTsBuckets, siteDataMap]);
+    }, [numTsBuckets, siteDataMap]);
 
 
     // Selected Site

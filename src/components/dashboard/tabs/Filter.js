@@ -46,13 +46,13 @@ const useStyles = makeStyles({
 });
 
 
-export default function Filter({Sparsity, formattedScores}) {
+export default function Filter({scores, filterSparsityData, resetFilter}) {
 
     const classes = useStyles();
+    const formattedScores = Array.from(new Set(scores)).sort((a, b) => a - b);
     const min = formattedScores[0];
     const max = formattedScores[formattedScores.length-1];
     const step = (max - min) / 500;
-    
     const [range, setRange] = useState([min, max]);
 
     const median = medianSorted(formattedScores);
@@ -69,12 +69,12 @@ export default function Filter({Sparsity, formattedScores}) {
 
     const handleChange = (event, newValue) => {
         setRange(newValue);
-        Sparsity.functions.filterSparsityData(newValue[0], newValue[1])
+        filterSparsityData(newValue[0], newValue[1])
     };
 
     const handleReset = () => {
         setRange([min, max]);
-        Sparsity.functions.resetFilter();
+        resetFilter();
     };
 
 

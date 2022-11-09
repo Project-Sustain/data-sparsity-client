@@ -58,7 +58,7 @@ export default function CurrentTab({currentTab, Request, Sparsity, Map, Dashboar
         case 5:
             return <SiteDataTab Request={Request} Sparsity={Sparsity} Map={Map} DashboardData={DashboardData} />;
         case 6:
-            return <Filter Sparsity={Sparsity} formattedScores={DashboardData.state.scoreSet} />
+            return <Filter scores={Sparsity.state.scores} filterSparsityData={Sparsity.functions.filterSparsityData} resetFilter={Sparsity.functions.resetFilter} />;
         default:
             return null;
     }
