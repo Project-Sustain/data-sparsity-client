@@ -43,7 +43,6 @@ export const UseDashboardData = (SparsityState, RequestState) => {
 
     // State
     const [scoreSet, setScoreSet] = useState([]);
-    const [reverseScoreSet, setReverseScoreSet] = useState([]);
 
     const [pieData, setPieData] = useState([]);
     const [pieIndex, setPieIndex] = useState(-1);
@@ -63,8 +62,6 @@ export const UseDashboardData = (SparsityState, RequestState) => {
     useEffect(() => {
         const tempScoreSet = [...new Set(SparsityState.scores)].sort((a, b) => a - b);
         setScoreSet(tempScoreSet);
-        const tempReverseScoreSet = Array.from(new Set(SparsityState.scores)).sort((a, b) => a - b);
-        setReverseScoreSet(tempReverseScoreSet);
     }, [SparsityState.scores]);
 
     useEffect(() => {
@@ -201,7 +198,7 @@ export const UseDashboardData = (SparsityState, RequestState) => {
     }
 
     // Return Vals
-    const state = {scoreSet, reverseScoreSet, pieData, pieIndex, barData, tsData, numTsBuckets, sitePieData, selectedSite, selectedSiteIndex};
+    const state = {scoreSet, pieData, pieIndex, barData, tsData, numTsBuckets, sitePieData, selectedSite, selectedSiteIndex};
 
     const functions = {
         setPieIndex: (index) => setPieIndex(index),

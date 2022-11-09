@@ -49,10 +49,10 @@ const useStyles = makeStyles({
 export default function Filter({Sparsity, formattedScores}) {
 
     const classes = useStyles();
-    // const formattedScores = Array.from(new Set(Sparsity.state.scores)).sort((a, b) => a - b);
     const min = formattedScores[0];
     const max = formattedScores[formattedScores.length-1];
     const step = (max - min) / 500;
+    
     const [range, setRange] = useState([min, max]);
 
     const median = medianSorted(formattedScores);

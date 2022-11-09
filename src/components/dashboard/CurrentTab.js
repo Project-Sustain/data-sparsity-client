@@ -32,7 +32,6 @@ END OF TERMS AND CONDITIONS
 */
 
 
-import { useEffect, useState } from "react";
 import RequestTab from './tabs/RequestTab';
 import StatisticsTab from './tabs/StatisticsTab';
 import CustomBarChart from './tabs/CustomBarChart';
@@ -40,7 +39,6 @@ import PieChartTab from './tabs/PieChartTab';
 import TimeSeriesChart from './tabs/TimeSeriesChart';
 import SiteDataTab from './tabs/SiteDataTab';
 import Filter from "./tabs/Filter";
-import { Dashboard } from "@mui/icons-material";
 
 
 export default function CurrentTab({currentTab, Request, Sparsity, Map, DashboardData}) {
@@ -60,7 +58,7 @@ export default function CurrentTab({currentTab, Request, Sparsity, Map, Dashboar
         case 5:
             return <SiteDataTab Request={Request} Sparsity={Sparsity} Map={Map} DashboardData={DashboardData} />;
         case 6:
-            return <Filter Sparsity={Sparsity} formattedScores={DashboardData.state.reverseScoreSet} />
+            return <Filter Sparsity={Sparsity} formattedScores={DashboardData.state.scoreSet} />
         default:
             return null;
     }
