@@ -20,9 +20,9 @@ export const binary_search = (arr, x, start, end) => {
  * https://www.geeksforgeeks.org/search-insert-position-of-k-in-a-sorted-array/
  */
 
-export const find_index = (arr, n, K) => {
+export const find_index = (arr, K) => {
     let start = 0;
-    let end = n - 1;
+    let end = arr.length-1;
  
     while (start <= end) {
         let mid = Math.floor((start + end) / 2);

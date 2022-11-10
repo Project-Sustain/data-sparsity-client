@@ -111,6 +111,7 @@ export const UseDashboardData = (SparsityState, RequestState) => {
    useEffect(() => {
     let chartData = [];
     if(scoreSet.length > 0) {
+        console.log({scoreSet})
         try {
             const numBuckets = 7;
             const min = scoreSet[0];
@@ -119,17 +120,18 @@ export const UseDashboardData = (SparsityState, RequestState) => {
             const rangePerBucket = range / numBuckets;
 
             chartData = [...Array(numBuckets).keys()].map(index => {
-                const bucketMin = (min+(rangePerBucket*index)).toFixed(2);
-                const bucketMax = (min+(rangePerBucket*(index+1))).toFixed(2);
+                const bucketMin = (min+(rangePerBucket*index));
+                const bucketMax = (min+(rangePerBucket*(index+1)));
 
-                const lowIndex = find_index(scoreSet, scoreSet.length, bucketMin);
-                const highIndex = find_index(scoreSet, scoreSet.length, bucketMax);
+                const lowIndex = find_index(scoreSet, bucketMin);
+                const highIndex = find_index(scoreSet, bucketMax);
+                console.log(`${lowIndex} -> ${highIndex}`)
 
                 let numSites = 0;
                 scoreSiteMap.slice(lowIndex, highIndex).forEach(entry => numSites += entry.numberOfSites);
 
                 return {
-                    name: `${bucketMin} - ${bucketMax}`, 
+                    name: `${bucketMin.toFixed(2)} - ${bucketMax.toFixed(2)}`, 
                     numberOfSites: numSites
                 };
             });
