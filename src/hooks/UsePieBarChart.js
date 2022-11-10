@@ -37,7 +37,7 @@ import { colors } from '../library/colors';
 import { find_index } from '../library/binary_search';
 
 
-export const UsePieBarChart = (SparsityState, RequestState, scoreSet) => {
+export const UsePieBarChart = (SparsityState, requestStatus, scoreSet) => {
 
 
     // State
@@ -51,7 +51,7 @@ export const UsePieBarChart = (SparsityState, RequestState, scoreSet) => {
 
     useEffect(() => {
         setPieIndex(-1);
-    }, [RequestState.requestStatus]);
+    }, [requestStatus]);
 
     useEffect(() => {
         const data = scoreSet.map(score => {

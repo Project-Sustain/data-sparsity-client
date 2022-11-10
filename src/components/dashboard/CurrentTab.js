@@ -41,12 +41,14 @@ import SiteDataTab from './tabs/SiteDataTab';
 import Filter from "./tabs/Filter";
 import { UsePieBarChart } from '../../hooks/UsePieBarChart';
 import { UseTimeSeriesChart } from '../../hooks/UseTimeSeriesChart';
+import { UseFilter } from '../../hooks/UseFilter';
 
 
 export default function CurrentTab({currentTab, Request, Sparsity, Map, DashboardData}) {
 
-    const PieBarData = UsePieBarChart(Sparsity.state, Request.state, DashboardData.state.scoreSet);
-    const TimeSeriesData = UseTimeSeriesChart(Sparsity.state);
+    const PieBarData = UsePieBarChart(Sparsity.state, Request.state.requestStatus, DashboardData.state.scoreSet);
+    const TimeSeriesData = UseTimeSeriesChart(Sparsity.state.allSparsityData);
+    const DataFilter = UseFilter(DashboardData.state.scoreSet);
 
 
     switch (currentTab) {
@@ -78,9 +80,9 @@ export default function CurrentTab({currentTab, Request, Sparsity, Map, Dashboar
             return <Filter 
                         resetFilter={Sparsity.functions.resetFilter} 
                         filterSparsityData={Sparsity.functions.filterSparsityData} 
-                        filterObject={DashboardData.state.filterObject} 
-                        filterRange={DashboardData.state.filterRange} 
-                        setFilterRange={DashboardData.functions.setFilterRange}
+                        filterObject={DataFilter.state.filterObject} 
+                        filterRange={DataFilter.state.filterRange} 
+                        setFilterRange={DataFilter.functions.setFilterRange}
                     />
         default:
             return null;

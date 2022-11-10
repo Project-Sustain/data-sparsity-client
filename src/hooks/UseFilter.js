@@ -33,67 +33,48 @@ END OF TERMS AND CONDITIONS
 
 
 import { useState, useEffect } from 'react';
-import { sum } from 'simple-statistics';
-import moment from 'moment';
+import { interquartileRange, medianSorted } from 'simple-statistics';
 
 
-export const UseTimeSeriesChart = (allSparsityData) => {
+export const UseFilter = (scoreSet) => {
 
 
     // State
-    const [numTsBuckets, setNumTsBuckets] = useState(100);
-    const [tsData, setTsData] = useState([]);
-    const [siteDataMap, setSiteDataMap] = useState([]);
+    const [filterObject, setFilterObject] = useState({'min':0,'max':0,'step':1,'bottom':[],'iqr':[],'top':[]});
+    const [filterRange, setFilterRange] = useState([]);
 
 
     // useEffects
     useEffect(() => {
-        if(allSparsityData.length > 0) {
-            const timeLists = allSparsityData.map((siteData) => {
-                return siteData.epochTimes.map((time) => {return parseInt(time)});
-            });
-            const times = [].concat.apply([], timeLists);
-            const countDuplicates = {};
-            times.forEach(element => {
-                countDuplicates[element] = (countDuplicates[element] || 0) + 1;
-            })
-            const chartData = Object.entries(countDuplicates).map(([key, value]) => {
-                return {'value': value, 'time': parseInt(key)};
-            });
-            chartData.sort((a, b) => {return a.time - b.time});
-            setSiteDataMap(chartData);
+        if(scoreSet.length > 0) {
+
+            const min = scoreSet[0];
+            const max = scoreSet[scoreSet.length-1];
+            const step = (max - min) / 500;
+
+            const median = medianSorted(scoreSet);
+            const iqrVal = interquartileRange(scoreSet);
+            const q1 = median - (iqrVal/2);
+            const q3 = median + (iqrVal/2);
+
+            const percent = 0.1
+            const index = Math.floor(scoreSet.length * percent);
+
+            const bottom = [min, scoreSet[index]];
+            const iqr = [q1, q3];
+            const top = [scoreSet[scoreSet.length - index], max];
+
+            setFilterRange([min, max]);
+            setFilterObject({'min':min,'max':max,'step':step,'bottom':bottom,'iqr':iqr,'top':top});
+
         }
-    }, [allSparsityData]);
-
-    useEffect(() => {
-        if(siteDataMap.length > 0) {
-            const items_per_bucket = siteDataMap.length / numTsBuckets;
-            let bucketData = [];
-            for(let i = 0; i < numTsBuckets; i++) {
-                try {
-                    bucketData.push(convertBucket(siteDataMap.slice(i*items_per_bucket, (i+1)*items_per_bucket)));
-                } catch(err){
-                    // console.log("Error trying to convert buckets");
-                }
-            }
-            setTsData(bucketData);
-
-            function convertBucket(bucket) {
-                const startTime = moment.unix(bucket[0].time/1000).format('MM/YYYY');
-                const endTime = moment.unix(bucket[bucket.length-1].time/1000).format('MM/YYYY');
-                const values = bucket.map(entry => {return entry.value});
-                const totalValue = sum(values);
-                return {'name': `${startTime} - ${endTime}`, 'Number of Observations': totalValue};
-            }
-        }
-    }, [numTsBuckets, siteDataMap]);
-
+    }, [scoreSet]);
 
     // Return Vals
-    const state = {tsData, numTsBuckets};
+    const state = {filterRange, filterObject};
 
     const functions = {
-        setNumTsBuckets: (num) => setNumTsBuckets(num)
+        setFilterRange: (range) => setFilterRange(range)
     }
 
 
