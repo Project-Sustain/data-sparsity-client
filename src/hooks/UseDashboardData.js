@@ -125,7 +125,6 @@ export const UseDashboardData = (SparsityState, RequestState) => {
 
                 const lowIndex = find_index(scoreSet, bucketMin);
                 const highIndex = find_index(scoreSet, bucketMax);
-                console.log(`${lowIndex} -> ${highIndex}`)
 
                 let numSites = 0;
                 scoreSiteMap.slice(lowIndex, highIndex).forEach(entry => numSites += entry.numberOfSites);
