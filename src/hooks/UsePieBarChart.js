@@ -32,96 +32,100 @@ END OF TERMS AND CONDITIONS
 */
 
 
-import { useEffect, useState } from "react";
-import { Box, Drawer, Divider, IconButton, Grid, Stack } from "@mui/material";
-import { makeStyles } from "@material-ui/core";
-import MenuIcon from '@mui/icons-material/Menu';
-import TabSystem from "./TabSystem";
-import CurrentTab from "./CurrentTab";
+import { useState, useEffect } from 'react';
+import { colors } from '../library/colors';
+import { find_index } from '../library/binary_search';
 
 
-const useStyles = makeStyles({
-    root: {
-        zIndex: 5000,
-        opacity: 0.9,
-        overflow: 'auto'
-    },
-    openButton: {
-        position: 'fixed',
-        top: 5,
-        left: 5
-    },
-    drawer: {
-        width: 'auto'
-    }
-});
+export const UsePieBarChart = (SparsityState, requestStatus) => {
 
 
-export default function Dashboard({Request, Sparsity, Map}) {
+    // State
+    const [scoreSiteMap, setScoreSiteMap] = useState([]);
 
-    const classes = useStyles();
+    const [pieData, setPieData] = useState([]);
+    const [pieIndex, setPieIndex] = useState(-1);
 
-    const [open, setOpen] = useState(true);
-    const [currentTab, setCurrentTab] = useState(0);
-    const [disableTab, setDisableTab] = useState(true);
+    const [barData, setBarData] = useState([]);
 
 
     useEffect(() => {
-        setDisableTab(Request.state.requestStatus !== 'VALID');
-    }, [Request.state.requestStatus]);
+        setPieIndex(-1);
+    }, [requestStatus]);
+
+    useEffect(() => {
+        const data = SparsityState.scoreSet.map(score => {
+            const numberWithThisScore = SparsityState.scores.filter(entry => {return entry === score}).length;
+            return {'score': score, 'numberOfSites': numberWithThisScore};
+        });
+        setScoreSiteMap(data);
+    }, [SparsityState.scoreSet]);
 
 
-    const handleDrawerClose = () => {
-        setOpen(false);
+
+    // Pie Chart
+    useEffect(() => {
+        const data = scoreSiteMap.map((entry, index) => {
+            const numberWithThisScore = entry.numberOfSites;
+            const percent = ((numberWithThisScore / SparsityState.scores.length) * 100).toFixed(2);
+            const color = index === pieIndex ? colors.highlight : SparsityState.colorGradient[index];
+            return {
+                "score": entry.score,
+                "sites": numberWithThisScore,
+                "fill": color,
+                "percent": percent
+            }
+        });
+        setPieData(data);
+    }, [scoreSiteMap, pieIndex, SparsityState.scores, SparsityState.colorGradient]);
+
+
+   // Bar Chart
+   useEffect(() => {
+    let chartData = [];
+    if(SparsityState.scoreSet.length > 0) {
+        try {
+            const numBuckets = 7;
+            const min = SparsityState.scoreSet[0];
+            const max = SparsityState.scoreSet[SparsityState.scoreSet.length-1];
+            const range = max - min;
+            const rangePerBucket = range / numBuckets;
+
+            chartData = [...Array(numBuckets).keys()].map(index => {
+                const bucketMin = (min+(rangePerBucket*index));
+                const bucketMax = (min+(rangePerBucket*(index+1)));
+
+                const lowIndex = find_index(SparsityState.scoreSet, bucketMin);
+                const highIndex = find_index(SparsityState.scoreSet, bucketMax);
+
+                let numSites = 0;
+                scoreSiteMap.slice(lowIndex, highIndex).forEach(entry => numSites += entry.numberOfSites);
+
+                return {
+                    name: `${bucketMin.toFixed(2)} - ${bucketMax.toFixed(2)}`, 
+                    numberOfSites: numSites
+                };
+            });
+
+            } catch (exception) {
+                console.log({exception}); // FIXME Set a flag to display a message...
+            }
+
+            setBarData(chartData);
+        }
+    }, [SparsityState.scoreSet, scoreSiteMap]);
+
+
+
+    // Return Vals
+    const state = { pieData, pieIndex, barData };
+
+    const functions = {
+        setPieIndex: (index) => setPieIndex(index),
     }
 
 
-    return (
-        <>
-            <IconButton 
-                className={classes.openButton} 
-                onClick={() => setOpen(!open)}
-            >
-                <MenuIcon/>
-            </IconButton>
-            <Drawer
-                className={classes.root}
-                variant='persistent'
-                anchor='bottom'
-                open={open}
-                onClose={handleDrawerClose}
-            >
-                <Box
-                    className={classes.drawer}
-                    role='presentation'
-                >
-                    <Stack direction='column' alignItems='center' justifyContent='center'>
-                        <TabSystem
-                            currentTab={currentTab}
-                            setCurrentTab={setCurrentTab}
-                            handleDrawerClose={handleDrawerClose}
-                            disableTab={disableTab}
-                            scoreSet={Sparsity.state.scoreSet}
-                            requestStatus={Request.state.requestStatus}
-                        />
-                    </Stack>
-                    <Divider/>
-                    <Grid
-                        container 
-                        spacing={2}
-                        justifyContent='center'
-                        alignItems='center'
-                    >
-                        <CurrentTab
-                            currentTab={currentTab}
-                            Request={Request}
-                            Sparsity={Sparsity}
-                            Map={Map}
-                        />
-                    </Grid>
-                </Box>
-            </Drawer>
-        </>
-    );
+    // Return
+    return {state, functions};
 
 }

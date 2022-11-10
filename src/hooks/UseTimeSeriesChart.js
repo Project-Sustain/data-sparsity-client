@@ -32,96 +32,73 @@ END OF TERMS AND CONDITIONS
 */
 
 
-import { useEffect, useState } from "react";
-import { Box, Drawer, Divider, IconButton, Grid, Stack } from "@mui/material";
-import { makeStyles } from "@material-ui/core";
-import MenuIcon from '@mui/icons-material/Menu';
-import TabSystem from "./TabSystem";
-import CurrentTab from "./CurrentTab";
+import { useState, useEffect } from 'react';
+import { sum } from 'simple-statistics';
+import moment from 'moment';
 
 
-const useStyles = makeStyles({
-    root: {
-        zIndex: 5000,
-        opacity: 0.9,
-        overflow: 'auto'
-    },
-    openButton: {
-        position: 'fixed',
-        top: 5,
-        left: 5
-    },
-    drawer: {
-        width: 'auto'
-    }
-});
+export const UseTimeSeriesChart = (allSparsityData) => {
 
 
-export default function Dashboard({Request, Sparsity, Map}) {
+    // State
+    const [numTsBuckets, setNumTsBuckets] = useState(100);
+    const [tsData, setTsData] = useState([]);
+    const [siteDataMap, setSiteDataMap] = useState([]);
 
-    const classes = useStyles();
 
-    const [open, setOpen] = useState(true);
-    const [currentTab, setCurrentTab] = useState(0);
-    const [disableTab, setDisableTab] = useState(true);
-
+    // useEffects
+    useEffect(() => {
+        if(allSparsityData.length > 0) {
+            const timeLists = allSparsityData.map((siteData) => {
+                return siteData.epochTimes.map((time) => {return parseInt(time)});
+            });
+            const times = [].concat.apply([], timeLists);
+            const countDuplicates = {};
+            times.forEach(element => {
+                countDuplicates[element] = (countDuplicates[element] || 0) + 1;
+            })
+            const chartData = Object.entries(countDuplicates).map(([key, value]) => {
+                return {'value': value, 'time': parseInt(key)};
+            });
+            chartData.sort((a, b) => {return a.time - b.time});
+            setSiteDataMap(chartData);
+        }
+    }, [allSparsityData]);
 
     useEffect(() => {
-        setDisableTab(Request.state.requestStatus !== 'VALID');
-    }, [Request.state.requestStatus]);
+        if(siteDataMap.length > 0) {
+            const items_per_bucket = siteDataMap.length / numTsBuckets;
+            let bucketData = [];
+            for(let i = 0; i < numTsBuckets; i++) {
+                try {
+                    bucketData.push(convertBucket(siteDataMap.slice(i*items_per_bucket, (i+1)*items_per_bucket)));
+                } catch(err){
+                    // console.log("Error trying to convert buckets");
+                }
+            }
+            setTsData(bucketData);
+
+            function convertBucket(bucket) {
+                const startTime = moment.unix(bucket[0].time/1000).format('MM/YYYY');
+                const endTime = moment.unix(bucket[bucket.length-1].time/1000).format('MM/YYYY');
+                const values = bucket.map(entry => {return entry.value});
+                const totalValue = sum(values);
+                return {'name': `${startTime} - ${endTime}`, 'Number of Observations': totalValue};
+            }
+        }
+    }, [numTsBuckets, siteDataMap]);
 
 
-    const handleDrawerClose = () => {
-        setOpen(false);
+    // Return Vals
+    const state = {tsData, numTsBuckets};
+
+    const functions = {
+        setNumTsBuckets: (num) => setNumTsBuckets(num)
     }
 
 
-    return (
-        <>
-            <IconButton 
-                className={classes.openButton} 
-                onClick={() => setOpen(!open)}
-            >
-                <MenuIcon/>
-            </IconButton>
-            <Drawer
-                className={classes.root}
-                variant='persistent'
-                anchor='bottom'
-                open={open}
-                onClose={handleDrawerClose}
-            >
-                <Box
-                    className={classes.drawer}
-                    role='presentation'
-                >
-                    <Stack direction='column' alignItems='center' justifyContent='center'>
-                        <TabSystem
-                            currentTab={currentTab}
-                            setCurrentTab={setCurrentTab}
-                            handleDrawerClose={handleDrawerClose}
-                            disableTab={disableTab}
-                            scoreSet={Sparsity.state.scoreSet}
-                            requestStatus={Request.state.requestStatus}
-                        />
-                    </Stack>
-                    <Divider/>
-                    <Grid
-                        container 
-                        spacing={2}
-                        justifyContent='center'
-                        alignItems='center'
-                    >
-                        <CurrentTab
-                            currentTab={currentTab}
-                            Request={Request}
-                            Sparsity={Sparsity}
-                            Map={Map}
-                        />
-                    </Grid>
-                </Box>
-            </Drawer>
-        </>
-    );
+    // Return
+    return {state, functions};
 
 }
+

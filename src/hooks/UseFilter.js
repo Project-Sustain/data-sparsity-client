@@ -32,96 +32,54 @@ END OF TERMS AND CONDITIONS
 */
 
 
-import { useEffect, useState } from "react";
-import { Box, Drawer, Divider, IconButton, Grid, Stack } from "@mui/material";
-import { makeStyles } from "@material-ui/core";
-import MenuIcon from '@mui/icons-material/Menu';
-import TabSystem from "./TabSystem";
-import CurrentTab from "./CurrentTab";
+import { useState, useEffect } from 'react';
+import { interquartileRange, medianSorted } from 'simple-statistics';
 
 
-const useStyles = makeStyles({
-    root: {
-        zIndex: 5000,
-        opacity: 0.9,
-        overflow: 'auto'
-    },
-    openButton: {
-        position: 'fixed',
-        top: 5,
-        left: 5
-    },
-    drawer: {
-        width: 'auto'
-    }
-});
+export const UseFilter = (scoreSet) => {
 
 
-export default function Dashboard({Request, Sparsity, Map}) {
-
-    const classes = useStyles();
-
-    const [open, setOpen] = useState(true);
-    const [currentTab, setCurrentTab] = useState(0);
-    const [disableTab, setDisableTab] = useState(true);
+    // State
+    const [filterObject, setFilterObject] = useState({'min':0,'max':0,'step':1,'bottom':[],'iqr':[],'top':[]});
+    const [filterRange, setFilterRange] = useState([]);
 
 
+    // useEffects
     useEffect(() => {
-        setDisableTab(Request.state.requestStatus !== 'VALID');
-    }, [Request.state.requestStatus]);
+        if(scoreSet.length > 0) {
 
+            const min = scoreSet[0];
+            const max = scoreSet[scoreSet.length-1];
+            const step = (max - min) / 500;
 
-    const handleDrawerClose = () => {
-        setOpen(false);
+            const median = medianSorted(scoreSet);
+            const iqrVal = interquartileRange(scoreSet);
+            const q1 = median - (iqrVal/2);
+            const q3 = median + (iqrVal/2);
+
+            const percent = 0.1
+            const index = Math.floor(scoreSet.length * percent);
+
+            const bottom = [min, scoreSet[index]];
+            const iqr = [q1, q3];
+            const top = [scoreSet[scoreSet.length - index], max];
+
+            setFilterRange([min, max]);
+            setFilterObject({'min':min,'max':max,'step':step,'bottom':bottom,'iqr':iqr,'top':top});
+
+        }
+    }, [scoreSet]);
+
+    // Return Vals
+    const state = {filterRange, filterObject};
+
+    const functions = {
+        setFilterRange: (range) => setFilterRange(range)
     }
 
 
-    return (
-        <>
-            <IconButton 
-                className={classes.openButton} 
-                onClick={() => setOpen(!open)}
-            >
-                <MenuIcon/>
-            </IconButton>
-            <Drawer
-                className={classes.root}
-                variant='persistent'
-                anchor='bottom'
-                open={open}
-                onClose={handleDrawerClose}
-            >
-                <Box
-                    className={classes.drawer}
-                    role='presentation'
-                >
-                    <Stack direction='column' alignItems='center' justifyContent='center'>
-                        <TabSystem
-                            currentTab={currentTab}
-                            setCurrentTab={setCurrentTab}
-                            handleDrawerClose={handleDrawerClose}
-                            disableTab={disableTab}
-                            scoreSet={Sparsity.state.scoreSet}
-                            requestStatus={Request.state.requestStatus}
-                        />
-                    </Stack>
-                    <Divider/>
-                    <Grid
-                        container 
-                        spacing={2}
-                        justifyContent='center'
-                        alignItems='center'
-                    >
-                        <CurrentTab
-                            currentTab={currentTab}
-                            Request={Request}
-                            Sparsity={Sparsity}
-                            Map={Map}
-                        />
-                    </Grid>
-                </Box>
-            </Drawer>
-        </>
-    );
+    // Return
+    return {state, functions};
 
 }
+

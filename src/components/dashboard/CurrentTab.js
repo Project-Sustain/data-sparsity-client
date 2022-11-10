@@ -39,42 +39,56 @@ import PieChartTab from './tabs/PieChartTab';
 import TimeSeriesChart from './tabs/TimeSeriesChart';
 import SiteDataTab from './tabs/SiteDataTab';
 import Filter from "./tabs/Filter";
+import { UsePieBarChart } from '../../hooks/UsePieBarChart';
+import { UseTimeSeriesChart } from '../../hooks/UseTimeSeriesChart';
+import { UseFilter } from '../../hooks/UseFilter';
+import { UseSiteData } from '../../hooks/UseSiteData';
 
 
-export default function CurrentTab({currentTab, Request, Sparsity, Map, DashboardData}) {
+export default function CurrentTab({currentTab, Request, Sparsity, Map}) {
+
+    const PieBarData = UsePieBarChart(Sparsity.state, Request.state.requestStatus);
+    const TimeSeriesData = UseTimeSeriesChart(Sparsity.state.allSparsityData);
+    const DataFilter = UseFilter(Sparsity.state.scoreSet);
+    const SiteData = UseSiteData(Sparsity.state);
 
 
     switch (currentTab) {
         case 0:
-            return <RequestTab Request={Request} Sparsity={Sparsity} Map={Map} />;
+            return <RequestTab Request={Request} Sparsity={Sparsity} Map={Map} />
         case 1:
-            return <StatisticsTab stats={Sparsity.state.sparsityStats} />;
+            return <StatisticsTab stats={Sparsity.state.sparsityStats} />
         case 2:
-            return <PieChartTab colorGradient={Sparsity.state.colorGradient} DashboardData={DashboardData} />;
+            return <PieChartTab 
+                        scoreSet={Sparsity.state.scoreSet} 
+                        colorGradient={Sparsity.state.colorGradient} 
+                        PieBarData={PieBarData} />
         case 3:
-            return <CustomBarChart data={DashboardData.state.barData} />;
+            return <CustomBarChart data={PieBarData.state.barData} />
         case 4:
             return <TimeSeriesChart 
-                        data={DashboardData.state.tsData}
-                        setNumBuckets={DashboardData.functions.setNumTsBuckets}
-                        numBuckets={DashboardData.state.numTsBuckets}
-                    />;
+                        data={TimeSeriesData.state.tsData}
+                        setNumBuckets={TimeSeriesData.functions.setNumTsBuckets}
+                        numBuckets={TimeSeriesData.state.numTsBuckets}
+                    />
         case 5:
             return <SiteDataTab 
                         Request={Request}
                         Sparsity={Sparsity}
-                        Map={Map} DashboardData={DashboardData}
-                    />;
+                        Map={Map}
+                        SiteData={SiteData}
+                    />
         case 6:
             return <Filter 
                         resetFilter={Sparsity.functions.resetFilter} 
                         filterSparsityData={Sparsity.functions.filterSparsityData} 
-                        filterObject={DashboardData.state.filterObject} 
-                        filterRange={DashboardData.state.filterRange} 
-                        setFilterRange={DashboardData.functions.setFilterRange}
-                    />;
+                        filterObject={DataFilter.state.filterObject} 
+                        filterRange={DataFilter.state.filterRange} 
+                        setFilterRange={DataFilter.functions.setFilterRange}
+                    />
         default:
             return null;
+
     }
 
 
