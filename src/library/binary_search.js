@@ -5,7 +5,7 @@
  */
 
 export const binary_search = (arr, x, start, end) => {
-    if (start > end) return end; // Debug this, might be `return start`
+    if (start > end) return start;
     const mid = Math.floor((start + end)/2);
     if (arr[mid] === x) return mid;
     if(arr[mid] > x) {
@@ -14,4 +14,28 @@ export const binary_search = (arr, x, start, end) => {
     else {
         return binary_search(arr, x, start, mid-1);
     }
+}
+
+/**
+ * https://www.geeksforgeeks.org/search-insert-position-of-k-in-a-sorted-array/
+ */
+
+export const find_index = (arr, n, K) => {
+    let start = 0;
+    let end = n - 1;
+ 
+    while (start <= end) {
+        let mid = Math.floor((start + end) / 2);
+ 
+        if (arr[mid] === K)
+            return mid;
+ 
+        else if (arr[mid] < K)
+            start = mid + 1;
+ 
+        else
+            end = mid - 1;
+    }
+ 
+    return end + 1;
 }

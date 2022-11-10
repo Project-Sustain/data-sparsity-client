@@ -35,6 +35,7 @@ END OF TERMS AND CONDITIONS
 import { useState, useEffect } from 'react';
 import { colors } from '../library/colors';
 import { sum, interquartileRange, medianSorted } from 'simple-statistics';
+import { find_index } from '../library/binary_search';
 import moment from 'moment';
 
 
@@ -44,8 +45,6 @@ export const UseDashboardData = (SparsityState, RequestState) => {
     // State
     const [scoreSet, setScoreSet] = useState([]);
     const [scoreSiteMap, setScoreSiteMap] = useState([]);
-
-    console.log({scoreSiteMap})
 
     const [pieData, setPieData] = useState([]);
     const [pieIndex, setPieIndex] = useState(-1);
@@ -94,12 +93,9 @@ export const UseDashboardData = (SparsityState, RequestState) => {
     // Pie Chart
     useEffect(() => {
         const data = scoreSiteMap.map((entry, index) => {
-            console.log({entry})
             const numberWithThisScore = entry.numberOfSites;
             const percent = ((numberWithThisScore / SparsityState.scores.length) * 100).toFixed(2);
-            console.log({percent})
             const color = index === pieIndex ? colors.highlight : SparsityState.colorGradient[index];
-            console.log({color})
             return {
                 "score": entry.score,
                 "sites": numberWithThisScore,
@@ -111,35 +107,40 @@ export const UseDashboardData = (SparsityState, RequestState) => {
     }, [scoreSiteMap, pieIndex, SparsityState.scores, SparsityState.colorGradient]);
 
 
-    // Bar Chart
-    useEffect(() => {
-            let chartData = [];
-            if(SparsityState.scores.length > 0) {
-                try {
-                    const numBuckets = 7;
-                    const min = SparsityState.scores[SparsityState.scores.length-1];
-                    const max = SparsityState.scores[0];
-                    const range = max - min;
-                    const rangePerBucket = range / numBuckets;
+   // Bar Chart
+   useEffect(() => {
+    let chartData = [];
+    if(scoreSet.length > 0) {
+        try {
+            const numBuckets = 7;
+            const min = scoreSet[0];
+            const max = scoreSet[scoreSet.length-1];
+            const range = max - min;
+            const rangePerBucket = range / numBuckets;
 
-                    chartData = [...Array(numBuckets).keys()].map(index => {
-                        const bucketMin = (min+(rangePerBucket*index)).toFixed(2);
-                        const bucketMax = (min+(rangePerBucket*(index+1))).toFixed(2);
-                        return {
-                            name: `${bucketMin} - ${bucketMax}`, 
-                            numberOfSites: SparsityState.scores.filter(score => {
-                                const lessThanMax = index === (numBuckets-1) ? score <= bucketMax : score < bucketMax;
-                                return score >= bucketMin && lessThanMax;
-                            }).length};
-                    });
+            chartData = [...Array(numBuckets).keys()].map(index => {
+                const bucketMin = (min+(rangePerBucket*index)).toFixed(2);
+                const bucketMax = (min+(rangePerBucket*(index+1))).toFixed(2);
 
-                } catch (exception) {
-                    console.log({exception}); // FIXME Set a flag to display a message...
-                }
+                const lowIndex = find_index(scoreSet, scoreSet.length, bucketMin);
+                const highIndex = find_index(scoreSet, scoreSet.length, bucketMax);
+
+                let numSites = 0;
+                scoreSiteMap.slice(lowIndex, highIndex).forEach(entry => numSites += entry.numberOfSites);
+
+                return {
+                    name: `${bucketMin} - ${bucketMax}`, 
+                    numberOfSites: numSites
+                };
+            });
+
+            } catch (exception) {
+                console.log({exception}); // FIXME Set a flag to display a message...
+            }
 
             setBarData(chartData);
         }
-    }, [SparsityState.scores]);
+    }, [scoreSet, scoreSiteMap]);
 
 
     // Time Series
