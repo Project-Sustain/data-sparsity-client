@@ -39,7 +39,6 @@ import PieChartTab from './tabs/PieChartTab';
 import TimeSeriesChart from './tabs/TimeSeriesChart';
 import SiteDataTab from './tabs/SiteDataTab';
 import Filter from "./tabs/Filter";
-import { Dashboard } from '@mui/icons-material';
 
 
 export default function CurrentTab({currentTab, Request, Sparsity, Map, DashboardData}) {

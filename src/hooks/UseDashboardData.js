@@ -35,6 +35,7 @@ END OF TERMS AND CONDITIONS
 import { useState, useEffect } from 'react';
 import { colors } from '../library/colors';
 import { sum, interquartileRange, medianSorted } from 'simple-statistics';
+import { find_index } from '../library/binary_search';
 import moment from 'moment';
 
 
@@ -43,6 +44,7 @@ export const UseDashboardData = (SparsityState, RequestState) => {
 
     // State
     const [scoreSet, setScoreSet] = useState([]);
+    const [scoreSiteMap, setScoreSiteMap] = useState([]);
 
     const [pieData, setPieData] = useState([]);
     const [pieIndex, setPieIndex] = useState(-1);
@@ -79,52 +81,67 @@ export const UseDashboardData = (SparsityState, RequestState) => {
     }, [SparsityState.sparsityData]);
 
 
+    useEffect(() => {
+        const data = scoreSet.map(score => {
+            const numberWithThisScore = SparsityState.scores.filter(entry => {return entry === score}).length;
+            return {'score': score, 'numberOfSites': numberWithThisScore};
+        });
+        setScoreSiteMap(data);
+    }, [scoreSet]);
+
+
     // Pie Chart
     useEffect(() => {
-        const data = scoreSet.map((score, index) => {
-            const numberWithThisScore = SparsityState.scores.filter(entry => {return entry === score}).length;
+        const data = scoreSiteMap.map((entry, index) => {
+            const numberWithThisScore = entry.numberOfSites;
             const percent = ((numberWithThisScore / SparsityState.scores.length) * 100).toFixed(2);
             const color = index === pieIndex ? colors.highlight : SparsityState.colorGradient[index];
             return {
-                "score": score,
+                "score": entry.score,
                 "sites": numberWithThisScore,
                 "fill": color,
                 "percent": percent
             }
         });
         setPieData(data);
-    }, [scoreSet, pieIndex, SparsityState.scores, SparsityState.colorGradient]);
+    }, [scoreSiteMap, pieIndex, SparsityState.scores, SparsityState.colorGradient]);
 
 
-    // Bar Chart
-    useEffect(() => {
-            let chartData = [];
-            if(SparsityState.scores.length > 0) {
-                try {
-                    const numBuckets = 7;
-                    const min = SparsityState.scores[SparsityState.scores.length-1];
-                    const max = SparsityState.scores[0];
-                    const range = max - min;
-                    const rangePerBucket = range / numBuckets;
+   // Bar Chart
+   useEffect(() => {
+    let chartData = [];
+    if(scoreSet.length > 0) {
+        console.log({scoreSet})
+        try {
+            const numBuckets = 7;
+            const min = scoreSet[0];
+            const max = scoreSet[scoreSet.length-1];
+            const range = max - min;
+            const rangePerBucket = range / numBuckets;
 
-                    chartData = [...Array(numBuckets).keys()].map(index => {
-                        const bucketMin = (min+(rangePerBucket*index)).toFixed(2);
-                        const bucketMax = (min+(rangePerBucket*(index+1))).toFixed(2);
-                        return {
-                            name: `${bucketMin} - ${bucketMax}`, 
-                            numberOfSites: SparsityState.scores.filter(score => {
-                                const lessThanMax = index === 4 ? score <= bucketMax : score < bucketMax;
-                                return score >= bucketMin && lessThanMax;
-                            }).length};
-                    });
+            chartData = [...Array(numBuckets).keys()].map(index => {
+                const bucketMin = (min+(rangePerBucket*index));
+                const bucketMax = (min+(rangePerBucket*(index+1)));
 
-                } catch (exception) {
-                    console.log({exception}); // FIXME Set a flag to display a message...
-                }
+                const lowIndex = find_index(scoreSet, bucketMin);
+                const highIndex = find_index(scoreSet, bucketMax);
+
+                let numSites = 0;
+                scoreSiteMap.slice(lowIndex, highIndex).forEach(entry => numSites += entry.numberOfSites);
+
+                return {
+                    name: `${bucketMin.toFixed(2)} - ${bucketMax.toFixed(2)}`, 
+                    numberOfSites: numSites
+                };
+            });
+
+            } catch (exception) {
+                console.log({exception}); // FIXME Set a flag to display a message...
+            }
 
             setBarData(chartData);
         }
-    }, [SparsityState.scores]);
+    }, [scoreSet, scoreSiteMap]);
 
 
     // Time Series
