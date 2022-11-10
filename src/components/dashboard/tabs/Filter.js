@@ -44,18 +44,18 @@ const useStyles = makeStyles({
 });
 
 
-export default function Filter({resetFilter, filterSparsityData, filterObject, filterRange, setFilterRange}) {
+export default function Filter({resetFilter, filterSparsityData, DataFilter}) {
 
     const classes = useStyles();
 
 
     const handleChange = (event, newValue) => {
-        setFilterRange(newValue);
+        DataFilter.functions.setFilterRange(newValue);
         filterSparsityData(newValue[0], newValue[1])
     };
 
     const handleReset = () => {
-        setFilterRange([filterObject.min, filterObject.max]);
+        DataFilter.functions.setFilterRange([DataFilter.state.min, DataFilter.state.max]);
         resetFilter();
     };
 
@@ -64,20 +64,20 @@ export default function Filter({resetFilter, filterSparsityData, filterObject, f
         <Grid item xs={10}>
             <DashboardComponent>
                 <FormControl className={classes.root}>
-                    <FormLabel id='slider' align='center'>Filtering Scores: {filterRange[0].toFixed(3)} - {filterRange[1].toFixed(3)}</FormLabel>
+                    <FormLabel id='slider' align='center'>Filtering Scores: {DataFilter.state.filterRange[0].toFixed(3)} - {DataFilter.state.filterRange[1].toFixed(3)}</FormLabel>
                     <Slider
                         aria-labelledby='slider'
-                        value={filterRange}
-                        min={filterObject.min}
-                        max={filterObject.max}
+                        value={DataFilter.state.filterRange}
+                        min={DataFilter.state.min}
+                        max={DataFilter.state.max}
                         onChange={handleChange}
-                        step={filterObject.step}
+                        step={DataFilter.state.step}
                     />
                 </FormControl>
                 <ButtonGroup>
-                    <Button variant='outlined' onClick={() => handleChange(null, filterObject.bottom)}>Bottom 10%</Button>
-                    <Button variant='outlined' onClick={() => handleChange(null, filterObject.iqr)}>IQR</Button>
-                    <Button variant='outlined' onClick={() => handleChange(null, filterObject.top)}>Top 10%</Button>
+                    <Button variant='outlined' onClick={() => handleChange(null, DataFilter.state.bottom)}>Bottom 10%</Button>
+                    <Button variant='outlined' onClick={() => handleChange(null, DataFilter.state.iqr)}>IQR</Button>
+                    <Button variant='outlined' onClick={() => handleChange(null, DataFilter.state.top)}>Top 10%</Button>
                     <Button variant='outlined' color='tertiary' onClick={handleReset}>Reset Filter</Button>
                 </ButtonGroup>
             </DashboardComponent>

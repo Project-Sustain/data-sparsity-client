@@ -40,7 +40,12 @@ export const UseFilter = (scoreSet) => {
 
 
     // State
-    const [filterObject, setFilterObject] = useState({'min':0,'max':0,'step':1,'bottom':[],'iqr':[],'top':[]});
+    const [min, setMin] = useState(0);
+    const [max, setMax] = useState(0);
+    const [step, setStep] = useState(1);
+    const [bottom, setBottom] = useState([]);
+    const [iqr, setIqr] = useState([]);
+    const [top, setTop] = useState([]);
     const [filterRange, setFilterRange] = useState([]);
 
 
@@ -65,13 +70,17 @@ export const UseFilter = (scoreSet) => {
             const top = [scoreSet[scoreSet.length - index], max];
 
             setFilterRange([min, max]);
-            setFilterObject({'min':min,'max':max,'step':step,'bottom':bottom,'iqr':iqr,'top':top});
-
+            setMin(min);
+            setMax(max);
+            setStep(step);
+            setBottom(bottom);
+            setIqr(iqr);
+            setTop(top);
         }
     }, [scoreSet]);
 
     // Return Vals
-    const state = {filterRange, filterObject};
+    const state = {filterRange, min, max, step, bottom, iqr, top};
 
     const functions = {
         setFilterRange: (range) => setFilterRange(range)
