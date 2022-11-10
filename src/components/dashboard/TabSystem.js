@@ -45,19 +45,19 @@ const useStyles = makeStyles({
 });
 
 
-export default function TabSystem({currentTab, setCurrentTab, handleDrawerClose, disableTab, DashboardData, requestStatus}) {
+export default function TabSystem({currentTab, setCurrentTab, handleDrawerClose, disableTab, scoreSet, requestStatus}) {
 
     const classes = useStyles();
     const [pieChartInvalid, setPieChartInvalid] = useState(false);
 
     useEffect(() => {
         if(requestStatus === 'VALID') {
-            setPieChartInvalid(DashboardData.state.pieData.length < 1 || DashboardData.state.pieData.length > 100)
+            setPieChartInvalid(scoreSet.length < 1 || scoreSet.length > 100)
         }
         else {
             setPieChartInvalid(false);
         }
-    }, [requestStatus, DashboardData.state.pieData]);
+    }, [requestStatus, scoreSet]);
 
     const getPieTabTitle = () => {
         const status = pieChartInvalid ? ' Unavailable' : '';

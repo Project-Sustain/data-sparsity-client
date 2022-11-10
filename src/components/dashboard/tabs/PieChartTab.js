@@ -37,22 +37,22 @@ import PieTable from '../pieChart/PieTable';
 import CustomPieChart from '../pieChart/CustomPieChart';
 
 
-export default memo(function PieChartTab({DashboardData, colorGradient}) {
+export default memo(function PieChartTab({scoreSet, PieBarData, colorGradient}) {
 
 
     return (
         <>
             <PieTable
-                setSelectedIndex={DashboardData.functions.setPieIndex}
-                selectedIndex={DashboardData.state.pieIndex}
-                pieData={DashboardData.state.pieData}
+                setSelectedIndex={PieBarData.functions.setPieIndex}
+                selectedIndex={PieBarData.state.pieIndex}
+                pieData={PieBarData.state.pieData}
                 colorScale={colorGradient}
-                scoreSet={DashboardData.state.scoreSet}
+                scoreSet={scoreSet}
             />
 
             <CustomPieChart
-                pieData={DashboardData.state.pieData}
-                setSelectedIndex={DashboardData.functions.setPieIndex}
+                pieData={PieBarData.state.pieData}
+                setSelectedIndex={PieBarData.functions.setPieIndex}
             />
         </>
     );

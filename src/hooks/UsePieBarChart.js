@@ -34,100 +34,94 @@ END OF TERMS AND CONDITIONS
 
 import { useState, useEffect } from 'react';
 import { colors } from '../library/colors';
-import { interquartileRange, medianSorted } from 'simple-statistics';
+import { find_index } from '../library/binary_search';
 
 
-export const UseDashboardData = (SparsityState) => {
+export const UseCharts = (SparsityState, RequestState, DashboardDataState) => {
 
 
     // State
-    const [scoreSet, setScoreSet] = useState([]);
+    const [scoreSiteMap, setScoreSiteMap] = useState([]);
 
-    const [sitePieData, setSitePieData] = useState([]);
-    const [selectedSite, setSelectedSite] = useState({});
-    const [selectedSiteIndex, setSelectedSiteIndex] = useState(0);
+    const [pieData, setPieData] = useState([]);
+    const [pieIndex, setPieIndex] = useState(-1);
 
-    const [filterObject, setFilterObject] = useState({'min':0,'max':0,'step':1,'bottom':[],'iqr':[],'top':[]});
-    const [filterRange, setFilterRange] = useState([]);
+    const [barData, setBarData] = useState([]);
 
-
-    // useEffects
-    useEffect(() => {
-        const tempScoreSet = [...new Set(SparsityState.scores)].sort((a, b) => a - b);
-        setScoreSet(tempScoreSet);
-    }, [SparsityState.scores]);
 
     useEffect(() => {
-        if(SparsityState.sparsityData.length > 0) {
-            setSelectedSite(SparsityState.sparsityData[0]);
-        }
-        else setSelectedSite({});
-    }, [SparsityState.sparsityData]);
+        setPieIndex(-1);
+    }, [RequestState.requestStatus]);
 
-
-    // Selected Site
     useEffect(() => {
-        if(Object.keys(selectedSite) > 0){
-
-            const myScore = selectedSite.sparsityScore;
-            const numberOfSameScores = SparsityState.scores.filter(score => {return score === myScore}).length;
-            const numberOfDifferentScores = SparsityState.scores.length - numberOfSameScores;
-            setSitePieData([
-                {
-                    "name": `Sites with sparsity score = ${selectedSite.sparsityScore}`,
-                    "value": numberOfSameScores,
-                    "fill": colors.tertiary
-                },
-                {
-                    "name": "Sites with other sparisty scores",
-                    "value": numberOfDifferentScores,
-                    "fill": colors.primary
-                }
-            ]);
-
-        }
-    }, [selectedSite, SparsityState.scores]);
-
-
-    // Filter
-    useEffect(() => {
-        if(scoreSet.length > 0) {
-
-            const min = scoreSet[0];
-            const max = scoreSet[scoreSet.length-1];
-            const step = (max - min) / 500;
-
-            const median = medianSorted(scoreSet);
-            const iqrVal = interquartileRange(scoreSet);
-            const q1 = median - (iqrVal/2);
-            const q3 = median + (iqrVal/2);
-
-            const percent = 0.1
-            const index = Math.floor(scoreSet.length * percent);
-
-            const bottom = [min, scoreSet[index]];
-            const iqr = [q1, q3];
-            const top = [scoreSet[scoreSet.length - index], max];
-
-            setFilterRange([min, max]);
-            setFilterObject({'min':min,'max':max,'step':step,'bottom':bottom,'iqr':iqr,'top':top});
-
-        }
+        const data = scoreSet.map(score => {
+            const numberWithThisScore = SparsityState.scores.filter(entry => {return entry === score}).length;
+            return {'score': score, 'numberOfSites': numberWithThisScore};
+        });
+        setScoreSiteMap(data);
     }, [scoreSet]);
 
 
-    // Functions
-    const updateSelectedSite = (index) => {
-        setSelectedSiteIndex(index);
-        setSelectedSite(SparsityState.sparsityData[index]);
-    }
+
+    // Pie Chart
+    useEffect(() => {
+        const data = scoreSiteMap.map((entry, index) => {
+            const numberWithThisScore = entry.numberOfSites;
+            const percent = ((numberWithThisScore / SparsityState.scores.length) * 100).toFixed(2);
+            const color = index === pieIndex ? colors.highlight : SparsityState.colorGradient[index];
+            return {
+                "score": entry.score,
+                "sites": numberWithThisScore,
+                "fill": color,
+                "percent": percent
+            }
+        });
+        setPieData(data);
+    }, [scoreSiteMap, pieIndex, SparsityState.scores, SparsityState.colorGradient]);
+
+
+   // Bar Chart
+   useEffect(() => {
+    let chartData = [];
+    if(DashboardDataState.scoreSet.length > 0) {
+        try {
+            const numBuckets = 7;
+            const min = DashboardDataState.scoreSet[0];
+            const max = DashboardDataState.scoreSet[DashboardDataState.scoreSet.length-1];
+            const range = max - min;
+            const rangePerBucket = range / numBuckets;
+
+            chartData = [...Array(numBuckets).keys()].map(index => {
+                const bucketMin = (min+(rangePerBucket*index));
+                const bucketMax = (min+(rangePerBucket*(index+1)));
+
+                const lowIndex = find_index(scoreSet, bucketMin);
+                const highIndex = find_index(scoreSet, bucketMax);
+
+                let numSites = 0;
+                scoreSiteMap.slice(lowIndex, highIndex).forEach(entry => numSites += entry.numberOfSites);
+
+                return {
+                    name: `${bucketMin.toFixed(2)} - ${bucketMax.toFixed(2)}`, 
+                    numberOfSites: numSites
+                };
+            });
+
+            } catch (exception) {
+                console.log({exception}); // FIXME Set a flag to display a message...
+            }
+
+            setBarData(chartData);
+        }
+    }, [DashboardDataState.scoreSet, scoreSiteMap]);
+
+
 
     // Return Vals
-    const state = {scoreSet, sitePieData, selectedSite, selectedSiteIndex, filterRange, filterObject};
+    const state = { pieData, pieIndex, barData };
 
     const functions = {
-        updateSelectedSite: (index) => updateSelectedSite(index),
-        setFilterRange: (range) => setFilterRange(range)
+        setPieIndex: (index) => setPieIndex(index),
     }
 
 
@@ -135,4 +129,3 @@ export const UseDashboardData = (SparsityState) => {
     return {state, functions};
 
 }
-
