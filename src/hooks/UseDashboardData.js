@@ -43,6 +43,9 @@ export const UseDashboardData = (SparsityState, RequestState) => {
 
     // State
     const [scoreSet, setScoreSet] = useState([]);
+    const [scoreSiteMap, setScoreSiteMap] = useState([]);
+
+    console.log({scoreSiteMap})
 
     const [pieData, setPieData] = useState([]);
     const [pieIndex, setPieIndex] = useState(-1);
@@ -79,21 +82,33 @@ export const UseDashboardData = (SparsityState, RequestState) => {
     }, [SparsityState.sparsityData]);
 
 
+    useEffect(() => {
+        const data = scoreSet.map(score => {
+            const numberWithThisScore = SparsityState.scores.filter(entry => {return entry === score}).length;
+            return {'score': score, 'numberOfSites': numberWithThisScore};
+        });
+        setScoreSiteMap(data);
+    }, [scoreSet]);
+
+
     // Pie Chart
     useEffect(() => {
-        const data = scoreSet.map((score, index) => {
-            const numberWithThisScore = SparsityState.scores.filter(entry => {return entry === score}).length;
+        const data = scoreSiteMap.map((entry, index) => {
+            console.log({entry})
+            const numberWithThisScore = entry.numberOfSites;
             const percent = ((numberWithThisScore / SparsityState.scores.length) * 100).toFixed(2);
+            console.log({percent})
             const color = index === pieIndex ? colors.highlight : SparsityState.colorGradient[index];
+            console.log({color})
             return {
-                "score": score,
+                "score": entry.score,
                 "sites": numberWithThisScore,
                 "fill": color,
                 "percent": percent
             }
         });
         setPieData(data);
-    }, [scoreSet, pieIndex, SparsityState.scores, SparsityState.colorGradient]);
+    }, [scoreSiteMap, pieIndex, SparsityState.scores, SparsityState.colorGradient]);
 
 
     // Bar Chart
@@ -113,7 +128,7 @@ export const UseDashboardData = (SparsityState, RequestState) => {
                         return {
                             name: `${bucketMin} - ${bucketMax}`, 
                             numberOfSites: SparsityState.scores.filter(score => {
-                                const lessThanMax = index === 4 ? score <= bucketMax : score < bucketMax;
+                                const lessThanMax = index === (numBuckets-1) ? score <= bucketMax : score < bucketMax;
                                 return score >= bucketMin && lessThanMax;
                             }).length};
                     });
