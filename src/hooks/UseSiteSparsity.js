@@ -45,6 +45,7 @@ export const UseSiteSparsity = () => {
     const [sparsityData, setSparsityData] = useState([]);
     const [sparsityStats, setSparsityStats] = useState({});
     const [scores, setScores] = useState([]);
+    const [scoreSet, setScoreSet] = useState([]);
     const [colorGradient, setColorGradient] = useState([]);
     const [selectedScore, setSelectedScore] = useState(-1);
     const [lastHighlightedSite, setLastHighlightedSite] = useState({});
@@ -61,6 +62,11 @@ export const UseSiteSparsity = () => {
         tempScores.sort(function(a, b) {return b - a});
         setScores(tempScores)
     }, [numberOfResponses]);
+
+    useEffect(() => {
+        const tempScoreSet = [...new Set(scores)].sort((a, b) => a - b);
+        setScoreSet(tempScoreSet);
+    }, [scores]);
 
     useEffect(() => {
         const numberOfUniqueScores = new Set(scores).size;
@@ -116,7 +122,7 @@ export const UseSiteSparsity = () => {
 
 
     // Return Vals
-    const state = { allSparsityData, sparsityData, sparsityStats, scores, colorGradient, selectedScore, lastHighlightedSite };
+    const state = { allSparsityData, sparsityData, sparsityStats, scores, scoreSet, colorGradient, selectedScore, lastHighlightedSite };
 
     const functions = {
         setAllSparsityData: (data) => setAllSparsityData(data),

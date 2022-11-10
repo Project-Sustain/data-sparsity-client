@@ -42,13 +42,15 @@ import Filter from "./tabs/Filter";
 import { UsePieBarChart } from '../../hooks/UsePieBarChart';
 import { UseTimeSeriesChart } from '../../hooks/UseTimeSeriesChart';
 import { UseFilter } from '../../hooks/UseFilter';
+import { UseSiteData } from '../../hooks/UseSiteData';
 
 
-export default function CurrentTab({currentTab, Request, Sparsity, Map, DashboardData}) {
+export default function CurrentTab({currentTab, Request, Sparsity, Map}) {
 
-    const PieBarData = UsePieBarChart(Sparsity.state, Request.state.requestStatus, DashboardData.state.scoreSet);
+    const PieBarData = UsePieBarChart(Sparsity.state, Request.state.requestStatus);
     const TimeSeriesData = UseTimeSeriesChart(Sparsity.state.allSparsityData);
-    const DataFilter = UseFilter(DashboardData.state.scoreSet);
+    const DataFilter = UseFilter(Sparsity.state.scoreSet);
+    const SiteData = UseSiteData(Sparsity.state);
 
 
     switch (currentTab) {
@@ -58,7 +60,7 @@ export default function CurrentTab({currentTab, Request, Sparsity, Map, Dashboar
             return <StatisticsTab stats={Sparsity.state.sparsityStats} />
         case 2:
             return <PieChartTab 
-                        scoreSet={DashboardData.state.scoreSet} 
+                        scoreSet={Sparsity.state.scoreSet} 
                         colorGradient={Sparsity.state.colorGradient} 
                         PieBarData={PieBarData} />
         case 3:
@@ -74,7 +76,7 @@ export default function CurrentTab({currentTab, Request, Sparsity, Map, Dashboar
                         Request={Request}
                         Sparsity={Sparsity}
                         Map={Map}
-                        DashboardData={DashboardData}
+                        SiteData={SiteData}
                     />
         case 6:
             return <Filter 

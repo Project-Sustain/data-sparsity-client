@@ -34,7 +34,6 @@ END OF TERMS AND CONDITIONS
 
 import { useEffect, useState } from "react";
 import { Box, Drawer, Divider, IconButton, Grid, Stack } from "@mui/material";
-import { UseDashboardData } from "../../hooks/UseDashboardData";
 import { makeStyles } from "@material-ui/core";
 import MenuIcon from '@mui/icons-material/Menu';
 import TabSystem from "./TabSystem";
@@ -61,8 +60,6 @@ const useStyles = makeStyles({
 export default function Dashboard({Request, Sparsity, Map}) {
 
     const classes = useStyles();
-    const DashboardData = UseDashboardData(Sparsity.state);
-
 
     const [open, setOpen] = useState(true);
     const [currentTab, setCurrentTab] = useState(0);
@@ -104,7 +101,7 @@ export default function Dashboard({Request, Sparsity, Map}) {
                             setCurrentTab={setCurrentTab}
                             handleDrawerClose={handleDrawerClose}
                             disableTab={disableTab}
-                            scoreSet={DashboardData.state.scoreSet}
+                            scoreSet={Sparsity.state.scoreSet}
                             requestStatus={Request.state.requestStatus}
                         />
                     </Stack>
@@ -120,7 +117,6 @@ export default function Dashboard({Request, Sparsity, Map}) {
                             Request={Request}
                             Sparsity={Sparsity}
                             Map={Map}
-                            DashboardData={DashboardData}
                         />
                     </Grid>
                 </Box>

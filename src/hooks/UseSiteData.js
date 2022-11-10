@@ -34,29 +34,18 @@ END OF TERMS AND CONDITIONS
 
 import { useState, useEffect } from 'react';
 import { colors } from '../library/colors';
-import { interquartileRange, medianSorted } from 'simple-statistics';
 
 
-export const UseDashboardData = (SparsityState) => {
+export const UseSiteData = (SparsityState) => {
 
 
     // State
-    const [scoreSet, setScoreSet] = useState([]);
-
     const [sitePieData, setSitePieData] = useState([]);
     const [selectedSite, setSelectedSite] = useState({});
     const [selectedSiteIndex, setSelectedSiteIndex] = useState(0);
 
-    const [filterObject, setFilterObject] = useState({'min':0,'max':0,'step':1,'bottom':[],'iqr':[],'top':[]});
-    const [filterRange, setFilterRange] = useState([]);
-
 
     // useEffects
-    useEffect(() => {
-        const tempScoreSet = [...new Set(SparsityState.scores)].sort((a, b) => a - b);
-        setScoreSet(tempScoreSet);
-    }, [SparsityState.scores]);
-
     useEffect(() => {
         if(SparsityState.sparsityData.length > 0) {
             setSelectedSite(SparsityState.sparsityData[0]);
@@ -65,7 +54,6 @@ export const UseDashboardData = (SparsityState) => {
     }, [SparsityState.sparsityData]);
 
 
-    // Selected Site
     useEffect(() => {
         if(Object.keys(selectedSite) > 0){
 
@@ -89,33 +77,6 @@ export const UseDashboardData = (SparsityState) => {
     }, [selectedSite, SparsityState.scores]);
 
 
-    // Filter
-    useEffect(() => {
-        if(scoreSet.length > 0) {
-
-            const min = scoreSet[0];
-            const max = scoreSet[scoreSet.length-1];
-            const step = (max - min) / 500;
-
-            const median = medianSorted(scoreSet);
-            const iqrVal = interquartileRange(scoreSet);
-            const q1 = median - (iqrVal/2);
-            const q3 = median + (iqrVal/2);
-
-            const percent = 0.1
-            const index = Math.floor(scoreSet.length * percent);
-
-            const bottom = [min, scoreSet[index]];
-            const iqr = [q1, q3];
-            const top = [scoreSet[scoreSet.length - index], max];
-
-            setFilterRange([min, max]);
-            setFilterObject({'min':min,'max':max,'step':step,'bottom':bottom,'iqr':iqr,'top':top});
-
-        }
-    }, [scoreSet]);
-
-
     // Functions
     const updateSelectedSite = (index) => {
         setSelectedSiteIndex(index);
@@ -123,11 +84,10 @@ export const UseDashboardData = (SparsityState) => {
     }
 
     // Return Vals
-    const state = {scoreSet, sitePieData, selectedSite, selectedSiteIndex, filterRange, filterObject};
+    const state = {sitePieData, selectedSite, selectedSiteIndex};
 
     const functions = {
         updateSelectedSite: (index) => updateSelectedSite(index),
-        setFilterRange: (range) => setFilterRange(range)
     }
 
 
