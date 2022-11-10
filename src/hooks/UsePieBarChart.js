@@ -37,7 +37,7 @@ import { colors } from '../library/colors';
 import { find_index } from '../library/binary_search';
 
 
-export const UseCharts = (SparsityState, RequestState, DashboardDataState) => {
+export const UsePieBarChart = (SparsityState, RequestState, scoreSet) => {
 
 
     // State
@@ -83,11 +83,11 @@ export const UseCharts = (SparsityState, RequestState, DashboardDataState) => {
    // Bar Chart
    useEffect(() => {
     let chartData = [];
-    if(DashboardDataState.scoreSet.length > 0) {
+    if(scoreSet.length > 0) {
         try {
             const numBuckets = 7;
-            const min = DashboardDataState.scoreSet[0];
-            const max = DashboardDataState.scoreSet[DashboardDataState.scoreSet.length-1];
+            const min = scoreSet[0];
+            const max = scoreSet[scoreSet.length-1];
             const range = max - min;
             const rangePerBucket = range / numBuckets;
 
@@ -113,7 +113,7 @@ export const UseCharts = (SparsityState, RequestState, DashboardDataState) => {
 
             setBarData(chartData);
         }
-    }, [DashboardDataState.scoreSet, scoreSiteMap]);
+    }, [scoreSet, scoreSiteMap]);
 
 
 

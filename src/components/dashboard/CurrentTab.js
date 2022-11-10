@@ -39,12 +39,13 @@ import PieChartTab from './tabs/PieChartTab';
 import TimeSeriesChart from './tabs/TimeSeriesChart';
 import SiteDataTab from './tabs/SiteDataTab';
 import Filter from "./tabs/Filter";
+import { UsePieBarChart } from '../../hooks/UsePieBarChart';
 import { UseTimeSeriesChart } from '../../hooks/UseTimeSeriesChart';
 
 
 export default function CurrentTab({currentTab, Request, Sparsity, Map, DashboardData}) {
 
-    const PieBarData = UsePieBarChart(Sparsity.state, Request.state, DashboardData.state);
+    const PieBarData = UsePieBarChart(Sparsity.state, Request.state, DashboardData.state.scoreSet);
     const TimeSeriesData = UseTimeSeriesChart(Sparsity.state);
 
 
