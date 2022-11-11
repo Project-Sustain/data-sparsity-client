@@ -61,6 +61,8 @@ export default function SiteDataTab({Request, Sparsity, Map, SiteData}) {
             <SitePieChart
                 site={SiteData.state.selectedSite}  
                 scores={Sparsity.state.scores}
+                scoreSiteMap={Sparsity.state.scoreSiteMap}
+                scoreSet={Sparsity.state.scoreSet}
             />
         </>
     );
