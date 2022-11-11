@@ -37,7 +37,7 @@ import { colors } from '../library/colors';
 import { find_index } from '../library/binary_search';
 
 
-export const UsePieBarChart = (SparsityState, requestStatus, scoreSiteMap) => {
+export const UsePieBarChart = (SparsityState, requestStatus, scoreSiteMap, scoreHashMap) => {
 
 
     // State
@@ -54,19 +54,35 @@ export const UsePieBarChart = (SparsityState, requestStatus, scoreSiteMap) => {
 
     // Pie Chart
     useEffect(() => {
+        console.log({scoreHashMap})
+
+        let pData = [];
+        const numScores = SparsityState.scores.length;
+        let index = 0;
+        for(let entry in scoreHashMap) {
+            console.log({entry})
+            // const percent = ((entry.numberOfSites / numScores) * 100).toFixed(2);
+            // const color = index === pieIndex ? colors.highlight : SparsityState.colorGradient[index];
+            // index++;
+            // pData.push({
+            //     "score": entry.score,
+            //     "sites": entry.numberOfSites,
+            //     "fill": color,
+            //     "percent": percent
+            // })
+        }
         const data = scoreSiteMap.map((entry, index) => {
-            const numberWithThisScore = entry.numberOfSites;
-            const percent = ((numberWithThisScore / SparsityState.scores.length) * 100).toFixed(2);
+            const percent = ((entry.score / SparsityState.scores.length) * 100).toFixed(2);
             const color = index === pieIndex ? colors.highlight : SparsityState.colorGradient[index];
             return {
                 "score": entry.score,
-                "sites": numberWithThisScore,
+                "sites": entry.numberOfSites,
                 "fill": color,
                 "percent": percent
             }
         });
         setPieData(data);
-    }, [scoreSiteMap, pieIndex, SparsityState.scores, SparsityState.colorGradient]);
+    }, [scoreSiteMap, scoreHashMap, pieIndex, SparsityState.scores, SparsityState.colorGradient]);
 
 
    // Bar Chart

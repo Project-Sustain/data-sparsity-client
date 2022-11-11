@@ -47,7 +47,7 @@ import { UseSiteData } from '../../hooks/UseSiteData';
 
 export default function CurrentTab({currentTab, Request, Sparsity, Map}) {
 
-    const PieBarData = UsePieBarChart(Sparsity.state, Request.state.requestStatus, Sparsity.state.scoreSiteMap);
+    const PieBarData = UsePieBarChart(Sparsity.state, Request.state.requestStatus, Sparsity.state.scoreSiteMap, Sparsity.state.scoreHashMap);
     const TimeSeriesData = UseTimeSeriesChart(Sparsity.state.allSparsityData);
     const DataFilter = UseFilter(Sparsity.state.scoreSet);
     const SiteData = UseSiteData(Sparsity.state);
