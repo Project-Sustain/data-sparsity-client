@@ -40,23 +40,14 @@ import { find_index } from '../../../library/binary_search';
 import DashboardComponent from '../../utilityComponents/DashboardComponent';
 
 
-export default memo(function SitePieChart({site, scores, scoreSiteMap, scoreSet, scoreHashMap}) {
+export default memo(function SitePieChart({site, scores, scoreSiteMap, scoreSet}) {
     
     const [pieData, setPieData] = useState([]);
 
 
     useEffect(() => {
         if(site){
-
-
-            // const startTime = performance.now();
-            // const numberOfSameScores = scoreHashMap.get(site.sparsityScore);
-            // const endTime = performance.now();
-            // console.log(`Time: ${endTime - startTime}`);
-            // const numberOfDifferentScores = scores.length - numberOfSameScores;
-
-            const myScore = site.sparsityScore;
-            const index = find_index(scoreSet, myScore);
+            const index = find_index(scoreSet, site.sparsityScore);
             const numberOfSameScores = scoreSiteMap[index].numberOfSites;
             const numberOfDifferentScores = scores.length - numberOfSameScores;
             setPieData([

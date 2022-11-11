@@ -63,7 +63,6 @@ export default function SiteDataTab({Request, Sparsity, Map, SiteData}) {
                 scores={Sparsity.state.scores}
                 scoreSiteMap={Sparsity.state.scoreSiteMap}
                 scoreSet={Sparsity.state.scoreSet}
-                scoreHashMap={Sparsity.state.scoreHashMap}
             />
         </>
     );

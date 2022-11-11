@@ -47,7 +47,6 @@ export const UseSiteSparsity = () => {
     const [scores, setScores] = useState([]);
     const [scoreSet, setScoreSet] = useState([]);
     const [scoreSiteMap, setScoreSiteMap] = useState([]);
-    const [scoreHashMap, setScoreHashMap] = useState(new Map());
     const [colorGradient, setColorGradient] = useState([]);
     const [selectedScore, setSelectedScore] = useState(-1);
     const [lastHighlightedSite, setLastHighlightedSite] = useState({});
@@ -73,15 +72,6 @@ export const UseSiteSparsity = () => {
     }, [scores]);
 
     useEffect(() => {
-
-        // This is what we want to replce scoreSiteMap with.
-        let tempMap = new Map();
-        scoreSet.forEach(score => {
-            const numberWithThisScore = scores.filter(entry => {return entry === score}).length;
-            tempMap.set(score, numberWithThisScore);
-        });
-        setScoreHashMap(tempMap);
-
         const data = scoreSet.map(score => {
             const numberWithThisScore = scores.filter(entry => {return entry === score}).length;
             return {'score': score, 'numberOfSites': numberWithThisScore};
@@ -137,7 +127,7 @@ export const UseSiteSparsity = () => {
 
 
     // Return Vals
-    const state = { allSparsityData, sparsityData, sparsityStats, scores, scoreSet, scoreHashMap, scoreSiteMap, colorGradient, selectedScore, lastHighlightedSite };
+    const state = { allSparsityData, sparsityData, sparsityStats, scores, scoreSet, scoreSiteMap, colorGradient, selectedScore, lastHighlightedSite };
 
     const functions = {
         setAllSparsityData: (data) => setAllSparsityData(data),
