@@ -37,30 +37,19 @@ import { colors } from '../library/colors';
 import { find_index } from '../library/binary_search';
 
 
-export const UsePieBarChart = (SparsityState, requestStatus) => {
+export const UsePieBarChart = (SparsityState, requestStatus, scoreSiteMap) => {
 
 
     // State
-    const [scoreSiteMap, setScoreSiteMap] = useState([]);
-
     const [pieData, setPieData] = useState([]);
     const [pieIndex, setPieIndex] = useState(-1);
-
     const [barData, setBarData] = useState([]);
 
 
+    // useEffects
     useEffect(() => {
         setPieIndex(-1);
     }, [requestStatus]);
-
-    useEffect(() => {
-        const data = SparsityState.scoreSet.map(score => {
-            const numberWithThisScore = SparsityState.scores.filter(entry => {return entry === score}).length;
-            return {'score': score, 'numberOfSites': numberWithThisScore};
-        });
-        setScoreSiteMap(data);
-    }, [SparsityState.scoreSet]);
-
 
 
     // Pie Chart

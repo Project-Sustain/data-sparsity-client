@@ -46,6 +46,7 @@ export const UseSiteSparsity = () => {
     const [sparsityStats, setSparsityStats] = useState({});
     const [scores, setScores] = useState([]);
     const [scoreSet, setScoreSet] = useState([]);
+    const [scoreSiteMap, setScoreSiteMap] = useState([]);
     const [colorGradient, setColorGradient] = useState([]);
     const [selectedScore, setSelectedScore] = useState(-1);
     const [lastHighlightedSite, setLastHighlightedSite] = useState({});
@@ -65,14 +66,18 @@ export const UseSiteSparsity = () => {
 
     useEffect(() => {
         const tempScoreSet = [...new Set(scores)].sort((a, b) => a - b);
+        const tempGradient = chroma.scale([colors.tertiary, colors.primary]).colors(tempScoreSet.length);
         setScoreSet(tempScoreSet);
+        setColorGradient(tempGradient);
     }, [scores]);
 
     useEffect(() => {
-        const numberOfUniqueScores = new Set(scores).size;
-        const tempGradient = chroma.scale([colors.tertiary, colors.primary]).colors(numberOfUniqueScores);
-        setColorGradient(tempGradient);
-    }, [scores]);
+        const data = scoreSet.map(score => {
+            const numberWithThisScore = scores.filter(entry => {return entry === score}).length;
+            return {'score': score, 'numberOfSites': numberWithThisScore};
+        });
+        setScoreSiteMap(data);
+    }, [scoreSet]);
 
     /**
      * allSparsityData is set when a new request returns
@@ -122,7 +127,7 @@ export const UseSiteSparsity = () => {
 
 
     // Return Vals
-    const state = { allSparsityData, sparsityData, sparsityStats, scores, scoreSet, colorGradient, selectedScore, lastHighlightedSite };
+    const state = { allSparsityData, sparsityData, sparsityStats, scores, scoreSet, scoreSiteMap, colorGradient, selectedScore, lastHighlightedSite };
 
     const functions = {
         setAllSparsityData: (data) => setAllSparsityData(data),
