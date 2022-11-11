@@ -76,9 +76,6 @@ export const UseSiteSparsity = () => {
             const numberWithThisScore = scores.filter(entry => {return entry === score}).length;
             return {'score': score, 'numberOfSites': numberWithThisScore};
         });
-        /**
-         * This should probably be a hash table
-         */
         setScoreSiteMap(data);
     }, [scoreSet]);
 
