@@ -95,7 +95,7 @@ export const UseDeckMap = (SparsityState, Request) => {
     useEffect(() => {
         if(Request.state.stateOrCounty === 'COUNTY') {
             const setters = [setCountyLayer];
-            const params = { 'collection': 'county_geo', 'state': selectedState };
+            const params = { 'collection': 'county_geo_30mb', 'state': selectedState };
             sendShapefileRequest(setters, params, setCountyLayer, countyColors, 'countylayer', handleCountyClick);
         }
         else {
@@ -105,7 +105,7 @@ export const UseDeckMap = (SparsityState, Request) => {
   
     useEffect(() => {
         const setters = [setStateLayer, setCountyLayer];
-        const params = { 'collection': 'state_geo','state': '' }
+        const params = { 'collection': 'state_geo_data_sparsity','state': '' }
         sendShapefileRequest(setters, params, setStateLayer, stateColors, 'statelayer', handleStateClick);
     }, []);
 

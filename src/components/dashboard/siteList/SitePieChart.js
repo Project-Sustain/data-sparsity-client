@@ -36,19 +36,19 @@ import { useState, useEffect, memo } from 'react';
 import { ResponsiveContainer, PieChart, Pie, Legend } from 'recharts';
 import { Grid, Typography } from '@mui/material';
 import { colors } from '../../../library/colors';
+import { find_index } from '../../../library/binary_search';
 import DashboardComponent from '../../utilityComponents/DashboardComponent';
 
 
-export default memo(function SitePieChart({site, scores}) {
+export default memo(function SitePieChart({site, scores, scoreSiteMap, scoreSet}) {
     
     const [pieData, setPieData] = useState([]);
 
 
     useEffect(() => {
         if(site){
-
-            const myScore = site.sparsityScore;
-            const numberOfSameScores = scores.filter(score => {return score === myScore}).length;
+            const index = find_index(scoreSet, site.sparsityScore);
+            const numberOfSameScores = scoreSiteMap[index].numberOfSites;
             const numberOfDifferentScores = scores.length - numberOfSameScores;
             setPieData([
                 {
