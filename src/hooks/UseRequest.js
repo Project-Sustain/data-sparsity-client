@@ -85,7 +85,7 @@ export const UseRequest = (SparsityFunctions) => {
     // Functions
     const sendSparsityScoreRequest = async() => {
         setRequestStatus('PENDING');
-        const stats = await Api.sendJsonRequest("calculateSparsityScores", requestParams);
+        const stats = await Api.sendJsonRequest("calculateDataDensity", requestParams);
         if(stats) {
             updateStats(stats);
             const success = await streamSiteData();
@@ -109,7 +109,7 @@ export const UseRequest = (SparsityFunctions) => {
         const success = await streamSiteData();
 
         if(success) {
-            const stats = await Api.sendJsonRequest("sparsityStats", {});
+            const stats = await Api.sendJsonRequest("densityStats", {});
             if(stats) {
                 updateStats(stats);
                 SparsityFunctions.incrementNumberOfResponses();
