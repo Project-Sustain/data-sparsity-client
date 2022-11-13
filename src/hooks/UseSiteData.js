@@ -36,7 +36,7 @@ import { useState, useEffect } from 'react';
 import { colors } from '../library/colors';
 
 
-export const UseSiteData = (SparsityState) => {
+export const UseSiteData = (DensityState) => {
 
 
     // State
@@ -47,19 +47,19 @@ export const UseSiteData = (SparsityState) => {
 
     // useEffects
     useEffect(() => {
-        if(SparsityState.sparsityData.length > 0) {
-            setSelectedSite(SparsityState.sparsityData[0]);
+        if(DensityState.sparsityData.length > 0) {
+            setSelectedSite(DensityState.sparsityData[0]);
         }
         else setSelectedSite({});
-    }, [SparsityState.sparsityData]);
+    }, [DensityState.sparsityData]);
 
 
     useEffect(() => {
         if(Object.keys(selectedSite) > 0){
 
             const myScore = selectedSite.sparsityScore;
-            const numberOfSameScores = SparsityState.scores.filter(score => {return score === myScore}).length;
-            const numberOfDifferentScores = SparsityState.scores.length - numberOfSameScores;
+            const numberOfSameScores = DensityState.scores.filter(score => {return score === myScore}).length;
+            const numberOfDifferentScores = DensityState.scores.length - numberOfSameScores;
             setSitePieData([
                 {
                     "name": `Sites with sparsity score = ${selectedSite.sparsityScore}`,
@@ -74,13 +74,13 @@ export const UseSiteData = (SparsityState) => {
             ]);
 
         }
-    }, [selectedSite, SparsityState.scores]);
+    }, [selectedSite, DensityState.scores]);
 
 
     // Functions
     const updateSelectedSite = (index) => {
         setSelectedSiteIndex(index);
-        setSelectedSite(SparsityState.sparsityData[index]);
+        setSelectedSite(DensityState.sparsityData[index]);
     }
 
     // Return Vals

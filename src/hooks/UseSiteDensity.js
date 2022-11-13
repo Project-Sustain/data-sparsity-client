@@ -32,26 +32,117 @@ END OF TERMS AND CONDITIONS
 */
 
 
-import { Typography, Grid } from "@mui/material";
-import DashboardComponent from "../../utilityComponents/DashboardComponent";
+import { useState, useEffect } from "react";
+import { colors } from "../library/colors";
+import chroma from 'chroma-js';
+import { binary_search } from "../library/binary_search";
+
+export const UseSiteDensity = () => {
 
 
-export default function SparsityExplaination() {
+    // State
+    const [allDensityData, setAllDensityData] = useState([]);
+    const [sparsityData, setDensityData] = useState([]);
+    const [sparsityStats, setDensityStats] = useState({});
+    const [scores, setScores] = useState([]);
+    const [scoreSet, setScoreSet] = useState([]);
+    const [scoreSiteMap, setScoreSiteMap] = useState([]);
+    const [colorGradient, setColorGradient] = useState([]);
+    const [selectedScore, setSelectedScore] = useState(-1);
+    const [lastHighlightedSite, setLastHighlightedSite] = useState({});
+    const [numberOfResponses, setNumberOfResponses] = useState(0); // This informs useEffects when a new sparsity response has arrived
 
 
-    return (
-        <Grid item xs={3}>
-            <DashboardComponent>
-                <Typography variant='h5'><strong>Sparsity Score</strong></Typography>
-                <Typography>
-                    Sparsity Score represents the average amount of time between observations
-                    at a given observation site. The number is normalized based off of the mean and
-                    standard deviation of both frequency of measure and total number of observations
-                    at every site in the query.
-                </Typography>
-            </DashboardComponent>
-        </Grid>
-    )
+    // useEffects
+    useEffect(() => {
+        setLastHighlightedSite({});
+    }, [numberOfResponses]);
 
+    useEffect(() => {
+        let tempScores = allDensityData.map((siteData) => { return Number(siteData.sparsityScore) });
+        tempScores.sort(function(a, b) {return b - a});
+        setScores(tempScores)
+    }, [numberOfResponses]);
+
+    useEffect(() => {
+        const tempScoreSet = [...new Set(scores)].sort((a, b) => a - b);
+        const tempGradient = chroma.scale([colors.tertiary, colors.primary]).colors(tempScoreSet.length);
+        setScoreSet(tempScoreSet);
+        setColorGradient(tempGradient);
+    }, [scores]);
+
+    useEffect(() => {
+        const data = scoreSet.map(score => {
+            const numberWithThisScore = scores.filter(entry => {return entry === score}).length;
+            return {'score': score, 'numberOfSites': numberWithThisScore};
+        });
+        setScoreSiteMap(data);
+    }, [scoreSet]);
+
+    /**
+     * allDensityData is set when a new request returns
+     * The idea is that we change sparsityData on the client to filter by score, can reset to
+     * allDensityData
+     */
+    useEffect(() => {
+        setDensityData(allDensityData);
+    }, [allDensityData]);
+
+
+    // Functions
+    const updateHighlightedSite = (index) => {
+        let data = [...sparsityData];
+        if(Object.keys(lastHighlightedSite).length > 0) {
+            data[lastHighlightedSite.index].color = lastHighlightedSite.color;
+        }
+        setLastHighlightedSite({
+            'index': index,
+            'color': data[index].color
+        });
+        data[index].color = [1, 255, 0];
+        setDensityData(data);
+    };
+
+    const deselectSite = () => {
+        let data = [...sparsityData];
+        data[lastHighlightedSite.index].color = lastHighlightedSite.color;
+        setLastHighlightedSite({});
+        setDensityData(data);
+    }
+
+    const incrementNumberOfResponses = () => {
+        setNumberOfResponses(numberOfResponses+1);
+    }
+
+    const filterDensityData = (low, high) => {
+        const low_index = binary_search(scores, low, 0, scores.length-1);
+        const high_index = binary_search(scores, high, 0, scores.length-1);
+        const filteredData = [...allDensityData].slice(high_index, low_index);
+        setDensityData(filteredData);
+    }
+
+    const resetFilter = () => {
+        setDensityData(allDensityData);
+    }
+
+
+    // Return Vals
+    const state = { allDensityData, sparsityData, sparsityStats, scores, scoreSet, scoreSiteMap, colorGradient, selectedScore, lastHighlightedSite };
+
+    const functions = {
+        setAllDensityData: (data) => setAllDensityData(data),
+        setDensityData: (data) => setDensityData(data),
+        setDensityStats: (data) => setDensityStats(data), 
+        setSelectedScore: (score) => setSelectedScore(score), 
+        updateHighlightedSite: (index) => updateHighlightedSite(index), 
+        deselectSite: () => deselectSite(), 
+        incrementNumberOfResponses: () => incrementNumberOfResponses(),
+        filterDensityData: (low, high) => filterDensityData(low, high),
+        resetFilter: () => resetFilter()
+    };
+
+
+    // Return
+    return { state, functions };
 
 }

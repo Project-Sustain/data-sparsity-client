@@ -32,117 +32,53 @@ END OF TERMS AND CONDITIONS
 */
 
 
-import { useState, useEffect } from "react";
-import { colors } from "../library/colors";
-import chroma from 'chroma-js';
-import { binary_search } from "../library/binary_search";
-
-export const UseSiteSparsity = () => {
-
-
-    // State
-    const [allSparsityData, setAllSparsityData] = useState([]);
-    const [sparsityData, setSparsityData] = useState([]);
-    const [sparsityStats, setSparsityStats] = useState({});
-    const [scores, setScores] = useState([]);
-    const [scoreSet, setScoreSet] = useState([]);
-    const [scoreSiteMap, setScoreSiteMap] = useState([]);
-    const [colorGradient, setColorGradient] = useState([]);
-    const [selectedScore, setSelectedScore] = useState(-1);
-    const [lastHighlightedSite, setLastHighlightedSite] = useState({});
-    const [numberOfResponses, setNumberOfResponses] = useState(0); // This informs useEffects when a new sparsity response has arrived
+import { React } from 'react'
+import { makeStyles } from '@material-ui/core';
+import { Typography, Grid } from '@mui/material';
+import { DataGrid } from '@mui/x-data-grid';
+import DashboardComponent from '../../utilityComponents/DashboardComponent';
 
 
-    // useEffects
-    useEffect(() => {
-        setLastHighlightedSite({});
-    }, [numberOfResponses]);
-
-    useEffect(() => {
-        let tempScores = allSparsityData.map((siteData) => { return Number(siteData.sparsityScore) });
-        tempScores.sort(function(a, b) {return b - a});
-        setScores(tempScores)
-    }, [numberOfResponses]);
-
-    useEffect(() => {
-        const tempScoreSet = [...new Set(scores)].sort((a, b) => a - b);
-        const tempGradient = chroma.scale([colors.tertiary, colors.primary]).colors(tempScoreSet.length);
-        setScoreSet(tempScoreSet);
-        setColorGradient(tempGradient);
-    }, [scores]);
-
-    useEffect(() => {
-        const data = scoreSet.map(score => {
-            const numberWithThisScore = scores.filter(entry => {return entry === score}).length;
-            return {'score': score, 'numberOfSites': numberWithThisScore};
-        });
-        setScoreSiteMap(data);
-    }, [scoreSet]);
-
-    /**
-     * allSparsityData is set when a new request returns
-     * The idea is that we change sparsityData on the client to filter by score, can reset to
-     * allSparsityData
-     */
-    useEffect(() => {
-        setSparsityData(allSparsityData);
-    }, [allSparsityData]);
+const useStyles = makeStyles({
+  root: {
+    width: 450,
+    height: 350
+  }
+});
 
 
-    // Functions
-    const updateHighlightedSite = (index) => {
-        let data = [...sparsityData];
-        if(Object.keys(lastHighlightedSite).length > 0) {
-            data[lastHighlightedSite.index].color = lastHighlightedSite.color;
-        }
-        setLastHighlightedSite({
-            'index': index,
-            'color': data[index].color
-        });
-        data[index].color = [1, 255, 0];
-        setSparsityData(data);
-    };
+export default function DensityTable({updateSelectedSite, sparsityData}) {
 
-    const deselectSite = () => {
-        let data = [...sparsityData];
-        data[lastHighlightedSite.index].color = lastHighlightedSite.color;
-        setLastHighlightedSite({});
-        setSparsityData(data);
-    }
-
-    const incrementNumberOfResponses = () => {
-        setNumberOfResponses(numberOfResponses+1);
-    }
-
-    const filterSparsityData = (low, high) => {
-        const low_index = binary_search(scores, low, 0, scores.length-1);
-        const high_index = binary_search(scores, high, 0, scores.length-1);
-        const filteredData = [...allSparsityData].slice(high_index, low_index);
-        setSparsityData(filteredData);
-    }
-
-    const resetFilter = () => {
-        setSparsityData(allSparsityData);
-    }
+  const classes = useStyles();
 
 
-    // Return Vals
-    const state = { allSparsityData, sparsityData, sparsityStats, scores, scoreSet, scoreSiteMap, colorGradient, selectedScore, lastHighlightedSite };
+  const columns = [
+    {field: 'id', headerName: '', width: 50},
+    {field: 'monitorId', headerName: 'Monitor ID', width: 250},
+    {field: 'sparsityScore', headerName: 'Density Score', width: 125}
+  ]
 
-    const functions = {
-        setAllSparsityData: (data) => setAllSparsityData(data),
-        setSparsityData: (data) => setSparsityData(data),
-        setSparsityStats: (data) => setSparsityStats(data), 
-        setSelectedScore: (score) => setSelectedScore(score), 
-        updateHighlightedSite: (index) => updateHighlightedSite(index), 
-        deselectSite: () => deselectSite(), 
-        incrementNumberOfResponses: () => incrementNumberOfResponses(),
-        filterSparsityData: (low, high) => filterSparsityData(low, high),
-        resetFilter: () => resetFilter()
-    };
+  const rows = sparsityData.map((site, index) => {
+    return {id: index, monitorId: site.monitorId, sparsityScore: site.sparsityScore};
+  });
 
 
-    // Return
-    return { state, functions };
+  return (
+    <Grid item xs={4}>
+      <DashboardComponent>
+        <Typography align='center' variant='h5'>Density Score Table</Typography>
+        <div className={classes.root}>
+          <DataGrid
+            rows={rows}
+            columns={columns}
+            pageSize={100}
+            rowsPerPageOptions={[100]}
+            onCellClick={params => {updateSelectedSite(params.id)}}
+          />
+        </div>
+      </DashboardComponent>
+    </Grid>
+  );
+
 
 }

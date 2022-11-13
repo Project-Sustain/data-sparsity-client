@@ -37,14 +37,14 @@ import RequestForm from "../request/RequestForm";
 import NoData from "../request/components/NoData";
 
 
-export default function RequestTab({Request, Sparsity, Map}) {
+export default function RequestTab({Request, Density, Map}) {
 
 
     return (
         <>
             <RequestForm 
                 Request={Request}
-                sparsityDataLength={Sparsity.state.sparsityData.length} 
+                sparsityDataLength={Density.state.sparsityData.length} 
                 currentShapeName={Map.state.currentShapeName}
             />
             <NoData

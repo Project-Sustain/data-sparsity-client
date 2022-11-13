@@ -44,14 +44,14 @@ const useStyles = makeStyles({
 });
 
 
-export default function Filter({resetFilter, filterSparsityData, DataFilter}) {
+export default function Filter({resetFilter, filterDensityData, DataFilter}) {
 
     const classes = useStyles();
 
 
     const handleChange = (event, newValue) => {
         DataFilter.functions.setFilterRange(newValue);
-        filterSparsityData(newValue[0], newValue[1])
+        filterDensityData(newValue[0], newValue[1])
     };
 
     const handleReset = () => {

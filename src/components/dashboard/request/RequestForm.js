@@ -64,7 +64,7 @@ export default function RequestForm({ Request, sparsityDataLength, currentShapeN
         else {
             return (
                 <ButtonGroup>
-                    <Button onClick={Request.functions.sendSparsityScoreRequest}>
+                    <Button onClick={Request.functions.sendDensityRequest}>
                         Submit Request: {currentShapeName}
                     </Button>
                     <Button

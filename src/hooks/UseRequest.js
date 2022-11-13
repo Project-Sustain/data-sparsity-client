@@ -36,7 +36,7 @@ import { useState, useEffect } from "react";
 import { sparsityMetadata } from "../library/metadata";
 import { Api } from "../library/Api";
 
-export const UseRequest = (SparsityFunctions) => {
+export const UseRequest = (DensityFunctions) => {
 
     
     // State
@@ -83,14 +83,14 @@ export const UseRequest = (SparsityFunctions) => {
 
 
     // Functions
-    const sendSparsityScoreRequest = async() => {
+    const sendDensityRequest = async() => {
         setRequestStatus('PENDING');
         const stats = await Api.sendJsonRequest("calculateDataDensity", requestParams);
         if(stats) {
             updateStats(stats);
             const success = await streamSiteData();
             if(success) {
-                SparsityFunctions.incrementNumberOfResponses();
+                DensityFunctions.incrementNumberOfResponses();
                 setRequestStatus('VALID');
             }
             else {
@@ -112,7 +112,7 @@ export const UseRequest = (SparsityFunctions) => {
             const stats = await Api.sendJsonRequest("densityStats", {});
             if(stats) {
                 updateStats(stats);
-                SparsityFunctions.incrementNumberOfResponses();
+                DensityFunctions.incrementNumberOfResponses();
                 setRequestStatus('VALID');
             }
             else {
@@ -125,23 +125,23 @@ export const UseRequest = (SparsityFunctions) => {
     }
 
     const onFailure = () => {
-        SparsityFunctions.setSparsityStats({});
-        SparsityFunctions.setAllSparsityData([]);
+        DensityFunctions.setDensityStats({});
+        DensityFunctions.setAllDensityData([]);
         setRequestStatus('INVALID');
     }
 
     const streamSiteData = async() => {
         const results = await Api.sendSiteDataRequest({'baseline': baseline});
         if(results.length > 0) {
-            SparsityFunctions.setAllSparsityData(results);
-            SparsityFunctions.incrementNumberOfResponses();
+            DensityFunctions.setAllDensityData(results);
+            DensityFunctions.incrementNumberOfResponses();
             return true;
         }
         return false;
     }
 
     const updateStats = (response) => {
-        SparsityFunctions.setSparsityStats({
+        DensityFunctions.setDensityStats({
             'minTimeBetweenObservations': response.diffStats[0],
             'maxTimeBetweenObservations': response.diffStats[1],
             'meanTimeBetweenObservations': response.diffStats[2],
@@ -152,10 +152,10 @@ export const UseRequest = (SparsityFunctions) => {
             'meanNumberOfObservations': response.obsStats[2],
             'stdDevNumberOfObservations': response.obsStats[3],
 
-            'minSparsity': response.sparsityStats[0],
-            'maxSparsity': response.sparsityStats[1],
-            'meanSparsity': response.sparsityStats[2] ? response.sparsityStats[2] : 0.0,
-            'stdDevSparsity': response.sparsityStats[3]
+            'minDensity': response.sparsityStats[0],
+            'maxDensity': response.sparsityStats[1],
+            'meanDensity': response.sparsityStats[2] ? response.sparsityStats[2] : 0.0,
+            'stdDevDensity': response.sparsityStats[3]
         });
     }
 
@@ -170,7 +170,7 @@ export const UseRequest = (SparsityFunctions) => {
         setSpatialScope: (scope) => setSpatialScope(scope),
         setStateOrCounty: (value) => setStateOrCounty(value),
         sendUpdateBaselineRequest: () => sendUpdateBaselineRequest(), 
-        sendSparsityScoreRequest: () => sendSparsityScoreRequest()
+        sendDensityRequest: () => sendDensityRequest()
     }
 
 

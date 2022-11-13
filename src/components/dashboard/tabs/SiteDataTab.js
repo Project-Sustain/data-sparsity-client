@@ -32,27 +32,27 @@ END OF TERMS AND CONDITIONS
 */
 
 
-import SparsityTable from "../siteList/SparsityTable";
+import DensityTable from "../siteList/DensityTable";
 import SelectedSite from "../siteList/SelectedSite";
 import SitePieChart from "../siteList/SitePieChart";
 
 
-export default function SiteDataTab({Request, Sparsity, Map, SiteData}) {
+export default function SiteDataTab({Request, Density, Map, SiteData}) {
 
     
     return (
         <>
-            <SparsityTable 
+            <DensityTable 
                 updateSelectedSite={SiteData.functions.updateSelectedSite}
-                sparsityData={Sparsity.state.sparsityData}
+                sparsityData={Density.state.sparsityData}
             />
             <SelectedSite 
                 updateMapViewState={Map.functions.updateMapViewState}
                 
-                updateHighlightedSite={Sparsity.functions.updateHighlightedSite}
-                deselectSite={Sparsity.functions.deselectSite}
+                updateHighlightedSite={Density.functions.updateHighlightedSite}
+                deselectSite={Density.functions.deselectSite}
                 site={SiteData.state.selectedSite} 
-                disable={Object.keys(Sparsity.state.lastHighlightedSite).length === 0}
+                disable={Object.keys(Density.state.lastHighlightedSite).length === 0}
 
                 collectionProperties={Request.state.collection.sitePropertyFields}
 
@@ -60,9 +60,9 @@ export default function SiteDataTab({Request, Sparsity, Map, SiteData}) {
             />
             <SitePieChart
                 site={SiteData.state.selectedSite}  
-                scores={Sparsity.state.scores}
-                scoreSiteMap={Sparsity.state.scoreSiteMap}
-                scoreSet={Sparsity.state.scoreSet}
+                scores={Density.state.scores}
+                scoreSiteMap={Density.state.scoreSiteMap}
+                scoreSet={Density.state.scoreSet}
             />
         </>
     );

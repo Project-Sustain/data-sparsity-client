@@ -32,16 +32,16 @@ END OF TERMS AND CONDITIONS
 */
 
 
-import SparsityExplaination from "../statistics/SparsityExplaination";
+import DensityExplaination from "../statistics/DensityExplaination";
 import StatisticsTable from "../statistics/StatisticsTable";
 
 
-export default function SparsityTab({stats}) {
+export default function DensityTab({stats}) {
 
 
     return (
         <>
-            <SparsityExplaination />
+            <DensityExplaination />
             <StatisticsTable
                 stats={stats}
             />

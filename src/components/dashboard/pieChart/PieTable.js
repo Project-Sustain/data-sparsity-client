@@ -69,7 +69,7 @@ export default function PieTable({setSelectedIndex, selectedIndex, pieData, colo
                         <TableHead>
                             <TableRow onClick={() => setSelectedIndex(-1)}>
                                 <TableCell className={classes.cell}>{getFirstHeadText()}</TableCell>
-                                <TableCell>Sparsity Score</TableCell>
+                                <TableCell>Density Score</TableCell>
                                 <TableCell>Number of Sites</TableCell>
                                 <TableCell>% of Pie</TableCell>
                             </TableRow>

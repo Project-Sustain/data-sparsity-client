@@ -37,7 +37,7 @@ import { colors } from '../library/colors';
 import { find_index } from '../library/binary_search';
 
 
-export const UsePieBarChart = (SparsityState, requestStatus, scoreSiteMap, scoreHashMap) => {
+export const UsePieBarChart = (DensityState, requestStatus, scoreSiteMap, scoreHashMap) => {
 
 
     // State
@@ -55,8 +55,8 @@ export const UsePieBarChart = (SparsityState, requestStatus, scoreSiteMap, score
     // Pie Chart
     useEffect(() => {
         const data = scoreSiteMap.map((entry, index) => {
-            const percent = ((entry.score / SparsityState.scores.length) * 100).toFixed(2);
-            const color = index === pieIndex ? colors.highlight : SparsityState.colorGradient[index];
+            const percent = ((entry.score / DensityState.scores.length) * 100).toFixed(2);
+            const color = index === pieIndex ? colors.highlight : DensityState.colorGradient[index];
             return {
                 "score": entry.score,
                 "sites": entry.numberOfSites,
@@ -65,17 +65,17 @@ export const UsePieBarChart = (SparsityState, requestStatus, scoreSiteMap, score
             }
         });
         setPieData(data);
-    }, [scoreSiteMap, scoreHashMap, pieIndex, SparsityState.scores, SparsityState.colorGradient]);
+    }, [scoreSiteMap, scoreHashMap, pieIndex, DensityState.scores, DensityState.colorGradient]);
 
 
    // Bar Chart
    useEffect(() => {
     let chartData = [];
-    if(SparsityState.scoreSet.length > 0) {
+    if(DensityState.scoreSet.length > 0) {
         try {
             const numBuckets = 7;
-            const min = SparsityState.scoreSet[0];
-            const max = SparsityState.scoreSet[SparsityState.scoreSet.length-1];
+            const min = DensityState.scoreSet[0];
+            const max = DensityState.scoreSet[DensityState.scoreSet.length-1];
             const range = max - min;
             const rangePerBucket = range / numBuckets;
 
@@ -83,8 +83,8 @@ export const UsePieBarChart = (SparsityState, requestStatus, scoreSiteMap, score
                 const bucketMin = (min+(rangePerBucket*index));
                 const bucketMax = (min+(rangePerBucket*(index+1)));
 
-                const lowIndex = find_index(SparsityState.scoreSet, bucketMin);
-                const highIndex = find_index(SparsityState.scoreSet, bucketMax);
+                const lowIndex = find_index(DensityState.scoreSet, bucketMin);
+                const highIndex = find_index(DensityState.scoreSet, bucketMax);
 
                 let numSites = 0;
                 scoreSiteMap.slice(lowIndex, highIndex).forEach(entry => numSites += entry.numberOfSites);
@@ -101,7 +101,7 @@ export const UsePieBarChart = (SparsityState, requestStatus, scoreSiteMap, score
 
             setBarData(chartData);
         }
-    }, [SparsityState.scoreSet, scoreSiteMap]);
+    }, [DensityState.scoreSet, scoreSiteMap]);
 
 
 
