@@ -36,7 +36,7 @@ import chroma from 'chroma-js';
 import { colors } from './colors';
 
 const flaskIp = '127.0.0.1';
-const flaskPort = '5001';
+const flaskPort = '5000';
 
 export class Api {
 
@@ -104,7 +104,7 @@ export class Api {
             // FIXME All sites with same score should have same color. Number of colors should be number of UNIQUE scores
             const initialColorScale = chroma.scale([colors.tertiary, colors.primary]).colors(streamedResults.length);
             const formattedResults = streamedResults.map((result, index) => {
-                result.sparsityScore = result.sparsityScore ? result.sparsityScore : 0;
+                result.densityScore = result.densityScore ? result.densityScore : 0;
                 result.color = hexToRgb(initialColorScale[index]);
                 return result;
             });

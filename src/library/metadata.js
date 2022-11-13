@@ -42,7 +42,7 @@ const aqiSiteCollection = "epa_aqi_monitors";
 const aqiSiteProperties = ["sample_duration", "method"];
 const aqiInitialBaseline = 86400000;
 
-export const sparsityMetadata = [
+export const densityMetadata = [
     
     // Water Quality
     {

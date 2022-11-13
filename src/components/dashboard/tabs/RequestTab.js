@@ -44,7 +44,7 @@ export default function RequestTab({Request, Density, Map}) {
         <>
             <RequestForm 
                 Request={Request}
-                sparsityDataLength={Density.state.sparsityData.length} 
+                densityDataLength={Density.state.densityData.length} 
                 currentShapeName={Map.state.currentShapeName}
             />
             <NoData

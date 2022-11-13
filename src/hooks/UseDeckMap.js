@@ -72,7 +72,7 @@ export const UseDeckMap = (DensityState, Request) => {
         const layer = new IconLayer({
             id: 'icon-layer',
             pickable: true,
-            data: DensityState.sparsityData,
+            data: DensityState.densityData,
             iconAtlas: 'https://raw.githubusercontent.com/visgl/deck.gl-data/master/website/icon-atlas.png',
             iconMapping: ICON_MAPPING,
             sizeScale: 15,
@@ -83,7 +83,7 @@ export const UseDeckMap = (DensityState, Request) => {
             getFillColor: d => d.color
         });
         setIconLayer([layer])
-    }, [DensityState.sparsityData]);
+    }, [DensityState.densityData]);
 
     useEffect(() => {
         if(Object.keys(selectedShape).length > 0) {
@@ -167,7 +167,7 @@ export const UseDeckMap = (DensityState, Request) => {
             return object && `${object.name}`;
         }
         else {
-            return object && `Density Score: ${object.sparsityScore}\nSite Mean: ${object.siteMean}\nNumber of Observations: ${object.numberOfMeasurements}`
+            return object && `Density Score: ${object.densityScore}\nSite Mean: ${object.siteMean}\nNumber of Observations: ${object.numberOfMeasurements}`
         }
     };
 

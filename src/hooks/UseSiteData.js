@@ -47,22 +47,22 @@ export const UseSiteData = (DensityState) => {
 
     // useEffects
     useEffect(() => {
-        if(DensityState.sparsityData.length > 0) {
-            setSelectedSite(DensityState.sparsityData[0]);
+        if(DensityState.densityData.length > 0) {
+            setSelectedSite(DensityState.densityData[0]);
         }
         else setSelectedSite({});
-    }, [DensityState.sparsityData]);
+    }, [DensityState.densityData]);
 
 
     useEffect(() => {
         if(Object.keys(selectedSite) > 0){
 
-            const myScore = selectedSite.sparsityScore;
+            const myScore = selectedSite.densityScore;
             const numberOfSameScores = DensityState.scores.filter(score => {return score === myScore}).length;
             const numberOfDifferentScores = DensityState.scores.length - numberOfSameScores;
             setSitePieData([
                 {
-                    "name": `Sites with sparsity score = ${selectedSite.sparsityScore}`,
+                    "name": `Sites with density score = ${selectedSite.densityScore}`,
                     "value": numberOfSameScores,
                     "fill": colors.tertiary
                 },
@@ -80,7 +80,7 @@ export const UseSiteData = (DensityState) => {
     // Functions
     const updateSelectedSite = (index) => {
         setSelectedSiteIndex(index);
-        setSelectedSite(DensityState.sparsityData[index]);
+        setSelectedSite(DensityState.densityData[index]);
     }
 
     // Return Vals

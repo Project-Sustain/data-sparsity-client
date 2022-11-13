@@ -42,15 +42,15 @@ export const UseSiteDensity = () => {
 
     // State
     const [allDensityData, setAllDensityData] = useState([]);
-    const [sparsityData, setDensityData] = useState([]);
-    const [sparsityStats, setDensityStats] = useState({});
+    const [densityData, setDensityData] = useState([]);
+    const [densityStats, setDensityStats] = useState({});
     const [scores, setScores] = useState([]);
     const [scoreSet, setScoreSet] = useState([]);
     const [scoreSiteMap, setScoreSiteMap] = useState([]);
     const [colorGradient, setColorGradient] = useState([]);
     const [selectedScore, setSelectedScore] = useState(-1);
     const [lastHighlightedSite, setLastHighlightedSite] = useState({});
-    const [numberOfResponses, setNumberOfResponses] = useState(0); // This informs useEffects when a new sparsity response has arrived
+    const [numberOfResponses, setNumberOfResponses] = useState(0); // This informs useEffects when a new density response has arrived
 
 
     // useEffects
@@ -59,7 +59,7 @@ export const UseSiteDensity = () => {
     }, [numberOfResponses]);
 
     useEffect(() => {
-        let tempScores = allDensityData.map((siteData) => { return Number(siteData.sparsityScore) });
+        let tempScores = allDensityData.map((siteData) => { return Number(siteData.densityScore) });
         tempScores.sort(function(a, b) {return b - a});
         setScores(tempScores)
     }, [numberOfResponses]);
@@ -81,7 +81,7 @@ export const UseSiteDensity = () => {
 
     /**
      * allDensityData is set when a new request returns
-     * The idea is that we change sparsityData on the client to filter by score, can reset to
+     * The idea is that we change densityData on the client to filter by score, can reset to
      * allDensityData
      */
     useEffect(() => {
@@ -91,7 +91,7 @@ export const UseSiteDensity = () => {
 
     // Functions
     const updateHighlightedSite = (index) => {
-        let data = [...sparsityData];
+        let data = [...densityData];
         if(Object.keys(lastHighlightedSite).length > 0) {
             data[lastHighlightedSite.index].color = lastHighlightedSite.color;
         }
@@ -104,7 +104,7 @@ export const UseSiteDensity = () => {
     };
 
     const deselectSite = () => {
-        let data = [...sparsityData];
+        let data = [...densityData];
         data[lastHighlightedSite.index].color = lastHighlightedSite.color;
         setLastHighlightedSite({});
         setDensityData(data);
@@ -127,7 +127,7 @@ export const UseSiteDensity = () => {
 
 
     // Return Vals
-    const state = { allDensityData, sparsityData, sparsityStats, scores, scoreSet, scoreSiteMap, colorGradient, selectedScore, lastHighlightedSite };
+    const state = { allDensityData, densityData, densityStats, scores, scoreSet, scoreSiteMap, colorGradient, selectedScore, lastHighlightedSite };
 
     const functions = {
         setAllDensityData: (data) => setAllDensityData(data),

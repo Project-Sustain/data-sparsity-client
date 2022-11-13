@@ -44,7 +44,7 @@ export default function SiteDataTab({Request, Density, Map, SiteData}) {
         <>
             <DensityTable 
                 updateSelectedSite={SiteData.functions.updateSelectedSite}
-                sparsityData={Density.state.sparsityData}
+                densityData={Density.state.densityData}
             />
             <SelectedSite 
                 updateMapViewState={Map.functions.updateMapViewState}

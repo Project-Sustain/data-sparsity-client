@@ -57,7 +57,7 @@ export default function CurrentTab({currentTab, Request, Density, Map}) {
         case 0:
             return <RequestTab Request={Request} Density={Density} Map={Map} />
         case 1:
-            return <StatisticsTab stats={Density.state.sparsityStats} />
+            return <StatisticsTab stats={Density.state.densityStats} />
         case 2:
             return <PieChartTab 
                         scoreSet={Density.state.scoreSet} 

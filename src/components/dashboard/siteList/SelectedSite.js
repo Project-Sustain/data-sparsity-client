@@ -62,7 +62,7 @@ export default memo(function SelectedSite({updateHighlightedSite, deselectSite, 
         <Grid item xs={4}>
             <Paper elevation={3} className={classes.root}>
                 <div className={classes.section}>
-                    <Typography><strong>Density Score:</strong> {site.sparsityScore}</Typography>
+                    <Typography><strong>Density Score:</strong> {site.densityScore}</Typography>
                     <Typography><strong>Mean Time Between Observations:</strong> {site.siteMean}</Typography>
                     <Typography><strong>Total Observations:</strong> {site.numberOfMeasurements}</Typography>
                 </div>

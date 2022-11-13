@@ -47,7 +47,7 @@ const useStyles = makeStyles({
 });
 
 
-export default function DensityTable({updateSelectedSite, sparsityData}) {
+export default function DensityTable({updateSelectedSite, densityData}) {
 
   const classes = useStyles();
 
@@ -55,11 +55,11 @@ export default function DensityTable({updateSelectedSite, sparsityData}) {
   const columns = [
     {field: 'id', headerName: '', width: 50},
     {field: 'monitorId', headerName: 'Monitor ID', width: 250},
-    {field: 'sparsityScore', headerName: 'Density Score', width: 125}
+    {field: 'densityScore', headerName: 'Density Score', width: 125}
   ]
 
-  const rows = sparsityData.map((site, index) => {
-    return {id: index, monitorId: site.monitorId, sparsityScore: site.sparsityScore};
+  const rows = densityData.map((site, index) => {
+    return {id: index, monitorId: site.monitorId, densityScore: site.densityScore};
   });
 
 

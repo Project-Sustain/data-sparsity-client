@@ -33,7 +33,7 @@ END OF TERMS AND CONDITIONS
 
 
 import { FormControl, InputLabel, Select, MenuItem } from '@mui/material';
-import { sparsityMetadata } from '../../../../library/metadata';
+import { densityMetadata } from '../../../../library/metadata';
 
 
 export default function CollectionSelector({ collection, setCollection, setBaseline }) {
@@ -44,7 +44,7 @@ export default function CollectionSelector({ collection, setCollection, setBasel
         setBaseline(newCollection.initialBaseline);
     }
 
-    if(sparsityMetadata.length > 0) {
+    if(densityMetadata.length > 0) {
         return (
             <FormControl>
                 <InputLabel>Dataset</InputLabel>
@@ -57,7 +57,7 @@ export default function CollectionSelector({ collection, setCollection, setBasel
                     onChange={updateCollection}
                 >
                     {
-                        sparsityMetadata.map((dataset, index) => {
+                        densityMetadata.map((dataset, index) => {
                             return (
                                 <MenuItem key={index} value={dataset}>{dataset.label}</MenuItem>
                             );

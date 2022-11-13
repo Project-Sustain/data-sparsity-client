@@ -33,15 +33,15 @@ END OF TERMS AND CONDITIONS
 
 
 import { useState, useEffect } from "react";
-import { sparsityMetadata } from "../library/metadata";
+import { densityMetadata } from "../library/metadata";
 import { Api } from "../library/Api";
 
 export const UseRequest = (DensityFunctions) => {
 
     
     // State
-    const [collection, setCollection] = useState(sparsityMetadata[0]);
-    const [baseline, setBaseline] = useState(sparsityMetadata[0].initialBaseline);
+    const [collection, setCollection] = useState(densityMetadata[0]);
+    const [baseline, setBaseline] = useState(densityMetadata[0].initialBaseline);
     const [spatialScope, setSpatialScope] = useState('G0800690');
     const [requestParams, setRequestParams] = useState({});
     const [startTime, setStartTime] = useState();
@@ -152,10 +152,10 @@ export const UseRequest = (DensityFunctions) => {
             'meanNumberOfObservations': response.obsStats[2],
             'stdDevNumberOfObservations': response.obsStats[3],
 
-            'minDensity': response.sparsityStats[0],
-            'maxDensity': response.sparsityStats[1],
-            'meanDensity': response.sparsityStats[2] ? response.sparsityStats[2] : 0.0,
-            'stdDevDensity': response.sparsityStats[3]
+            'minDensity': response.densityStats[0],
+            'maxDensity': response.densityStats[1],
+            'meanDensity': response.densityStats[2] ? response.densityStats[2] : 0.0,
+            'stdDevDensity': response.densityStats[3]
         });
     }
 
