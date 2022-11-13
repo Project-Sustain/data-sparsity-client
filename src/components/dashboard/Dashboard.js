@@ -57,7 +57,7 @@ const useStyles = makeStyles({
 });
 
 
-export default function Dashboard({Request, Sparsity, Map}) {
+export default function Dashboard({Request, Density, Map}) {
 
     const classes = useStyles();
 
@@ -101,7 +101,7 @@ export default function Dashboard({Request, Sparsity, Map}) {
                             setCurrentTab={setCurrentTab}
                             handleDrawerClose={handleDrawerClose}
                             disableTab={disableTab}
-                            scoreSet={Sparsity.state.scoreSet}
+                            scoreSet={Density.state.scoreSet}
                             requestStatus={Request.state.requestStatus}
                         />
                     </Stack>
@@ -115,7 +115,7 @@ export default function Dashboard({Request, Sparsity, Map}) {
                         <CurrentTab
                             currentTab={currentTab}
                             Request={Request}
-                            Sparsity={Sparsity}
+                            Density={Density}
                             Map={Map}
                         />
                     </Grid>

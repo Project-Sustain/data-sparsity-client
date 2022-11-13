@@ -47,12 +47,12 @@ export default memo(function SitePieChart({site, scores, scoreSiteMap, scoreSet}
 
     useEffect(() => {
         if(site){
-            const index = find_index(scoreSet, site.sparsityScore);
+            const index = find_index(scoreSet, site.densityScore);
             const numberOfSameScores = scoreSiteMap[index].numberOfSites;
             const numberOfDifferentScores = scores.length - numberOfSameScores;
             setPieData([
                 {
-                    "name": `Sites with sparsity score = ${site.sparsityScore}`,
+                    "name": `Sites with density score = ${site.densityScore}`,
                     "value": numberOfSameScores,
                     "fill": colors.tertiary
                 },
@@ -70,7 +70,7 @@ export default memo(function SitePieChart({site, scores, scoreSiteMap, scoreSet}
     return (
         <Grid item xs={3}>
             <DashboardComponent>
-                <Typography align='center' variant='h5'>Sparsity Score Comparison</Typography>
+                <Typography align='center' variant='h5'>Density Score Comparison</Typography>
                 <ResponsiveContainer width='100%' height={250}>
                     <PieChart>
                         <Pie

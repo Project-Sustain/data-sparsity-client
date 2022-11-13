@@ -36,7 +36,7 @@ import { useState, useEffect } from 'react';
 import { colors } from '../library/colors';
 
 
-export const UseSiteData = (SparsityState) => {
+export const UseSiteData = (DensityState) => {
 
 
     // State
@@ -47,22 +47,22 @@ export const UseSiteData = (SparsityState) => {
 
     // useEffects
     useEffect(() => {
-        if(SparsityState.sparsityData.length > 0) {
-            setSelectedSite(SparsityState.sparsityData[0]);
+        if(DensityState.densityData.length > 0) {
+            setSelectedSite(DensityState.densityData[0]);
         }
         else setSelectedSite({});
-    }, [SparsityState.sparsityData]);
+    }, [DensityState.densityData]);
 
 
     useEffect(() => {
         if(Object.keys(selectedSite) > 0){
 
-            const myScore = selectedSite.sparsityScore;
-            const numberOfSameScores = SparsityState.scores.filter(score => {return score === myScore}).length;
-            const numberOfDifferentScores = SparsityState.scores.length - numberOfSameScores;
+            const myScore = selectedSite.densityScore;
+            const numberOfSameScores = DensityState.scores.filter(score => {return score === myScore}).length;
+            const numberOfDifferentScores = DensityState.scores.length - numberOfSameScores;
             setSitePieData([
                 {
-                    "name": `Sites with sparsity score = ${selectedSite.sparsityScore}`,
+                    "name": `Sites with density score = ${selectedSite.densityScore}`,
                     "value": numberOfSameScores,
                     "fill": colors.tertiary
                 },
@@ -74,13 +74,13 @@ export const UseSiteData = (SparsityState) => {
             ]);
 
         }
-    }, [selectedSite, SparsityState.scores]);
+    }, [selectedSite, DensityState.scores]);
 
 
     // Functions
     const updateSelectedSite = (index) => {
         setSelectedSiteIndex(index);
-        setSelectedSite(SparsityState.sparsityData[index]);
+        setSelectedSite(DensityState.densityData[index]);
     }
 
     // Return Vals

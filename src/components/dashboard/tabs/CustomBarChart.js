@@ -44,7 +44,7 @@ export default function CustomBarChart({data}) {
     return (
         <Grid item xs={11}>
             <DashboardComponent>
-                <Typography variant='h5' align='center'>Number of Sites Within Sparsity Range</Typography>
+                <Typography variant='h5' align='center'>Number of Sites Within Density Range</Typography>
                 <ResponsiveContainer width='100%' height={350}>
                     <BarChart data={data}>
                         <XAxis dataKey="name" />

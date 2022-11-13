@@ -37,7 +37,7 @@ import { sum } from 'simple-statistics';
 import moment from 'moment';
 
 
-export const UseTimeSeriesChart = (allSparsityData) => {
+export const UseTimeSeriesChart = (allDensityData) => {
 
 
     // State
@@ -48,8 +48,8 @@ export const UseTimeSeriesChart = (allSparsityData) => {
 
     // useEffects
     useEffect(() => {
-        if(allSparsityData.length > 0) {
-            const timeLists = allSparsityData.map((siteData) => {
+        if(allDensityData.length > 0) {
+            const timeLists = allDensityData.map((siteData) => {
                 return siteData.epochTimes.map((time) => {return parseInt(time)});
             });
             const times = [].concat.apply([], timeLists);
@@ -63,7 +63,7 @@ export const UseTimeSeriesChart = (allSparsityData) => {
             chartData.sort((a, b) => {return a.time - b.time});
             setSiteDataMap(chartData);
         }
-    }, [allSparsityData]);
+    }, [allDensityData]);
 
     useEffect(() => {
         if(siteDataMap.length > 0) {

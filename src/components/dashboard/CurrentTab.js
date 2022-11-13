@@ -45,23 +45,23 @@ import { UseFilter } from '../../hooks/UseFilter';
 import { UseSiteData } from '../../hooks/UseSiteData';
 
 
-export default function CurrentTab({currentTab, Request, Sparsity, Map}) {
+export default function CurrentTab({currentTab, Request, Density, Map}) {
 
-    const PieBarData = UsePieBarChart(Sparsity.state, Request.state.requestStatus, Sparsity.state.scoreSiteMap, Sparsity.state.scoreHashMap);
-    const TimeSeriesData = UseTimeSeriesChart(Sparsity.state.allSparsityData);
-    const DataFilter = UseFilter(Sparsity.state.scoreSet);
-    const SiteData = UseSiteData(Sparsity.state);
+    const PieBarData = UsePieBarChart(Density.state, Request.state.requestStatus, Density.state.scoreSiteMap, Density.state.scoreHashMap);
+    const TimeSeriesData = UseTimeSeriesChart(Density.state.allDensityData);
+    const DataFilter = UseFilter(Density.state.scoreSet);
+    const SiteData = UseSiteData(Density.state);
 
 
     switch (currentTab) {
         case 0:
-            return <RequestTab Request={Request} Sparsity={Sparsity} Map={Map} />
+            return <RequestTab Request={Request} Density={Density} Map={Map} />
         case 1:
-            return <StatisticsTab stats={Sparsity.state.sparsityStats} />
+            return <StatisticsTab stats={Density.state.densityStats} />
         case 2:
             return <PieChartTab 
-                        scoreSet={Sparsity.state.scoreSet} 
-                        colorGradient={Sparsity.state.colorGradient} 
+                        scoreSet={Density.state.scoreSet} 
+                        colorGradient={Density.state.colorGradient} 
                         PieBarData={PieBarData} />
         case 3:
             return <CustomBarChart data={PieBarData.state.barData} />
@@ -74,14 +74,14 @@ export default function CurrentTab({currentTab, Request, Sparsity, Map}) {
         case 5:
             return <SiteDataTab 
                         Request={Request}
-                        Sparsity={Sparsity}
+                        Density={Density}
                         Map={Map}
                         SiteData={SiteData}
                     />
         case 6:
             return <Filter 
-                        resetFilter={Sparsity.functions.resetFilter} 
-                        filterSparsityData={Sparsity.functions.filterSparsityData} 
+                        resetFilter={Density.functions.resetFilter} 
+                        filterDensityData={Density.functions.filterDensityData} 
                         DataFilter={DataFilter} 
                     />
         default:

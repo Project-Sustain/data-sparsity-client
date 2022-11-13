@@ -32,53 +32,26 @@ END OF TERMS AND CONDITIONS
 */
 
 
-import { React } from 'react'
-import { makeStyles } from '@material-ui/core';
-import { Typography, Grid } from '@mui/material';
-import { DataGrid } from '@mui/x-data-grid';
-import DashboardComponent from '../../utilityComponents/DashboardComponent';
+import { Typography, Grid } from "@mui/material";
+import DashboardComponent from "../../utilityComponents/DashboardComponent";
 
 
-const useStyles = makeStyles({
-  root: {
-    width: 450,
-    height: 350
-  }
-});
+export default function DensityExplaination() {
 
 
-export default function SparsityTable({updateSelectedSite, sparsityData}) {
-
-  const classes = useStyles();
-
-
-  const columns = [
-    {field: 'id', headerName: '', width: 50},
-    {field: 'monitorId', headerName: 'Monitor ID', width: 250},
-    {field: 'sparsityScore', headerName: 'Sparsity Score', width: 125}
-  ]
-
-  const rows = sparsityData.map((site, index) => {
-    return {id: index, monitorId: site.monitorId, sparsityScore: site.sparsityScore};
-  });
-
-
-  return (
-    <Grid item xs={4}>
-      <DashboardComponent>
-        <Typography align='center' variant='h5'>Sparsity Score Table</Typography>
-        <div className={classes.root}>
-          <DataGrid
-            rows={rows}
-            columns={columns}
-            pageSize={100}
-            rowsPerPageOptions={[100]}
-            onCellClick={params => {updateSelectedSite(params.id)}}
-          />
-        </div>
-      </DashboardComponent>
-    </Grid>
-  );
+    return (
+        <Grid item xs={3}>
+            <DashboardComponent>
+                <Typography variant='h5'><strong>Density Score</strong></Typography>
+                <Typography>
+                    Density Score represents the average amount of time between observations
+                    at a given observation site. The number is normalized based off of the mean and
+                    standard deviation of both frequency of measure and total number of observations
+                    at every site in the query.
+                </Typography>
+            </DashboardComponent>
+        </Grid>
+    )
 
 
 }

@@ -35,7 +35,7 @@ END OF TERMS AND CONDITIONS
 import { Stack } from '@mui/material';
 
 // Hooks
-import { UseSiteSparsity } from './hooks/UseSiteSparsity';
+import { UseSiteDensity } from './hooks/UseSiteDensity';
 import { UseRequest } from './hooks/UseRequest';
 import { UseDeckMap } from './hooks/UseDeckMap';
 
@@ -47,9 +47,9 @@ import MapLegend from './components/map/MapLegend';
 
 export default function App() {
 
-    const Sparsity = UseSiteSparsity();
-    const Request = UseRequest(Sparsity.functions);
-    const Map = UseDeckMap(Sparsity.state, Request);
+    const Density = UseSiteDensity();
+    const Request = UseRequest(Density.functions);
+    const Map = UseDeckMap(Density.state, Request);
 
 
     return (
@@ -65,12 +65,12 @@ export default function App() {
             >
                 <Dashboard
                     Request={Request}
-                    Sparsity={Sparsity}
+                    Density={Density}
                     Map={Map}
                 />
                 <MapLegend
-                    min={Sparsity.state.scores[0]}
-                    max={Sparsity.state.scores[Sparsity.state.scores.length-1]}
+                    min={Density.state.scores[0]}
+                    max={Density.state.scores[Density.state.scores.length-1]}
                     requestStatus={Request.state.requestStatus}
                     visible={Map.state.viewMapLegend}
                 />

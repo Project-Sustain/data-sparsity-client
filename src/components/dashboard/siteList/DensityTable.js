@@ -32,26 +32,53 @@ END OF TERMS AND CONDITIONS
 */
 
 
-import { Typography, Grid } from "@mui/material";
-import DashboardComponent from "../../utilityComponents/DashboardComponent";
+import { React } from 'react'
+import { makeStyles } from '@material-ui/core';
+import { Typography, Grid } from '@mui/material';
+import { DataGrid } from '@mui/x-data-grid';
+import DashboardComponent from '../../utilityComponents/DashboardComponent';
 
 
-export default function SparsityExplaination() {
+const useStyles = makeStyles({
+  root: {
+    width: 450,
+    height: 350
+  }
+});
 
 
-    return (
-        <Grid item xs={3}>
-            <DashboardComponent>
-                <Typography variant='h5'><strong>Sparsity Score</strong></Typography>
-                <Typography>
-                    Sparsity Score represents the average amount of time between observations
-                    at a given observation site. The number is normalized based off of the mean and
-                    standard deviation of both frequency of measure and total number of observations
-                    at every site in the query.
-                </Typography>
-            </DashboardComponent>
-        </Grid>
-    )
+export default function DensityTable({updateSelectedSite, densityData}) {
+
+  const classes = useStyles();
+
+
+  const columns = [
+    {field: 'id', headerName: '', width: 50},
+    {field: 'monitorId', headerName: 'Monitor ID', width: 250},
+    {field: 'densityScore', headerName: 'Density Score', width: 125}
+  ]
+
+  const rows = densityData.map((site, index) => {
+    return {id: index, monitorId: site.monitorId, densityScore: site.densityScore};
+  });
+
+
+  return (
+    <Grid item xs={4}>
+      <DashboardComponent>
+        <Typography align='center' variant='h5'>Density Score Table</Typography>
+        <div className={classes.root}>
+          <DataGrid
+            rows={rows}
+            columns={columns}
+            pageSize={100}
+            rowsPerPageOptions={[100]}
+            onCellClick={params => {updateSelectedSite(params.id)}}
+          />
+        </div>
+      </DashboardComponent>
+    </Grid>
+  );
 
 
 }

@@ -70,10 +70,10 @@ export default function StatisticsTable({stats}) {
                             </TableRow>
                             <TableRow>
                                 <TableCell>Sparstiy Scores</TableCell>
-                                <TableCell>{stats.minSparsity}</TableCell>
-                                <TableCell>{stats.maxSparsity}</TableCell>
-                                <TableCell>{stats.meanSparsity}</TableCell>
-                                <TableCell>{stats.stdDevSparsity}</TableCell>
+                                <TableCell>{stats.minDensity}</TableCell>
+                                <TableCell>{stats.maxDensity}</TableCell>
+                                <TableCell>{stats.meanDensity}</TableCell>
+                                <TableCell>{stats.stdDevDensity}</TableCell>
                             </TableRow>
                         </TableBody>
                     </Table>

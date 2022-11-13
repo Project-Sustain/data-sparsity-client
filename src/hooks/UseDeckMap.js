@@ -38,7 +38,7 @@ import { Api } from '../library/Api';
 import { colors } from '../library/colors';
 import chroma from 'chroma-js';
 
-export const UseDeckMap = (SparsityState, Request) => {
+export const UseDeckMap = (DensityState, Request) => {
 
     
     // Constants
@@ -72,7 +72,7 @@ export const UseDeckMap = (SparsityState, Request) => {
         const layer = new IconLayer({
             id: 'icon-layer',
             pickable: true,
-            data: SparsityState.sparsityData,
+            data: DensityState.densityData,
             iconAtlas: 'https://raw.githubusercontent.com/visgl/deck.gl-data/master/website/icon-atlas.png',
             iconMapping: ICON_MAPPING,
             sizeScale: 15,
@@ -83,7 +83,7 @@ export const UseDeckMap = (SparsityState, Request) => {
             getFillColor: d => d.color
         });
         setIconLayer([layer])
-    }, [SparsityState.sparsityData]);
+    }, [DensityState.densityData]);
 
     useEffect(() => {
         if(Object.keys(selectedShape).length > 0) {
@@ -167,7 +167,7 @@ export const UseDeckMap = (SparsityState, Request) => {
             return object && `${object.name}`;
         }
         else {
-            return object && `Sparsity Score: ${object.sparsityScore}\nSite Mean: ${object.siteMean}\nNumber of Observations: ${object.numberOfMeasurements}`
+            return object && `Density Score: ${object.densityScore}\nSite Mean: ${object.siteMean}\nNumber of Observations: ${object.numberOfMeasurements}`
         }
     };
 

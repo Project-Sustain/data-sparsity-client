@@ -48,7 +48,7 @@ const useStyles = makeStyles({
 });
 
 
-export default function RequestForm({ Request, sparsityDataLength, currentShapeName }) {
+export default function RequestForm({ Request, densityDataLength, currentShapeName }) {
 
     const classes = useStyles();
 
@@ -64,11 +64,11 @@ export default function RequestForm({ Request, sparsityDataLength, currentShapeN
         else {
             return (
                 <ButtonGroup>
-                    <Button onClick={Request.functions.sendSparsityScoreRequest}>
+                    <Button onClick={Request.functions.sendDensityRequest}>
                         Submit Request: {currentShapeName}
                     </Button>
                     <Button
-                        disabled={sparsityDataLength < 1}
+                        disabled={densityDataLength < 1}
                         onClick={Request.functions.sendUpdateBaselineRequest}
                     >
                         Update Baseline
