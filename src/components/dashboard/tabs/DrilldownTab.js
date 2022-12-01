@@ -34,7 +34,7 @@ END OF TERMS AND CONDITIONS
 
 import { useEffect, useState } from "react";
 import { makeStyles } from "@material-ui/core";
-import { List, ListItemButton, ListItemText, ListSubheader, Grid } from "@mui/material";
+import { List, ListItemButton, ListItemText, ListSubheader, Grid, LinearProgress, Typography } from "@mui/material";
 import { LineChart, Line, XAxis, YAxis, CartesianGrid, Tooltip, Legend, ResponsiveContainer } from 'recharts';
 import { Api } from "../../../library/Api";
 import DashboardComponent from "../../utilityComponents/DashboardComponent";
@@ -48,13 +48,14 @@ const useStyles = makeStyles({
         overflow: 'auto',
         maxHeight: '50vh',
         width: '20vw'
+    },
+    loading: {
+        width: '100%'
     }
 });
 
 
 export default function DrilldownTab({siteId, requestParams}) {
-
-    console.log({siteId})
 
     const classes = useStyles();
 
@@ -64,6 +65,7 @@ export default function DrilldownTab({siteId, requestParams}) {
     const [selectedIndex, setSelectedIndex] = useState(0);
     const [drilldownData, setDrilldownData] = useState([]);
     const [chartData, setChartData] = useState([]);
+    const [status, setStatus] = useState('NO DATA');
 
 
     useEffect(() => {
@@ -99,7 +101,6 @@ export default function DrilldownTab({siteId, requestParams}) {
 
     useEffect(() => {
         const temp = drilldownData.map((entry) => {
-            console.log(entry.epochTime)
             return {'value': parseFloat(entry.value), 'time': moment.unix(entry.epochTime/1000).format('MM/DD/YY')}
         });
         setChartData(temp);
@@ -108,27 +109,74 @@ export default function DrilldownTab({siteId, requestParams}) {
 
     const handleListItemClick = (event, index) => {
         setSelectedIndex(index);
-        sendDrilldownRequest();
+        sendDrilldownRequest(filteredMeasurementNames[index]);
     };
 
-    const sendDrilldownRequest = async() => {
+    const sendDrilldownRequest = async(measurement) => {
+        console.log({measurement})
         const params = {
             'collectionName': requestParams.collectionName,
             'startTime': requestParams.startTime,
             'endTime' : requestParams.endTime,
             'siteIdName': requestParams.siteIdName,
             'siteId': siteId,
-            'measurementName': filteredMeasurementNames[selectedIndex],
+            'measurementName': measurement,
             'unit': true
         };
 
-        const streamedResults = await Api.sendStreamRequest('streamDrilldownData', params);
+        setStatus('PENDING');
+        const streamedResults = await Api.sendStreamRequest('streamDrilldownData', params).then();
         setDrilldownData(streamedResults);
+        setStatus('VALID');
     };
 
     const handleSearchText = (event) => {
         setSearchText(event.target.value);
     };
+
+    const renderChart = () => {
+        if (status === 'VALID') {
+            return (
+                <ResponsiveContainer width="100%" height={350}>
+                    <LineChart
+                        data={chartData}
+                        margin={{
+                            top: 5,
+                            right: 30,
+                            left: 20,
+                            bottom: 5,
+                        }}
+                    >
+                        <CartesianGrid strokeDasharray="3 3" />
+                        <XAxis
+                            dataKey="time"
+                            // tickFormatter = {(unixTime) => moment(unixTime).format('HH:mm Do')}
+                        />
+                        <YAxis />
+                        <Tooltip />
+                        <Legend />
+                        <Line 
+                            type="monotone" 
+                            dataKey='value' 
+                            stroke={colors.tertiary}
+                            activeDot={{ r: 8 }}
+                        />
+                    </LineChart>
+                </ResponsiveContainer>
+            );
+        }
+        else if (status === 'PENDING') {
+            return (
+                <>
+                    <Typography>Loading Data...</Typography>
+                    <LinearProgress className={classes.loading} />
+                </>
+            );
+        }
+        else {
+            return null;
+        }
+    }
 
 
     return (
@@ -166,32 +214,7 @@ export default function DrilldownTab({siteId, requestParams}) {
 
             <Grid item xs={8}>
                 <DashboardComponent>
-                    <ResponsiveContainer width="100%" height={350}>
-                        <LineChart
-                            data={chartData}
-                            margin={{
-                                top: 5,
-                                right: 30,
-                                left: 20,
-                                bottom: 5,
-                            }}
-                        >
-                            <CartesianGrid strokeDasharray="3 3" />
-                            <XAxis
-                                dataKey="time"
-                                // tickFormatter = {(unixTime) => moment(unixTime).format('HH:mm Do')}
-                            />
-                            <YAxis />
-                            <Tooltip />
-                            <Legend />
-                            <Line 
-                                type="monotone" 
-                                dataKey="value" 
-                                stroke={colors.tertiary}
-                                activeDot={{ r: 8 }}
-                            />
-                        </LineChart>
-                    </ResponsiveContainer>
+                    {renderChart()}
                 </DashboardComponent>
             </Grid>
         </>
