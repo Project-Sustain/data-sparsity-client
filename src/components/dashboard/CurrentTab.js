@@ -43,6 +43,7 @@ import { UsePieBarChart } from '../../hooks/UsePieBarChart';
 import { UseTimeSeriesChart } from '../../hooks/UseTimeSeriesChart';
 import { UseFilter } from '../../hooks/UseFilter';
 import { UseSiteData } from '../../hooks/UseSiteData';
+import DrilldownTab from './tabs/DrilldownTab';
 
 
 export default function CurrentTab({currentTab, Request, Density, Map}) {
@@ -72,17 +73,22 @@ export default function CurrentTab({currentTab, Request, Density, Map}) {
                         numBuckets={TimeSeriesData.state.numTsBuckets}
                     />
         case 5:
+            return <Filter 
+                        resetFilter={Density.functions.resetFilter} 
+                        filterDensityData={Density.functions.filterDensityData} 
+                        DataFilter={DataFilter} 
+                    />
+        case 6:
             return <SiteDataTab 
                         Request={Request}
                         Density={Density}
                         Map={Map}
                         SiteData={SiteData}
                     />
-        case 6:
-            return <Filter 
-                        resetFilter={Density.functions.resetFilter} 
-                        filterDensityData={Density.functions.filterDensityData} 
-                        DataFilter={DataFilter} 
+        case 7:
+            return <DrilldownTab
+                        siteId={SiteData.state.selectedSite.monitorId}
+                        requestParams={Request.state.requestParams}
                     />
         default:
             return null;

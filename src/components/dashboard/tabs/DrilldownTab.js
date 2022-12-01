@@ -32,82 +32,196 @@ END OF TERMS AND CONDITIONS
 */
 
 
-import { useState, useEffect } from "react";
-import { ButtonGroup, Button } from "@mui/material";
+import { useEffect, useState } from "react";
 import { makeStyles } from "@material-ui/core";
-import KeyboardArrowDownIcon from '@mui/icons-material/KeyboardArrowDown';
+import { List, ListItemButton, ListItemText, ListSubheader, Grid, LinearProgress, Typography } from "@mui/material";
+import { LineChart, Line, XAxis, YAxis, CartesianGrid, Tooltip, Legend, ResponsiveContainer } from 'recharts';
+import { Api } from "../../../library/Api";
+import DashboardComponent from "../../utilityComponents/DashboardComponent";
+import { TextField } from "@mui/material";
+import moment from 'moment';
+import { colors } from "../../../library/colors";
 
 
 const useStyles = makeStyles({
-    root: {
-        margin: '10px'
+    list: {
+        overflow: 'auto',
+        maxHeight: '50vh',
+        width: '20vw'
+    },
+    loading: {
+        width: '100%'
     }
 });
 
 
-export default function TabSystem({currentTab, setCurrentTab, handleDrawerClose, disableTab, scoreSet, requestStatus}) {
+export default function DrilldownTab({siteId, requestParams}) {
 
     const classes = useStyles();
-    const [pieChartInvalid, setPieChartInvalid] = useState(false);
+
+    const [measurementNames, setMeasurentNames] = useState([]);
+    const [filteredMeasurementNames, setFilteredMeasurementNames] = useState([]);
+    const [searchText, setSearchText] = useState('');
+    const [selectedIndex, setSelectedIndex] = useState(0);
+    const [drilldownData, setDrilldownData] = useState([]);
+    const [chartData, setChartData] = useState([]);
+    const [status, setStatus] = useState('NO DATA');
+
 
     useEffect(() => {
-        if(requestStatus === 'VALID') {
-            setPieChartInvalid(scoreSet.length < 1 || scoreSet.length > 100)
+        (async () => {
+
+            const params = {
+                'collectionName': requestParams.collectionName,
+                'startTime': requestParams.startTime,
+                'endTime' : requestParams.endTime,
+                'siteIdName': requestParams.siteIdName,
+                'siteId': siteId,
+                'ignoredFields': ['epoch_time', '_id', 'GridCode', 'unit', 'MonitoringLocationIdentifier', 'DataType']
+            }
+
+            const response = await Api.sendJsonRequest("measurementNames", params);
+            if(response) {
+                setMeasurentNames(response.measurementName);
+            }
+            else console.log("ERROR sending temporalRange request");
+        })();
+    }, [requestParams]);
+
+    useEffect(() => {
+        setFilteredMeasurementNames(measurementNames);
+    }, [measurementNames]);
+
+    useEffect(() => {
+        const temp = measurementNames.filter(name => {
+            return name.includes(searchText);
+        });
+        setFilteredMeasurementNames(temp);
+    }, [searchText]);
+
+    useEffect(() => {
+        const temp = drilldownData.map((entry) => {
+            return {'value': parseFloat(entry.value), 'time': moment.unix(entry.epochTime/1000).format('MM/DD/YY')}
+        });
+        setChartData(temp);
+    }, [drilldownData]);
+
+
+    const handleListItemClick = (event, index) => {
+        setSelectedIndex(index);
+        sendDrilldownRequest(filteredMeasurementNames[index]);
+    };
+
+    const sendDrilldownRequest = async(measurement) => {
+        const params = {
+            'collectionName': requestParams.collectionName,
+            'startTime': requestParams.startTime,
+            'endTime' : requestParams.endTime,
+            'siteIdName': requestParams.siteIdName,
+            'siteId': siteId,
+            'measurementName': measurement,
+            'unit': true
+        };
+
+        setStatus('PENDING');
+        const streamedResults = await Api.sendStreamRequest('streamDrilldownData', params).then();
+        setDrilldownData(streamedResults);
+        setStatus('VALID');
+    };
+
+    const handleSearchText = (event) => {
+        setSearchText(event.target.value);
+    };
+
+    const renderChart = () => {
+        if (status === 'VALID') {
+            return (
+                <>
+                    <Typography>{filteredMeasurementNames[selectedIndex]}</Typography>
+                    <ResponsiveContainer width="100%" height={350}>
+                        <LineChart
+                            data={chartData}
+                            margin={{
+                                top: 5,
+                                right: 30,
+                                left: 20,
+                                bottom: 5,
+                            }}
+                        >
+                            <CartesianGrid strokeDasharray="3 3" />
+                            <XAxis
+                                dataKey="time"
+                                // tickFormatter = {(unixTime) => moment(unixTime).format('HH:mm Do')}
+                            />
+                            <YAxis />
+                            <Tooltip />
+                            <Legend />
+                            <Line 
+                                type="monotone" 
+                                dataKey='value' 
+                                stroke={colors.tertiary}
+                                activeDot={{ r: 8 }}
+                            />
+                        </LineChart>
+                    </ResponsiveContainer>
+                </>
+            );
+        }
+        else if (status === 'PENDING') {
+            return (
+                <>
+                    <Typography>Loading Data...</Typography>
+                    <LinearProgress className={classes.loading} />
+                </>
+            );
         }
         else {
-            setPieChartInvalid(false);
+            return <Typography>No Data Yet</Typography>;
         }
-    }, [requestStatus, scoreSet]);
-
-    const getPieTabTitle = () => {
-        const status = pieChartInvalid ? ' Unavailable' : '';
-        return `Pie Chart${status}`;
-    };
-
-    const tabs = [
-        'Request Form',
-        'Statistics',
-        getPieTabTitle(),
-        'Bar Chart',
-        'Time Series',
-        'Data Filter',
-        'Site Data',
-        'Site Drilldown'
-    ];
-
-    const getVariant = (index) => {
-        if(index === currentTab) return 'contained';
-        else return 'outlined';
-    };
-
-    const disableButton = (index) => {
-        if(index === 2) {
-            if(pieChartInvalid) return true;
-        }
-        if(index > 0) return disableTab;
-        else return false;
     }
 
 
     return (
-        <ButtonGroup className={classes.root}>
-            {
-                tabs.map((title, index) => {
-                    return (
-                        <Button 
-                            key={index} 
-                            onClick={() => setCurrentTab(index)}
-                            variant={getVariant(index)}
-                            disabled={disableButton(index)}
-                        >
-                            {title}
-                        </Button>
-                    );
-                })
-            }
-            <Button onClick={handleDrawerClose}><KeyboardArrowDownIcon/></Button>
-        </ButtonGroup>
+        <>
+            <Grid item xs={3}>
+                <DashboardComponent>
+                    <List
+                        className={classes.list}
+                    >
+                        <ListSubheader>
+                            <TextField
+                                fullWidth
+                                value={searchText}
+                                label='Search...'
+                                variant='outlined'
+                                onChange={handleSearchText}
+                            />
+                        </ListSubheader>
+                        {
+                            filteredMeasurementNames.map((name, index) => {
+                                return (
+                                    <ListItemButton
+                                        key={index}
+                                        selected={selectedIndex === index}
+                                        onClick={(event) => handleListItemClick(event, index)}
+                                    >
+                                        <ListItemText primary={name} />
+                                    </ListItemButton> 
+                                );
+                            })
+                        }
+                    </List>
+                </DashboardComponent>
+            </Grid>
+
+            <Grid item xs={8}>
+                <DashboardComponent>
+                    {renderChart()}
+                </DashboardComponent>
+            </Grid>
+        </>
     );
 
 
 }
+
