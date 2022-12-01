@@ -34,10 +34,13 @@ END OF TERMS AND CONDITIONS
 
 import { useEffect, useState } from "react";
 import { makeStyles } from "@material-ui/core";
-import { List, ListItemButton, ListItemText, ListSubheader } from "@mui/material";
+import { List, ListItemButton, ListItemText, ListSubheader, Grid } from "@mui/material";
+import { LineChart, Line, XAxis, YAxis, CartesianGrid, Tooltip, Legend, ResponsiveContainer } from 'recharts';
 import { Api } from "../../../library/Api";
 import DashboardComponent from "../../utilityComponents/DashboardComponent";
 import { TextField } from "@mui/material";
+import moment from 'moment';
+import { colors } from "../../../library/colors";
 
 
 const useStyles = makeStyles({
@@ -58,8 +61,9 @@ export default function DrilldownTab({}) {
     const [searchText, setSearchText] = useState('');
     const [selectedIndex, setSelectedIndex] = useState(0);
     const [drilldownData, setDrilldownData] = useState([]);
+    const [chartData, setChartData] = useState([]);
 
-    console.log({drilldownData})
+    console.log({chartData})
 
 
     useEffect(() => {
@@ -93,6 +97,14 @@ export default function DrilldownTab({}) {
         setFilteredMeasurementNames(temp);
     }, [searchText]);
 
+    useEffect(() => {
+        const temp = drilldownData.map((entry) => {
+            console.log(entry.epochTime)
+            return {'value': parseFloat(entry.value), 'time': moment.unix(entry.epochTime/1000).format('MM/DD/YY')}
+        });
+        setChartData(temp);
+    }, [drilldownData]);
+
 
     const handleListItemClick = (event, index) => {
         setSelectedIndex(index);
@@ -121,34 +133,69 @@ export default function DrilldownTab({}) {
 
 
     return (
-        <DashboardComponent>
-            <List
-                className={classes.list}
-            >
-                <ListSubheader>
-                    <TextField
-                        fullWidth
-                        value={searchText}
-                        label='Search...'
-                        variant='outlined'
-                        onChange={handleSearchText}
-                    />
-                </ListSubheader>
-                {
-                    filteredMeasurementNames.map((name, index) => {
-                        return (
-                            <ListItemButton
-                                key={index}
-                                selected={selectedIndex === index}
-                                onClick={(event) => handleListItemClick(event, index)}
-                            >
-                                <ListItemText primary={name} />
-                            </ListItemButton> 
-                        );
-                    })
-                }
-            </List>
-        </DashboardComponent>
+        <>
+            <Grid item xs={3}>
+                <DashboardComponent>
+                    <List
+                        className={classes.list}
+                    >
+                        <ListSubheader>
+                            <TextField
+                                fullWidth
+                                value={searchText}
+                                label='Search...'
+                                variant='outlined'
+                                onChange={handleSearchText}
+                            />
+                        </ListSubheader>
+                        {
+                            filteredMeasurementNames.map((name, index) => {
+                                return (
+                                    <ListItemButton
+                                        key={index}
+                                        selected={selectedIndex === index}
+                                        onClick={(event) => handleListItemClick(event, index)}
+                                    >
+                                        <ListItemText primary={name} />
+                                    </ListItemButton> 
+                                );
+                            })
+                        }
+                    </List>
+                </DashboardComponent>
+            </Grid>
+
+            <Grid item xs={8}>
+                <DashboardComponent>
+                    <ResponsiveContainer width="100%" height={350}>
+                        <LineChart
+                            data={chartData}
+                            margin={{
+                                top: 5,
+                                right: 30,
+                                left: 20,
+                                bottom: 5,
+                            }}
+                        >
+                            <CartesianGrid strokeDasharray="3 3" />
+                            <XAxis
+                                dataKey="time"
+                                // tickFormatter = {(unixTime) => moment(unixTime).format('HH:mm Do')}
+                            />
+                            <YAxis />
+                            <Tooltip />
+                            <Legend />
+                            <Line 
+                                type="monotone" 
+                                dataKey="value" 
+                                stroke={colors.tertiary}
+                                activeDot={{ r: 8 }}
+                            />
+                        </LineChart>
+                    </ResponsiveContainer>
+                </DashboardComponent>
+            </Grid>
+        </>
     );
 
 
