@@ -59,8 +59,7 @@ export default function DrilldownTab({}) {
     const [selectedIndex, setSelectedIndex] = useState(0);
     const [drilldownData, setDrilldownData] = useState([]);
 
-    // console.log({drilldownData})
-    console.log({filteredMeasurementNames})
+    console.log({drilldownData})
 
 
     useEffect(() => {
@@ -88,9 +87,8 @@ export default function DrilldownTab({}) {
     }, [measurementNames]);
 
     useEffect(() => {
-        console.log({searchText})
         const temp = measurementNames.filter(name => {
-            name.includes(searchText);
+            return name.includes(searchText);
         });
         setFilteredMeasurementNames(temp);
     }, [searchText]);
@@ -114,7 +112,6 @@ export default function DrilldownTab({}) {
         };
 
         const streamedResults = await Api.sendStreamRequest('streamDrilldownData', requestParams);
-        console.log({streamedResults})
         setDrilldownData(streamedResults);
     };
 
