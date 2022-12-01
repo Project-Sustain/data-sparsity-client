@@ -32,82 +32,128 @@ END OF TERMS AND CONDITIONS
 */
 
 
-import { useState, useEffect } from "react";
-import { ButtonGroup, Button } from "@mui/material";
+import { useEffect, useState } from "react";
 import { makeStyles } from "@material-ui/core";
-import KeyboardArrowDownIcon from '@mui/icons-material/KeyboardArrowDown';
+import { List, ListItemButton, ListItemText, ListSubheader } from "@mui/material";
+import { Api } from "../../../library/Api";
+import DashboardComponent from "../../utilityComponents/DashboardComponent";
+import { TextField } from "@mui/material";
 
 
 const useStyles = makeStyles({
-    root: {
-        margin: '10px'
+    list: {
+        overflow: 'auto',
+        maxHeight: '50vh',
+        width: '20vw'
     }
 });
 
 
-export default function TabSystem({currentTab, setCurrentTab, handleDrawerClose, disableTab, scoreSet, requestStatus}) {
+export default function DrilldownTab({}) {
 
     const classes = useStyles();
-    const [pieChartInvalid, setPieChartInvalid] = useState(false);
+
+    const [measurementNames, setMeasurentNames] = useState([]);
+    const [filteredMeasurementNames, setFilteredMeasurementNames] = useState([]);
+    const [searchText, setSearchText] = useState('');
+    const [selectedIndex, setSelectedIndex] = useState(0);
+    const [drilldownData, setDrilldownData] = useState([]);
+
+    // console.log({drilldownData})
+    console.log({filteredMeasurementNames})
+
 
     useEffect(() => {
-        if(requestStatus === 'VALID') {
-            setPieChartInvalid(scoreSet.length < 1 || scoreSet.length > 100)
-        }
-        else {
-            setPieChartInvalid(false);
-        }
-    }, [requestStatus, scoreSet]);
+        (async () => {
 
-    const getPieTabTitle = () => {
-        const status = pieChartInvalid ? ' Unavailable' : '';
-        return `Pie Chart${status}`;
+            const requestParams = {
+                'collectionName': 'water_quality_bodies_of_water',
+                'startTime': 0,
+                'endTime' : 1451520000000,
+                'siteIdName': 'MonitoringLocationIdentifier',
+                'siteId': 'USGS-02361038',
+                'ignoredFields': ['epoch_time', '_id', 'GridCode', 'unit', 'MonitoringLocationIdentifier', 'DataType']
+            }
+
+            const response = await Api.sendJsonRequest("measurementNames", requestParams);
+            if(response) {
+                setMeasurentNames(response.measurementName);
+            }
+            else console.log("ERROR sending temporalRange request");
+        })();
+    }, []);
+
+    useEffect(() => {
+        setFilteredMeasurementNames(measurementNames);
+    }, [measurementNames]);
+
+    useEffect(() => {
+        console.log({searchText})
+        const temp = measurementNames.filter(name => {
+            name.includes(searchText);
+        });
+        setFilteredMeasurementNames(temp);
+    }, [searchText]);
+
+
+    const handleListItemClick = (event, index) => {
+        setSelectedIndex(index);
+        sendDrilldownRequest();
     };
 
-    const tabs = [
-        'Request Form',
-        'Statistics',
-        getPieTabTitle(),
-        'Bar Chart',
-        'Time Series',
-        'Data Filter',
-        'Site Data',
-        'Site Drilldown'
-    ];
+    const sendDrilldownRequest = async() => {
+        console.log(`Sending Drilldown Request for ${filteredMeasurementNames[selectedIndex]}`)
+        const requestParams = {
+            'collectionName': 'water_quality_bodies_of_water',
+            'startTime': 0,
+            'endTime' : 1451520000000,
+            'siteIdName': 'MonitoringLocationIdentifier',
+            'siteId': 'USGS-02361038',
+            'measurementName': filteredMeasurementNames[selectedIndex],
+            'unit': true
+        };
 
-    const getVariant = (index) => {
-        if(index === currentTab) return 'contained';
-        else return 'outlined';
+        const streamedResults = await Api.sendStreamRequest('streamDrilldownData', requestParams);
+        console.log({streamedResults})
+        setDrilldownData(streamedResults);
     };
 
-    const disableButton = (index) => {
-        if(index === 2) {
-            if(pieChartInvalid) return true;
-        }
-        if(index > 0) return disableTab;
-        else return false;
-    }
+    const handleSearchText = (event) => {
+        setSearchText(event.target.value);
+    };
 
 
     return (
-        <ButtonGroup className={classes.root}>
-            {
-                tabs.map((title, index) => {
-                    return (
-                        <Button 
-                            key={index} 
-                            onClick={() => setCurrentTab(index)}
-                            variant={getVariant(index)}
-                            disabled={disableButton(index)}
-                        >
-                            {title}
-                        </Button>
-                    );
-                })
-            }
-            <Button onClick={handleDrawerClose}><KeyboardArrowDownIcon/></Button>
-        </ButtonGroup>
+        <DashboardComponent>
+            <List
+                className={classes.list}
+            >
+                <ListSubheader>
+                    <TextField
+                        fullWidth
+                        value={searchText}
+                        label='Search...'
+                        variant='outlined'
+                        onChange={handleSearchText}
+                    />
+                </ListSubheader>
+                {
+                    filteredMeasurementNames.map((name, index) => {
+                        return (
+                            <ListItemButton
+                                key={index}
+                                selected={selectedIndex === index}
+                                onClick={(event) => handleListItemClick(event, index)}
+                            >
+                                <ListItemText primary={name} />
+                            </ListItemButton> 
+                        );
+                    })
+                }
+            </List>
+        </DashboardComponent>
     );
 
 
 }
+
