@@ -113,7 +113,6 @@ export default function DrilldownTab({siteId, requestParams}) {
     };
 
     const sendDrilldownRequest = async(measurement) => {
-        console.log({measurement})
         const params = {
             'collectionName': requestParams.collectionName,
             'startTime': requestParams.startTime,
@@ -137,32 +136,35 @@ export default function DrilldownTab({siteId, requestParams}) {
     const renderChart = () => {
         if (status === 'VALID') {
             return (
-                <ResponsiveContainer width="100%" height={350}>
-                    <LineChart
-                        data={chartData}
-                        margin={{
-                            top: 5,
-                            right: 30,
-                            left: 20,
-                            bottom: 5,
-                        }}
-                    >
-                        <CartesianGrid strokeDasharray="3 3" />
-                        <XAxis
-                            dataKey="time"
-                            // tickFormatter = {(unixTime) => moment(unixTime).format('HH:mm Do')}
-                        />
-                        <YAxis />
-                        <Tooltip />
-                        <Legend />
-                        <Line 
-                            type="monotone" 
-                            dataKey='value' 
-                            stroke={colors.tertiary}
-                            activeDot={{ r: 8 }}
-                        />
-                    </LineChart>
-                </ResponsiveContainer>
+                <>
+                    <Typography>{filteredMeasurementNames[selectedIndex]}</Typography>
+                    <ResponsiveContainer width="100%" height={350}>
+                        <LineChart
+                            data={chartData}
+                            margin={{
+                                top: 5,
+                                right: 30,
+                                left: 20,
+                                bottom: 5,
+                            }}
+                        >
+                            <CartesianGrid strokeDasharray="3 3" />
+                            <XAxis
+                                dataKey="time"
+                                // tickFormatter = {(unixTime) => moment(unixTime).format('HH:mm Do')}
+                            />
+                            <YAxis />
+                            <Tooltip />
+                            <Legend />
+                            <Line 
+                                type="monotone" 
+                                dataKey='value' 
+                                stroke={colors.tertiary}
+                                activeDot={{ r: 8 }}
+                            />
+                        </LineChart>
+                    </ResponsiveContainer>
+                </>
             );
         }
         else if (status === 'PENDING') {
@@ -174,7 +176,7 @@ export default function DrilldownTab({siteId, requestParams}) {
             );
         }
         else {
-            return null;
+            return <Typography>No Data Yet</Typography>;
         }
     }
 
