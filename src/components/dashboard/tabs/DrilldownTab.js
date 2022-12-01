@@ -52,7 +52,9 @@ const useStyles = makeStyles({
 });
 
 
-export default function DrilldownTab({}) {
+export default function DrilldownTab({siteId, requestParams}) {
+
+    console.log({siteId})
 
     const classes = useStyles();
 
@@ -63,28 +65,26 @@ export default function DrilldownTab({}) {
     const [drilldownData, setDrilldownData] = useState([]);
     const [chartData, setChartData] = useState([]);
 
-    console.log({chartData})
-
 
     useEffect(() => {
         (async () => {
 
-            const requestParams = {
-                'collectionName': 'water_quality_bodies_of_water',
-                'startTime': 0,
-                'endTime' : 1451520000000,
-                'siteIdName': 'MonitoringLocationIdentifier',
-                'siteId': 'USGS-02361038',
+            const params = {
+                'collectionName': requestParams.collectionName,
+                'startTime': requestParams.startTime,
+                'endTime' : requestParams.endTime,
+                'siteIdName': requestParams.siteIdName,
+                'siteId': siteId,
                 'ignoredFields': ['epoch_time', '_id', 'GridCode', 'unit', 'MonitoringLocationIdentifier', 'DataType']
             }
 
-            const response = await Api.sendJsonRequest("measurementNames", requestParams);
+            const response = await Api.sendJsonRequest("measurementNames", params);
             if(response) {
                 setMeasurentNames(response.measurementName);
             }
             else console.log("ERROR sending temporalRange request");
         })();
-    }, []);
+    }, [requestParams]);
 
     useEffect(() => {
         setFilteredMeasurementNames(measurementNames);
@@ -112,18 +112,17 @@ export default function DrilldownTab({}) {
     };
 
     const sendDrilldownRequest = async() => {
-        console.log(`Sending Drilldown Request for ${filteredMeasurementNames[selectedIndex]}`)
-        const requestParams = {
-            'collectionName': 'water_quality_bodies_of_water',
-            'startTime': 0,
-            'endTime' : 1451520000000,
-            'siteIdName': 'MonitoringLocationIdentifier',
-            'siteId': 'USGS-02361038',
+        const params = {
+            'collectionName': requestParams.collectionName,
+            'startTime': requestParams.startTime,
+            'endTime' : requestParams.endTime,
+            'siteIdName': requestParams.siteIdName,
+            'siteId': siteId,
             'measurementName': filteredMeasurementNames[selectedIndex],
             'unit': true
         };
 
-        const streamedResults = await Api.sendStreamRequest('streamDrilldownData', requestParams);
+        const streamedResults = await Api.sendStreamRequest('streamDrilldownData', params);
         setDrilldownData(streamedResults);
     };
 

@@ -86,7 +86,10 @@ export default function CurrentTab({currentTab, Request, Density, Map}) {
                         SiteData={SiteData}
                     />
         case 7:
-            return <DrilldownTab/>
+            return <DrilldownTab
+                        siteId={SiteData.state.selectedSite.monitorId}
+                        requestParams={Request.state.requestParams}
+                    />
         default:
             return null;
 
