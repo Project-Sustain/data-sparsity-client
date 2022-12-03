@@ -55,7 +55,7 @@ const useStyles = makeStyles({
 });
 
 
-export default function DrilldownTab({siteId, requestParams}) {
+export default function DrilldownTab({siteId, requestParams, ignoredFields}) {
 
     const classes = useStyles();
 
@@ -67,6 +67,8 @@ export default function DrilldownTab({siteId, requestParams}) {
     const [chartData, setChartData] = useState([]);
     const [status, setStatus] = useState('NO DATA');
     const [measurementNamesStatus, setMeasurentNamesStatus] = useState('NO DATA')
+
+    console.log({ignoredFields})
 
 
     useEffect(() => {
@@ -80,7 +82,7 @@ export default function DrilldownTab({siteId, requestParams}) {
                 'endTime' : requestParams.endTime,
                 'siteIdName': requestParams.siteIdName,
                 'siteId': siteId,
-                'ignoredFields': ['epoch_time', '_id', 'GridCode', 'unit', 'MonitoringLocationIdentifier', 'DataType']
+                'ignoredFields': ignoredFields
             }
 
             const response = await Api.sendJsonRequest("measurementNames", params);

@@ -36,11 +36,13 @@ const waterSiteIdName = "MonitoringLocationIdentifier";
 const waterSiteCollection = "water_quality_sites";
 const waterSiteProperties = ["OrganizationFormalName", "MonitoringLocationName", "MonitoringLocationTypeName", "ProviderName"];
 const waterInitialBaseline = 2629800000;
+const waterQualityIgnoredFields = ["epoch_time", "_id", "GridCode", "unit", "MonitoringLocationIdentifier", "DataType"];
 
 const aqiSiteIdName = "monitor_id";
 const aqiSiteCollection = "epa_aqi_monitors";
 const aqiSiteProperties = ["sample_duration", "method"];
 const aqiInitialBaseline = 86400000;
+const aqiIgnoredFields = ["epoch_time", "_id", "monitor_id"];
 
 export const densityMetadata = [
     
@@ -51,7 +53,8 @@ export const densityMetadata = [
         "siteIdName": waterSiteIdName,
         "siteCollection": waterSiteCollection,
         "sitePropertyFields": waterSiteProperties,
-        "initialBaseline": waterInitialBaseline
+        "initialBaseline": waterInitialBaseline,
+        "ignoredFields": waterQualityIgnoredFields
     },
     {
         "collection": "water_quality_pipes",
@@ -59,7 +62,8 @@ export const densityMetadata = [
         "siteIdName": waterSiteIdName,
         "siteCollection": waterSiteCollection,
         "sitePropertyFields": waterSiteProperties,
-        "initialBaseline": waterInitialBaseline
+        "initialBaseline": waterInitialBaseline,
+        "ignoredFields": waterQualityIgnoredFields
     },
     {
         "collection": "water_quality_streams",
@@ -67,7 +71,8 @@ export const densityMetadata = [
         "siteIdName": waterSiteIdName,
         "siteCollection": waterSiteCollection,
         "sitePropertyFields": waterSiteProperties,
-        "initialBaseline": waterInitialBaseline
+        "initialBaseline": waterInitialBaseline,
+        "ignoredFields": waterQualityIgnoredFields
     },
     {
         "collection": "water_quality_point_data",
@@ -75,7 +80,8 @@ export const densityMetadata = [
         "siteIdName": waterSiteIdName,
         "siteCollection": waterSiteCollection,
         "sitePropertyFields": waterSiteProperties,
-        "initialBaseline": waterInitialBaseline
+        "initialBaseline": waterInitialBaseline,
+        "ignoredFields": waterQualityIgnoredFields
     },
 
     // AQI
@@ -85,7 +91,8 @@ export const densityMetadata = [
         "siteIdName": aqiSiteIdName,
         "siteCollection": aqiSiteCollection,
         "sitePropertyFields": aqiSiteProperties,
-        "initialBaseline": aqiInitialBaseline
+        "initialBaseline": aqiInitialBaseline,
+        "ignoredFields": aqiIgnoredFields
     },
     {
         "collection": "epa_aqi_carbon_monoxide",
@@ -93,7 +100,8 @@ export const densityMetadata = [
         "siteIdName": aqiSiteIdName,
         "siteCollection": aqiSiteCollection,
         "sitePropertyFields": aqiSiteProperties,
-        "initialBaseline": aqiInitialBaseline
+        "initialBaseline": aqiInitialBaseline,
+        "ignoredFields": aqiIgnoredFields
     },
     {
         "collection": "epa_aqi_lead_pm10",
@@ -101,7 +109,8 @@ export const densityMetadata = [
         "siteIdName": aqiSiteIdName,
         "siteCollection": aqiSiteCollection,
         "sitePropertyFields": aqiSiteProperties,
-        "initialBaseline": aqiInitialBaseline
+        "initialBaseline": aqiInitialBaseline,
+        "ignoredFields": aqiIgnoredFields
     },
     {
         "collection": "epa_aqi_lead_tsp",
@@ -109,7 +118,8 @@ export const densityMetadata = [
         "siteIdName": aqiSiteIdName,
         "siteCollection": aqiSiteCollection,
         "sitePropertyFields": aqiSiteProperties,
-        "initialBaseline": aqiInitialBaseline
+        "initialBaseline": aqiInitialBaseline,
+        "ignoredFields": aqiIgnoredFields
     },
     {
         "collection": "epa_aqi_nitrogen",
@@ -117,7 +127,8 @@ export const densityMetadata = [
         "siteIdName": aqiSiteIdName,
         "siteCollection": aqiSiteCollection,
         "sitePropertyFields": aqiSiteProperties,
-        "initialBaseline": aqiInitialBaseline
+        "initialBaseline": aqiInitialBaseline,
+        "ignoredFields": aqiIgnoredFields
     },
     {
         "collection": "epa_aqi_pm10_total",
@@ -125,7 +136,8 @@ export const densityMetadata = [
         "siteIdName": aqiSiteIdName,
         "siteCollection": aqiSiteCollection,
         "sitePropertyFields": aqiSiteProperties,
-        "initialBaseline": aqiInitialBaseline
+        "initialBaseline": aqiInitialBaseline,
+        "ignoredFields": aqiIgnoredFields
     },
     {
         "collection": "epa_aqi_pm25",
@@ -133,7 +145,8 @@ export const densityMetadata = [
         "siteIdName": aqiSiteIdName,
         "siteCollection": aqiSiteCollection,
         "sitePropertyFields": aqiSiteProperties,
-        "initialBaseline": aqiInitialBaseline
+        "initialBaseline": aqiInitialBaseline,
+        "ignoredFields": aqiIgnoredFields
     }
     // {
     //     "collection": "epa_aqi_sulfur_dioxide",

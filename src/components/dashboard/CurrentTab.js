@@ -54,6 +54,9 @@ export default function CurrentTab({currentTab, Request, Density, Map}) {
     const SiteData = UseSiteData(Density.state);
 
 
+    console.log({Request})
+
+
     switch (currentTab) {
         case 0:
             return <RequestTab Request={Request} Density={Density} Map={Map} />
@@ -89,6 +92,7 @@ export default function CurrentTab({currentTab, Request, Density, Map}) {
             return <DrilldownTab
                         siteId={SiteData.state.selectedSite.monitorId}
                         requestParams={Request.state.requestParams}
+                        ignoredFields={Request.state.collection.ignoredFields}
                     />
         default:
             return null;
