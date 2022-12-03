@@ -53,6 +53,12 @@ export const UseDrilldown = (RequestState, siteId, densityData) => {
     const [chartStatus, setChartStatus] = useState('NO DATA');
     const [measurementNamesStatus, setMeasurentNamesStatus] = useState('NO DATA');
 
+    const [collectionName, setCollectionName] = useState('');
+    const [startTime, setStartTime] = useState();
+    const [endTime, setEndTime] = useState();
+    const [siteIdName, setSiteIdName] = useState('');
+    const [ignoredFields, setIgnoredFields] = useState([]);
+
 
     // useEffects
     /**
@@ -66,18 +72,20 @@ export const UseDrilldown = (RequestState, siteId, densityData) => {
                 setMeasurentNamesStatus('PENDING');
 
                 const params = {
-                    'collectionName': RequestState.requestParams.collectionName,
-                    'startTime': RequestState.requestParams.startTime,
-                    'endTime' : RequestState.requestParams.endTime,
-                    'siteIdName': RequestState.requestParams.siteIdName,
+                    'collectionName': collectionName,
+                    'startTime': startTime,
+                    'endTime' : endTime,
+                    'siteIdName': siteIdName,
                     'siteId': siteId,
-                    'ignoredFields': RequestState.collection.ignoredFields
+                    'ignoredFields': ignoredFields
                 }
 
                 const response = await Api.sendJsonRequest("measurementNames", params);
                 if(response) {
                     setMeasurentNames(response.measurementName);
                     setMeasurentNamesStatus('VALID');
+                    setSelectedIndex(0);
+                    sendDrilldownRequest(response.measurementName[0]);
                 }
                 else {
                     console.log("ERROR sending temporalRange request");
@@ -92,10 +100,15 @@ export const UseDrilldown = (RequestState, siteId, densityData) => {
     }, [densityData, siteId]);
 
     /**
-     * Reset drilldownData(& chartData) when a new density query returns
+     * Reset drilldownData(& chartData), measurement data args when a new density query returns
      */
     useEffect(() => {
         setDrilldownData([]);
+        setCollectionName(RequestState.requestParams.collectionName);
+        setStartTime(RequestState.requestParams.startTime);
+        setEndTime(RequestState.requestParams.endTime);
+        setSiteIdName(RequestState.requestParams.siteIdName);
+        setIgnoredFields(RequestState.collection.ignoredFields);
     }, [densityData]);
 
     /**
@@ -131,10 +144,10 @@ export const UseDrilldown = (RequestState, siteId, densityData) => {
     // Functions
     const sendDrilldownRequest = async(measurement) => {
         const params = {
-            'collectionName': RequestState.requestParams.collectionName,
-            'startTime': RequestState.requestParams.startTime,
-            'endTime' : RequestState.requestParams.endTime,
-            'siteIdName': RequestState.requestParams.siteIdName,
+            'collectionName': collectionName,
+            'startTime': startTime,
+            'endTime' : endTime,
+            'siteIdName': siteIdName,
             'siteId': siteId,
             'measurementName': measurement
         };
