@@ -68,8 +68,6 @@ export default function DrilldownTab({siteId, requestParams, ignoredFields}) {
     const [status, setStatus] = useState('NO DATA');
     const [measurementNamesStatus, setMeasurentNamesStatus] = useState('NO DATA')
 
-    console.log({ignoredFields})
-
 
     useEffect(() => {
         (async () => {
@@ -128,8 +126,7 @@ export default function DrilldownTab({siteId, requestParams, ignoredFields}) {
             'endTime' : requestParams.endTime,
             'siteIdName': requestParams.siteIdName,
             'siteId': siteId,
-            'measurementName': measurement,
-            'unit': true
+            'measurementName': measurement
         };
 
         setStatus('PENDING');

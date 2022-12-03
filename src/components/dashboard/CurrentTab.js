@@ -54,9 +54,6 @@ export default function CurrentTab({currentTab, Request, Density, Map}) {
     const SiteData = UseSiteData(Density.state);
 
 
-    console.log({Request})
-
-
     switch (currentTab) {
         case 0:
             return <RequestTab Request={Request} Density={Density} Map={Map} />
