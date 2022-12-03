@@ -32,69 +32,153 @@ END OF TERMS AND CONDITIONS
 */
 
 
-import { useState, useEffect } from 'react';
-import { colors } from '../library/colors';
+import { useEffect, useState } from "react";
+import { Api } from "../library/Api";
+import moment from 'moment';
 
 
-export const UseSiteData = (DensityState) => {
+export const UseDrilldown = (RequestState, siteId, densityData) => {
 
 
-    // State
-    const [sitePieData, setSitePieData] = useState([]);
-    const [selectedSite, setSelectedSite] = useState({});
-    const [selectedSiteIndex, setSelectedSiteIndex] = useState(0);
+    // state
+    const [measurementNames, setMeasurentNames] = useState([]);
+    const [filteredMeasurementNames, setFilteredMeasurementNames] = useState([]);
 
-    console.log(selectedSite.monitorId)
+    const [searchText, setSearchText] = useState('');
+    const [selectedIndex, setSelectedIndex] = useState(0);
+
+    const [drilldownData, setDrilldownData] = useState([]);
+    const [chartData, setChartData] = useState([]);
+
+    const [chartStatus, setChartStatus] = useState('NO DATA');
+    const [measurementNamesStatus, setMeasurentNamesStatus] = useState('NO DATA');
 
 
     // useEffects
+    /**
+     * Set the measurement names with the return from the API request
+     * Do this only when a new density query returns or the selected site changes
+     */
     useEffect(() => {
-        if(DensityState.densityData.length > 0) {
-            setSelectedSite(DensityState.densityData[0]);
-        }
-        else setSelectedSite({});
-    }, [DensityState.densityData]);
+        if (siteId) {
+            (async () => {
 
+                setMeasurentNamesStatus('PENDING');
 
-    useEffect(() => {
-        if(Object.keys(selectedSite) > 0){
-
-            const myScore = selectedSite.densityScore;
-            const numberOfSameScores = DensityState.scores.filter(score => {return score === myScore}).length;
-            const numberOfDifferentScores = DensityState.scores.length - numberOfSameScores;
-            setSitePieData([
-                {
-                    "name": `Sites with density score = ${selectedSite.densityScore}`,
-                    "value": numberOfSameScores,
-                    "fill": colors.tertiary
-                },
-                {
-                    "name": "Sites with other sparisty scores",
-                    "value": numberOfDifferentScores,
-                    "fill": colors.primary
+                const params = {
+                    'collectionName': RequestState.requestParams.collectionName,
+                    'startTime': RequestState.requestParams.startTime,
+                    'endTime' : RequestState.requestParams.endTime,
+                    'siteIdName': RequestState.requestParams.siteIdName,
+                    'siteId': siteId,
+                    'ignoredFields': RequestState.collection.ignoredFields
                 }
-            ]);
 
+                const response = await Api.sendJsonRequest("measurementNames", params);
+                if(response) {
+                    setMeasurentNames(response.measurementName);
+                    setMeasurentNamesStatus('VALID');
+                }
+                else {
+                    console.log("ERROR sending temporalRange request");
+                    setMeasurentNamesStatus('INVALID');
+                }
+            })();
         }
-    }, [selectedSite, DensityState.scores]);
+        else {
+            setMeasurentNames([]);
+            setDrilldownData([]);
+        }
+    }, [densityData, siteId]);
+
+    /**
+     * Reset drilldownData(& chartData) when a new density query returns
+     */
+    useEffect(() => {
+        setDrilldownData([]);
+    }, [densityData]);
+
+    /**
+     * Reset the filtered list whenever the measurement names change
+     */
+    useEffect(() => {
+        setFilteredMeasurementNames(measurementNames);
+    }, [measurementNames]);
+
+    /**
+     * Update the filtered list whenever the user types into the search box
+     */
+    useEffect(() => {
+        if (measurementNames) {
+            const temp = measurementNames.filter(name => {
+                return name.includes(searchText);
+            });
+            setFilteredMeasurementNames(temp);
+        }
+    }, [searchText, measurementNames]);
+
+    /**
+     * Create the chart data each time drilldown data returns
+     */
+    useEffect(() => {
+        const temp = drilldownData.map((entry) => {
+            return {'value': parseFloat(entry.value), 'time': moment.unix(entry.epochTime/1000).format('MM/DD/YY')}
+        });
+        setChartData(temp);
+    }, [drilldownData]);
 
 
     // Functions
-    const updateSelectedSite = (index) => {
-        setSelectedSiteIndex(index);
-        setSelectedSite(DensityState.densityData[index]);
-    }
+    const sendDrilldownRequest = async(measurement) => {
+        const params = {
+            'collectionName': RequestState.requestParams.collectionName,
+            'startTime': RequestState.requestParams.startTime,
+            'endTime' : RequestState.requestParams.endTime,
+            'siteIdName': RequestState.requestParams.siteIdName,
+            'siteId': siteId,
+            'measurementName': measurement
+        };
+
+        setChartStatus('PENDING');
+        const streamedResults = await Api.sendStreamRequest('streamDrilldownData', params).then();
+
+        if (streamedResults) {
+            setDrilldownData(streamedResults);
+            if (streamedResults.length > 0) setChartStatus('VALID');
+            else setChartStatus('NO DATA')
+        }
+
+        else {
+            setDrilldownData([]);
+            setChartStatus('INVALID');
+        }
+
+    };
+
+    const handleListItemClick = (event, index) => {
+        setSelectedIndex(index);
+        sendDrilldownRequest(filteredMeasurementNames[index]);
+    };
+
+    const handleSearchText = (event) => {
+        setSearchText(event.target.value);
+    };
+
 
     // Return Vals
-    const state = {sitePieData, selectedSite, selectedSiteIndex};
-
     const functions = {
-        updateSelectedSite: (index) => updateSelectedSite(index),
-    }
+        sendDrilldownRequest: async(measurement) => sendDrilldownRequest(measurement),
+        handleListItemClick: (event, index) => handleListItemClick(event, index),
+        handleSearchText: (event) => handleSearchText(event),
+        setSearchText: (text) => setSearchText(text),
+        setSelectedIndex: (index) => setSelectedIndex(index)
+    };
+
+    const state = { filteredMeasurementNames, searchText, selectedIndex, chartData, chartStatus, measurementNamesStatus };
 
 
     // Return
-    return {state, functions};
+    return { state, functions };
+
 
 }
-

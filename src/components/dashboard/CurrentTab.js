@@ -44,6 +44,7 @@ import { UseTimeSeriesChart } from '../../hooks/UseTimeSeriesChart';
 import { UseFilter } from '../../hooks/UseFilter';
 import { UseSiteData } from '../../hooks/UseSiteData';
 import DrilldownTab from './tabs/DrilldownTab';
+import { UseDrilldown } from '../../hooks/UseDrilldown';
 
 
 export default function CurrentTab({currentTab, Request, Density, Map}) {
@@ -52,6 +53,7 @@ export default function CurrentTab({currentTab, Request, Density, Map}) {
     const TimeSeriesData = UseTimeSeriesChart(Density.state.allDensityData);
     const DataFilter = UseFilter(Density.state.scoreSet);
     const SiteData = UseSiteData(Density.state);
+    const Drilldown = UseDrilldown(Request.state, SiteData.state.selectedSite.monitorId, Density.state.densityData);
 
 
     switch (currentTab) {
@@ -87,8 +89,7 @@ export default function CurrentTab({currentTab, Request, Density, Map}) {
                     />
         case 7:
             return <DrilldownTab
-                        siteId={SiteData.state.selectedSite.monitorId}
-                        requestParams={Request.state.requestParams}
+                        Drilldown={Drilldown}
                     />
         default:
             return null;

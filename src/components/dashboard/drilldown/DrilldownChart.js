@@ -32,69 +32,69 @@ END OF TERMS AND CONDITIONS
 */
 
 
-import { useState, useEffect } from 'react';
-import { colors } from '../library/colors';
+import { makeStyles } from "@material-ui/core";
+import { LinearProgress, Typography } from "@mui/material";
+import { LineChart, Line, XAxis, YAxis, CartesianGrid, Tooltip, Legend, ResponsiveContainer } from 'recharts';
+import { colors } from "../../../library/colors";
 
 
-export const UseSiteData = (DensityState) => {
+const useStyles = makeStyles({
+    loading: {
+        width: '100%'
+    }
+});
 
 
-    // State
-    const [sitePieData, setSitePieData] = useState([]);
-    const [selectedSite, setSelectedSite] = useState({});
-    const [selectedSiteIndex, setSelectedSiteIndex] = useState(0);
+export default function DrilldownChart({ status, measurementName, chartData }) {
 
-    console.log(selectedSite.monitorId)
+    const classes = useStyles();
 
-
-    // useEffects
-    useEffect(() => {
-        if(DensityState.densityData.length > 0) {
-            setSelectedSite(DensityState.densityData[0]);
-        }
-        else setSelectedSite({});
-    }, [DensityState.densityData]);
-
-
-    useEffect(() => {
-        if(Object.keys(selectedSite) > 0){
-
-            const myScore = selectedSite.densityScore;
-            const numberOfSameScores = DensityState.scores.filter(score => {return score === myScore}).length;
-            const numberOfDifferentScores = DensityState.scores.length - numberOfSameScores;
-            setSitePieData([
-                {
-                    "name": `Sites with density score = ${selectedSite.densityScore}`,
-                    "value": numberOfSameScores,
-                    "fill": colors.tertiary
-                },
-                {
-                    "name": "Sites with other sparisty scores",
-                    "value": numberOfDifferentScores,
-                    "fill": colors.primary
-                }
-            ]);
-
-        }
-    }, [selectedSite, DensityState.scores]);
-
-
-    // Functions
-    const updateSelectedSite = (index) => {
-        setSelectedSiteIndex(index);
-        setSelectedSite(DensityState.densityData[index]);
+    
+    if (status === 'VALID') {
+        return (
+            <>
+                <Typography>{measurementName}</Typography>
+                <ResponsiveContainer width="100%" height={350}>
+                    <LineChart
+                        data={chartData}
+                        margin={{
+                            top: 5,
+                            right: 30,
+                            left: 20,
+                            bottom: 5,
+                        }}
+                    >
+                        <CartesianGrid strokeDasharray="3 3" />
+                        <XAxis
+                            dataKey="time"
+                        />
+                        <YAxis />
+                        <Tooltip />
+                        <Legend />
+                        <Line 
+                            type="monotone" 
+                            dataKey='value' 
+                            stroke={colors.tertiary}
+                            activeDot={{ r: 8 }}
+                            dot={false}
+                        />
+                    </LineChart>
+                </ResponsiveContainer>
+            </>
+        );
+    }
+    else if (status === 'PENDING') {
+        return (
+            <>
+                <Typography>Loading Data...</Typography>
+                <LinearProgress className={classes.loading} />
+            </>
+        );
+    }
+    else {
+        return <Typography>No Data To Graph</Typography>;
     }
 
-    // Return Vals
-    const state = {sitePieData, selectedSite, selectedSiteIndex};
-
-    const functions = {
-        updateSelectedSite: (index) => updateSelectedSite(index),
-    }
-
-
-    // Return
-    return {state, functions};
 
 }
 

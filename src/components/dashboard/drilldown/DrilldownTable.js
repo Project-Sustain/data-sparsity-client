@@ -32,69 +32,72 @@ END OF TERMS AND CONDITIONS
 */
 
 
-import { useState, useEffect } from 'react';
-import { colors } from '../library/colors';
+import { List, ListItemButton, ListItemText, ListSubheader, LinearProgress, Typography, TextField } from "@mui/material";
+import { makeStyles } from "@material-ui/core";
 
 
-export const UseSiteData = (DensityState) => {
+const useStyles = makeStyles({
+    root: {
+        overflow: 'auto',
+        maxHeight: '50vh',
+        width: '20vw'
+    },
+    loading: {
+        width: '100%'
+    }
+});
 
 
-    // State
-    const [sitePieData, setSitePieData] = useState([]);
-    const [selectedSite, setSelectedSite] = useState({});
-    const [selectedSiteIndex, setSelectedSiteIndex] = useState(0);
+export default function DrilldownTable({ measurementNamesStatus, searchText, handleSearchText, filteredMeasurementNames, selectedIndex, handleListItemClick }) {
 
-    console.log(selectedSite.monitorId)
+    const classes = useStyles();
 
 
-    // useEffects
-    useEffect(() => {
-        if(DensityState.densityData.length > 0) {
-            setSelectedSite(DensityState.densityData[0]);
-        }
-        else setSelectedSite({});
-    }, [DensityState.densityData]);
-
-
-    useEffect(() => {
-        if(Object.keys(selectedSite) > 0){
-
-            const myScore = selectedSite.densityScore;
-            const numberOfSameScores = DensityState.scores.filter(score => {return score === myScore}).length;
-            const numberOfDifferentScores = DensityState.scores.length - numberOfSameScores;
-            setSitePieData([
+    if (measurementNamesStatus === 'VALID') {
+        return (
+            <List
+                className={classes.root}
+            >
+                <ListSubheader>
+                    <TextField
+                        fullWidth
+                        value={searchText}
+                        label='Search...'
+                        variant='outlined'
+                        onChange={handleSearchText}
+                    />
+                </ListSubheader>
                 {
-                    "name": `Sites with density score = ${selectedSite.densityScore}`,
-                    "value": numberOfSameScores,
-                    "fill": colors.tertiary
-                },
-                {
-                    "name": "Sites with other sparisty scores",
-                    "value": numberOfDifferentScores,
-                    "fill": colors.primary
+                    filteredMeasurementNames.map((name, index) => {
+                        return (
+                            <ListItemButton
+                                key={index}
+                                selected={selectedIndex === index}
+                                onClick={(event) => handleListItemClick(event, index)}
+                            >
+                                <ListItemText primary={name} />
+                            </ListItemButton> 
+                        );
+                    })
                 }
-            ]);
-
-        }
-    }, [selectedSite, DensityState.scores]);
-
-
-    // Functions
-    const updateSelectedSite = (index) => {
-        setSelectedSiteIndex(index);
-        setSelectedSite(DensityState.densityData[index]);
+            </List>
+        );
     }
 
-    // Return Vals
-    const state = {sitePieData, selectedSite, selectedSiteIndex};
-
-    const functions = {
-        updateSelectedSite: (index) => updateSelectedSite(index),
+    else if (measurementNamesStatus === 'PENDING') {
+        return (
+            <>
+                <Typography>Loading Data...</Typography>
+                <LinearProgress className={classes.loading} />
+            </>
+        );
     }
 
-
-    // Return
-    return {state, functions};
-
+    else if (measurementNamesStatus === 'NO DATA') {
+        return (
+            <>
+                <Typography>No Data</Typography>
+            </>
+        );
+    }
 }
-
