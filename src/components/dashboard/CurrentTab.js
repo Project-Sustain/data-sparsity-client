@@ -53,7 +53,7 @@ export default function CurrentTab({currentTab, Request, Density, Map}) {
     const TimeSeriesData = UseTimeSeriesChart(Density.state.allDensityData);
     const DataFilter = UseFilter(Density.state.scoreSet);
     const SiteData = UseSiteData(Density.state);
-    const Drilldown = UseDrilldown(Request.state, SiteData.state.selectedSite.monitorId);
+    const Drilldown = UseDrilldown(Request.state, SiteData.state.selectedSite.monitorId, Density.state.densityData);
 
 
     switch (currentTab) {

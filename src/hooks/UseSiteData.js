@@ -44,6 +44,8 @@ export const UseSiteData = (DensityState) => {
     const [selectedSite, setSelectedSite] = useState({});
     const [selectedSiteIndex, setSelectedSiteIndex] = useState(0);
 
+    console.log(selectedSite.monitorId)
+
 
     // useEffects
     useEffect(() => {

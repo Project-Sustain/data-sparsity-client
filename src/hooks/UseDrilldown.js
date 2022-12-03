@@ -37,7 +37,7 @@ import { Api } from "../library/Api";
 import moment from 'moment';
 
 
-export const UseDrilldown = (RequestState, siteId) => {
+export const UseDrilldown = (RequestState, siteId, densityData) => {
 
 
     // state
@@ -84,7 +84,18 @@ export const UseDrilldown = (RequestState, siteId) => {
                 }
             })();
         }
-    }, [RequestState, siteId]);
+        else {
+            setMeasurentNames([]);
+            setDrilldownData([]);
+        }
+    }, [densityData, siteId]);
+
+    /**
+     * Reset chartData when a new density query returns
+     */
+    useEffect(() => {
+        setDrilldownData([]);
+    }, [densityData]);
 
     /**
      * Reset the filtered list whenever the measurement names change
@@ -97,10 +108,12 @@ export const UseDrilldown = (RequestState, siteId) => {
      * Update the filtered list whenever the user types into the search box
      */
     useEffect(() => {
-        const temp = measurementNames.filter(name => {
-            return name.includes(searchText);
-        });
-        setFilteredMeasurementNames(temp);
+        if (measurementNames) {
+            const temp = measurementNames.filter(name => {
+                return name.includes(searchText);
+            });
+            setFilteredMeasurementNames(temp);
+        }
     }, [searchText, measurementNames]);
 
     /**
