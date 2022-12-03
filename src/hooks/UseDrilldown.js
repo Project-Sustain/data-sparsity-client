@@ -57,6 +57,7 @@ export const UseDrilldown = (RequestState, siteId, densityData) => {
     // useEffects
     /**
      * Set the measurement names with the return from the API request
+     * Do this only when a new density query returns or the selected site changes
      */
     useEffect(() => {
         if (siteId) {
@@ -91,7 +92,7 @@ export const UseDrilldown = (RequestState, siteId, densityData) => {
     }, [densityData, siteId]);
 
     /**
-     * Reset chartData when a new density query returns
+     * Reset drilldownData(& chartData) when a new density query returns
      */
     useEffect(() => {
         setDrilldownData([]);
