@@ -66,10 +66,13 @@ export default function DrilldownTab({siteId, requestParams}) {
     const [drilldownData, setDrilldownData] = useState([]);
     const [chartData, setChartData] = useState([]);
     const [status, setStatus] = useState('NO DATA');
+    const [measurementNamesStatus, setMeasurentNamesStatus] = useState('NO DATA')
 
 
     useEffect(() => {
         (async () => {
+
+            setMeasurentNamesStatus('PENDING');
 
             const params = {
                 'collectionName': requestParams.collectionName,
@@ -83,8 +86,12 @@ export default function DrilldownTab({siteId, requestParams}) {
             const response = await Api.sendJsonRequest("measurementNames", params);
             if(response) {
                 setMeasurentNames(response.measurementName);
+                setMeasurentNamesStatus('VALID');
             }
-            else console.log("ERROR sending temporalRange request");
+            else {
+                console.log("ERROR sending temporalRange request");
+                setMeasurentNamesStatus('INVALID');
+            }
         })();
     }, [requestParams]);
 
@@ -151,7 +158,6 @@ export default function DrilldownTab({siteId, requestParams}) {
                             <CartesianGrid strokeDasharray="3 3" />
                             <XAxis
                                 dataKey="time"
-                                // tickFormatter = {(unixTime) => moment(unixTime).format('HH:mm Do')}
                             />
                             <YAxis />
                             <Tooltip />
@@ -176,7 +182,58 @@ export default function DrilldownTab({siteId, requestParams}) {
             );
         }
         else {
-            return <Typography>No Data Yet</Typography>;
+            return <Typography>No Data To Graph</Typography>;
+        }
+    }
+
+
+    const renderTable = () => {
+        if (measurementNamesStatus === 'VALID') {
+            return (
+                <List
+                    className={classes.list}
+                >
+                    <ListSubheader>
+                        <TextField
+                            fullWidth
+                            value={searchText}
+                            label='Search...'
+                            variant='outlined'
+                            onChange={handleSearchText}
+                        />
+                    </ListSubheader>
+                    {
+                        filteredMeasurementNames.map((name, index) => {
+                            return (
+                                <ListItemButton
+                                    key={index}
+                                    selected={selectedIndex === index}
+                                    onClick={(event) => handleListItemClick(event, index)}
+                                >
+                                    <ListItemText primary={name} />
+                                </ListItemButton> 
+                            );
+                        })
+                    }
+                </List>
+            );
+        }
+
+        else if (measurementNamesStatus === 'PENDING') {
+            return (
+                <>
+                    <Typography>Loading Data...</Typography>
+                    <LinearProgress className={classes.loading} />
+                </>
+            );
+        }
+
+        else if (measurementNamesStatus === 'NO DATA') {
+            return (
+                <>
+                    <Typography>No Data</Typography>
+                </>
+            );
         }
     }
 
@@ -185,32 +242,7 @@ export default function DrilldownTab({siteId, requestParams}) {
         <>
             <Grid item xs={3}>
                 <DashboardComponent>
-                    <List
-                        className={classes.list}
-                    >
-                        <ListSubheader>
-                            <TextField
-                                fullWidth
-                                value={searchText}
-                                label='Search...'
-                                variant='outlined'
-                                onChange={handleSearchText}
-                            />
-                        </ListSubheader>
-                        {
-                            filteredMeasurementNames.map((name, index) => {
-                                return (
-                                    <ListItemButton
-                                        key={index}
-                                        selected={selectedIndex === index}
-                                        onClick={(event) => handleListItemClick(event, index)}
-                                    >
-                                        <ListItemText primary={name} />
-                                    </ListItemButton> 
-                                );
-                            })
-                        }
-                    </List>
+                    {renderTable()}
                 </DashboardComponent>
             </Grid>
 
