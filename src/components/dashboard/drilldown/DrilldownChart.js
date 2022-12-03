@@ -32,69 +32,68 @@ END OF TERMS AND CONDITIONS
 */
 
 
-import RequestTab from './tabs/RequestTab';
-import StatisticsTab from './tabs/StatisticsTab';
-import CustomBarChart from './tabs/CustomBarChart';
-import PieChartTab from './tabs/PieChartTab';
-import TimeSeriesChart from './tabs/TimeSeriesChart';
-import SiteDataTab from './tabs/SiteDataTab';
-import Filter from "./tabs/Filter";
-import { UsePieBarChart } from '../../hooks/UsePieBarChart';
-import { UseTimeSeriesChart } from '../../hooks/UseTimeSeriesChart';
-import { UseFilter } from '../../hooks/UseFilter';
-import { UseSiteData } from '../../hooks/UseSiteData';
-import DrilldownTab from './tabs/DrilldownTab';
-import { UseDrilldown } from '../../hooks/UseDrilldown';
+import { makeStyles } from "@material-ui/core";
+import { LinearProgress, Typography } from "@mui/material";
+import { LineChart, Line, XAxis, YAxis, CartesianGrid, Tooltip, Legend, ResponsiveContainer } from 'recharts';
+import { colors } from "../../../library/colors";
 
 
-export default function CurrentTab({currentTab, Request, Density, Map}) {
-
-    const PieBarData = UsePieBarChart(Density.state, Request.state.requestStatus, Density.state.scoreSiteMap, Density.state.scoreHashMap);
-    const TimeSeriesData = UseTimeSeriesChart(Density.state.allDensityData);
-    const DataFilter = UseFilter(Density.state.scoreSet);
-    const SiteData = UseSiteData(Density.state);
-    const Drilldown = UseDrilldown(Request.state, SiteData.state.selectedSite.monitorId);
+const useStyles = makeStyles({
+    loading: {
+        width: '100%'
+    }
+});
 
 
-    switch (currentTab) {
-        case 0:
-            return <RequestTab Request={Request} Density={Density} Map={Map} />
-        case 1:
-            return <StatisticsTab stats={Density.state.densityStats} />
-        case 2:
-            return <PieChartTab 
-                        scoreSet={Density.state.scoreSet} 
-                        colorGradient={Density.state.colorGradient} 
-                        PieBarData={PieBarData} />
-        case 3:
-            return <CustomBarChart data={PieBarData.state.barData} />
-        case 4:
-            return <TimeSeriesChart 
-                        data={TimeSeriesData.state.tsData}
-                        setNumBuckets={TimeSeriesData.functions.setNumTsBuckets}
-                        numBuckets={TimeSeriesData.state.numTsBuckets}
-                    />
-        case 5:
-            return <Filter 
-                        resetFilter={Density.functions.resetFilter} 
-                        filterDensityData={Density.functions.filterDensityData} 
-                        DataFilter={DataFilter} 
-                    />
-        case 6:
-            return <SiteDataTab 
-                        Request={Request}
-                        Density={Density}
-                        Map={Map}
-                        SiteData={SiteData}
-                    />
-        case 7:
-            return <DrilldownTab
-                        Drilldown={Drilldown}
-                    />
-        default:
-            return null;
+export default function DrilldownChart({ status, measurementName, chartData }) {
 
+    const classes = useStyles();
+
+    
+    if (status === 'VALID') {
+        return (
+            <>
+                <Typography>{measurementName}</Typography>
+                <ResponsiveContainer width="100%" height={350}>
+                    <LineChart
+                        data={chartData}
+                        margin={{
+                            top: 5,
+                            right: 30,
+                            left: 20,
+                            bottom: 5,
+                        }}
+                    >
+                        <CartesianGrid strokeDasharray="3 3" />
+                        <XAxis
+                            dataKey="time"
+                        />
+                        <YAxis />
+                        <Tooltip />
+                        <Legend />
+                        <Line 
+                            type="monotone" 
+                            dataKey='value' 
+                            stroke={colors.tertiary}
+                            activeDot={{ r: 8 }}
+                        />
+                    </LineChart>
+                </ResponsiveContainer>
+            </>
+        );
+    }
+    else if (status === 'PENDING') {
+        return (
+            <>
+                <Typography>Loading Data...</Typography>
+                <LinearProgress className={classes.loading} />
+            </>
+        );
+    }
+    else {
+        return <Typography>No Data To Graph</Typography>;
     }
 
 
 }
+

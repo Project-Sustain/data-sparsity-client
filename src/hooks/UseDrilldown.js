@@ -32,69 +32,139 @@ END OF TERMS AND CONDITIONS
 */
 
 
-import RequestTab from './tabs/RequestTab';
-import StatisticsTab from './tabs/StatisticsTab';
-import CustomBarChart from './tabs/CustomBarChart';
-import PieChartTab from './tabs/PieChartTab';
-import TimeSeriesChart from './tabs/TimeSeriesChart';
-import SiteDataTab from './tabs/SiteDataTab';
-import Filter from "./tabs/Filter";
-import { UsePieBarChart } from '../../hooks/UsePieBarChart';
-import { UseTimeSeriesChart } from '../../hooks/UseTimeSeriesChart';
-import { UseFilter } from '../../hooks/UseFilter';
-import { UseSiteData } from '../../hooks/UseSiteData';
-import DrilldownTab from './tabs/DrilldownTab';
-import { UseDrilldown } from '../../hooks/UseDrilldown';
+import { useEffect, useState } from "react";
+import { Api } from "../library/Api";
+import moment from 'moment';
 
 
-export default function CurrentTab({currentTab, Request, Density, Map}) {
-
-    const PieBarData = UsePieBarChart(Density.state, Request.state.requestStatus, Density.state.scoreSiteMap, Density.state.scoreHashMap);
-    const TimeSeriesData = UseTimeSeriesChart(Density.state.allDensityData);
-    const DataFilter = UseFilter(Density.state.scoreSet);
-    const SiteData = UseSiteData(Density.state);
-    const Drilldown = UseDrilldown(Request.state, SiteData.state.selectedSite.monitorId);
+export const UseDrilldown = (RequestState, siteId) => {
 
 
-    switch (currentTab) {
-        case 0:
-            return <RequestTab Request={Request} Density={Density} Map={Map} />
-        case 1:
-            return <StatisticsTab stats={Density.state.densityStats} />
-        case 2:
-            return <PieChartTab 
-                        scoreSet={Density.state.scoreSet} 
-                        colorGradient={Density.state.colorGradient} 
-                        PieBarData={PieBarData} />
-        case 3:
-            return <CustomBarChart data={PieBarData.state.barData} />
-        case 4:
-            return <TimeSeriesChart 
-                        data={TimeSeriesData.state.tsData}
-                        setNumBuckets={TimeSeriesData.functions.setNumTsBuckets}
-                        numBuckets={TimeSeriesData.state.numTsBuckets}
-                    />
-        case 5:
-            return <Filter 
-                        resetFilter={Density.functions.resetFilter} 
-                        filterDensityData={Density.functions.filterDensityData} 
-                        DataFilter={DataFilter} 
-                    />
-        case 6:
-            return <SiteDataTab 
-                        Request={Request}
-                        Density={Density}
-                        Map={Map}
-                        SiteData={SiteData}
-                    />
-        case 7:
-            return <DrilldownTab
-                        Drilldown={Drilldown}
-                    />
-        default:
-            return null;
+    // state
+    const [measurementNames, setMeasurentNames] = useState([]);
+    const [filteredMeasurementNames, setFilteredMeasurementNames] = useState([]);
 
-    }
+    const [searchText, setSearchText] = useState('');
+    const [selectedIndex, setSelectedIndex] = useState(0);
+
+    const [drilldownData, setDrilldownData] = useState([]);
+    const [chartData, setChartData] = useState([]);
+
+    const [chartStatus, setChartStatus] = useState('NO DATA');
+    const [measurementNamesStatus, setMeasurentNamesStatus] = useState('NO DATA');
+
+
+    // useEffects
+    /**
+     * Set the measurement names with the return from the API request
+     */
+    useEffect(() => {
+        if (siteId) {
+            (async () => {
+
+                setMeasurentNamesStatus('PENDING');
+
+                const params = {
+                    'collectionName': RequestState.requestParams.collectionName,
+                    'startTime': RequestState.requestParams.startTime,
+                    'endTime' : RequestState.requestParams.endTime,
+                    'siteIdName': RequestState.requestParams.siteIdName,
+                    'siteId': siteId,
+                    'ignoredFields': RequestState.collection.ignoredFields
+                }
+
+                const response = await Api.sendJsonRequest("measurementNames", params);
+                if(response) {
+                    setMeasurentNames(response.measurementName);
+                    setMeasurentNamesStatus('VALID');
+                }
+                else {
+                    console.log("ERROR sending temporalRange request");
+                    setMeasurentNamesStatus('INVALID');
+                }
+            })();
+        }
+    }, [RequestState, siteId]);
+
+    /**
+     * Reset the filtered list whenever the measurement names change
+     */
+    useEffect(() => {
+        setFilteredMeasurementNames(measurementNames);
+    }, [measurementNames]);
+
+    /**
+     * Update the filtered list whenever the user types into the search box
+     */
+    useEffect(() => {
+        const temp = measurementNames.filter(name => {
+            return name.includes(searchText);
+        });
+        setFilteredMeasurementNames(temp);
+    }, [searchText, measurementNames]);
+
+    /**
+     * Create the chart data each time drilldown data returns
+     */
+    useEffect(() => {
+        const temp = drilldownData.map((entry) => {
+            return {'value': parseFloat(entry.value), 'time': moment.unix(entry.epochTime/1000).format('MM/DD/YY')}
+        });
+        setChartData(temp);
+    }, [drilldownData]);
+
+
+    // Functions
+    const sendDrilldownRequest = async(measurement) => {
+        const params = {
+            'collectionName': RequestState.requestParams.collectionName,
+            'startTime': RequestState.requestParams.startTime,
+            'endTime' : RequestState.requestParams.endTime,
+            'siteIdName': RequestState.requestParams.siteIdName,
+            'siteId': siteId,
+            'measurementName': measurement
+        };
+
+        setChartStatus('PENDING');
+        const streamedResults = await Api.sendStreamRequest('streamDrilldownData', params).then();
+
+        if (streamedResults) {
+            setDrilldownData(streamedResults);
+            if (streamedResults.length > 0) setChartStatus('VALID');
+            else setChartStatus('NO DATA')
+        }
+
+        else {
+            setDrilldownData([]);
+            setChartStatus('INVALID');
+        }
+
+    };
+
+    const handleListItemClick = (event, index) => {
+        setSelectedIndex(index);
+        sendDrilldownRequest(filteredMeasurementNames[index]);
+    };
+
+    const handleSearchText = (event) => {
+        setSearchText(event.target.value);
+    };
+
+
+    // Return Vals
+    const functions = {
+        sendDrilldownRequest: async(measurement) => sendDrilldownRequest(measurement),
+        handleListItemClick: (event, index) => handleListItemClick(event, index),
+        handleSearchText: (event) => handleSearchText(event),
+        setSearchText: (text) => setSearchText(text),
+        setSelectedIndex: (index) => setSelectedIndex(index)
+    };
+
+    const state = { filteredMeasurementNames, searchText, selectedIndex, chartData, chartStatus, measurementNamesStatus };
+
+
+    // Return
+    return { state, functions };
 
 
 }

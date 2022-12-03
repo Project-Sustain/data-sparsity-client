@@ -32,69 +32,72 @@ END OF TERMS AND CONDITIONS
 */
 
 
-import RequestTab from './tabs/RequestTab';
-import StatisticsTab from './tabs/StatisticsTab';
-import CustomBarChart from './tabs/CustomBarChart';
-import PieChartTab from './tabs/PieChartTab';
-import TimeSeriesChart from './tabs/TimeSeriesChart';
-import SiteDataTab from './tabs/SiteDataTab';
-import Filter from "./tabs/Filter";
-import { UsePieBarChart } from '../../hooks/UsePieBarChart';
-import { UseTimeSeriesChart } from '../../hooks/UseTimeSeriesChart';
-import { UseFilter } from '../../hooks/UseFilter';
-import { UseSiteData } from '../../hooks/UseSiteData';
-import DrilldownTab from './tabs/DrilldownTab';
-import { UseDrilldown } from '../../hooks/UseDrilldown';
+import { List, ListItemButton, ListItemText, ListSubheader, LinearProgress, Typography, TextField } from "@mui/material";
+import { makeStyles } from "@material-ui/core";
 
 
-export default function CurrentTab({currentTab, Request, Density, Map}) {
+const useStyles = makeStyles({
+    root: {
+        overflow: 'auto',
+        maxHeight: '50vh',
+        width: '20vw'
+    },
+    loading: {
+        width: '100%'
+    }
+});
 
-    const PieBarData = UsePieBarChart(Density.state, Request.state.requestStatus, Density.state.scoreSiteMap, Density.state.scoreHashMap);
-    const TimeSeriesData = UseTimeSeriesChart(Density.state.allDensityData);
-    const DataFilter = UseFilter(Density.state.scoreSet);
-    const SiteData = UseSiteData(Density.state);
-    const Drilldown = UseDrilldown(Request.state, SiteData.state.selectedSite.monitorId);
+
+export default function DrilldownTable({ measurementNamesStatus, searchText, handleSearchText, filteredMeasurementNames, selectedIndex, handleListItemClick }) {
+
+    const classes = useStyles();
 
 
-    switch (currentTab) {
-        case 0:
-            return <RequestTab Request={Request} Density={Density} Map={Map} />
-        case 1:
-            return <StatisticsTab stats={Density.state.densityStats} />
-        case 2:
-            return <PieChartTab 
-                        scoreSet={Density.state.scoreSet} 
-                        colorGradient={Density.state.colorGradient} 
-                        PieBarData={PieBarData} />
-        case 3:
-            return <CustomBarChart data={PieBarData.state.barData} />
-        case 4:
-            return <TimeSeriesChart 
-                        data={TimeSeriesData.state.tsData}
-                        setNumBuckets={TimeSeriesData.functions.setNumTsBuckets}
-                        numBuckets={TimeSeriesData.state.numTsBuckets}
+    if (measurementNamesStatus === 'VALID') {
+        return (
+            <List
+                className={classes.root}
+            >
+                <ListSubheader>
+                    <TextField
+                        fullWidth
+                        value={searchText}
+                        label='Search...'
+                        variant='outlined'
+                        onChange={handleSearchText}
                     />
-        case 5:
-            return <Filter 
-                        resetFilter={Density.functions.resetFilter} 
-                        filterDensityData={Density.functions.filterDensityData} 
-                        DataFilter={DataFilter} 
-                    />
-        case 6:
-            return <SiteDataTab 
-                        Request={Request}
-                        Density={Density}
-                        Map={Map}
-                        SiteData={SiteData}
-                    />
-        case 7:
-            return <DrilldownTab
-                        Drilldown={Drilldown}
-                    />
-        default:
-            return null;
-
+                </ListSubheader>
+                {
+                    filteredMeasurementNames.map((name, index) => {
+                        return (
+                            <ListItemButton
+                                key={index}
+                                selected={selectedIndex === index}
+                                onClick={(event) => handleListItemClick(event, index)}
+                            >
+                                <ListItemText primary={name} />
+                            </ListItemButton> 
+                        );
+                    })
+                }
+            </List>
+        );
     }
 
+    else if (measurementNamesStatus === 'PENDING') {
+        return (
+            <>
+                <Typography>Loading Data...</Typography>
+                <LinearProgress className={classes.loading} />
+            </>
+        );
+    }
 
+    else if (measurementNamesStatus === 'NO DATA') {
+        return (
+            <>
+                <Typography>No Data</Typography>
+            </>
+        );
+    }
 }
