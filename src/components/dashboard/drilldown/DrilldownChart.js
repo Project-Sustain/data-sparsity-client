@@ -76,6 +76,7 @@ export default function DrilldownChart({ status, measurementName, chartData }) {
                             dataKey='value' 
                             stroke={colors.tertiary}
                             activeDot={{ r: 8 }}
+                            dot={false}
                         />
                     </LineChart>
                 </ResponsiveContainer>
